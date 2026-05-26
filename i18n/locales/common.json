@@ -1,0 +1,458 @@
+{
+  "topbar.email": {
+    "fr": "contact@circumlifesciences.com",
+    "en": "contact@circumlifesciences.com",
+    "de": "contact@circumlifesciences.com",
+    "it": "contact@circumlifesciences.com"
+  },
+  "topbar.newsletter": {
+    "fr": "Newsletter",
+    "en": "Newsletter",
+    "de": "Newsletter",
+    "it": "Newsletter"
+  },
+  "topbar.careers": {
+    "fr": "Carrières",
+    "en": "Careers",
+    "de": "Karriere",
+    "it": "Carriere"
+  },
+  "nav.about": {
+    "fr": "À propos",
+    "en": "About",
+    "de": "Über uns",
+    "it": "Chi siamo"
+  },
+  "nav.design": {
+    "fr": "Design & Développement",
+    "en": "Design & Development",
+    "de": "Design & Entwicklung",
+    "it": "Progettazione & Sviluppo"
+  },
+  "nav.manufacturing": {
+    "fr": "Fabrication",
+    "en": "Manufacturing",
+    "de": "Fertigung",
+    "it": "Produzione"
+  },
+  "nav.clients": {
+    "fr": "Clients",
+    "en": "Clients",
+    "de": "Kunden",
+    "it": "Clienti"
+  },
+  "nav.news": {
+    "fr": "News",
+    "en": "News",
+    "de": "Aktuelles",
+    "it": "News"
+  },
+  "nav.contact": {
+    "fr": "Contact",
+    "en": "Contact",
+    "de": "Kontakt",
+    "it": "Contatto"
+  },
+  "nav.sub.company": {
+    "fr": "Notre entreprise",
+    "en": "Our company",
+    "de": "Unser Unternehmen",
+    "it": "La nostra azienda"
+  },
+  "nav.sub.values": {
+    "fr": "Nos valeurs",
+    "en": "Our values",
+    "de": "Unsere Werte",
+    "it": "I nostri valori"
+  },
+  "nav.sub.board": {
+    "fr": "Board & Conseil stratégique",
+    "en": "Board & Strategic Council",
+    "de": "Board & Strategischer Beirat",
+    "it": "Board & Consiglio strategico"
+  },
+  "nav.sub.environment": {
+    "fr": "Politique environnementale",
+    "en": "Environmental policy",
+    "de": "Umweltpolitik",
+    "it": "Politica ambientale"
+  },
+  "nav.sub.founders": {
+    "fr": "Les trois fondateurs",
+    "en": "The three founders",
+    "de": "Die drei Gründer",
+    "it": "I tre fondatori"
+  },
+  "nav.sub.conception": {
+    "fr": "Conception",
+    "en": "Design",
+    "de": "Konstruktion",
+    "it": "Progettazione"
+  },
+  "nav.sub.qara": {
+    "fr": "Qualité & Affaires Réglementaires",
+    "en": "Quality & Regulatory Affairs",
+    "de": "Qualität & Regulatory Affairs",
+    "it": "Qualità & Affari regolatori"
+  },
+  "nav.sub.lab": {
+    "fr": "Laboratoire",
+    "en": "Laboratory",
+    "de": "Labor",
+    "it": "Laboratorio"
+  },
+  "nav.sub.vv": {
+    "fr": "Vérification & Validation",
+    "en": "Verification & Validation",
+    "de": "Verifizierung & Validierung",
+    "it": "Verifica & Validazione"
+  },
+  "nav.sub.forceone": {
+    "fr": "Force One",
+    "en": "Force One",
+    "de": "Force One",
+    "it": "Force One"
+  },
+  "nav.sub.molding": {
+    "fr": "Moulage par injection",
+    "en": "Injection molding",
+    "de": "Spritzguss",
+    "it": "Stampaggio a iniezione"
+  },
+  "nav.sub.assembly": {
+    "fr": "Assemblage",
+    "en": "Assembly",
+    "de": "Montage",
+    "it": "Assemblaggio"
+  },
+  "nav.sub.sterilization": {
+    "fr": "Stérilisation",
+    "en": "Sterilization",
+    "de": "Sterilisation",
+    "it": "Sterilizzazione"
+  },
+  "mobile.title.about": {
+    "fr": "À propos",
+    "en": "About",
+    "de": "Über uns",
+    "it": "Chi siamo"
+  },
+  "mobile.title.services": {
+    "fr": "Services",
+    "en": "Services",
+    "de": "Leistungen",
+    "it": "Servizi"
+  },
+  "mobile.news": {
+    "fr": "News & Media",
+    "en": "News & Media",
+    "de": "News & Medien",
+    "it": "News & Media"
+  },
+  "strip.title": {
+    "fr": "<strong>Newsletter trimestrielle.</strong> Restez informé.",
+    "en": "<strong>Quarterly newsletter.</strong> Stay informed.",
+    "de": "<strong>Vierteljährlicher Newsletter.</strong> Bleiben Sie informiert.",
+    "it": "<strong>Newsletter trimestrale.</strong> Restate informati."
+  },
+  "strip.text": {
+    "fr": "Recevez chaque trimestre nos actualités, innovations et publications. Désinscription en un clic.",
+    "en": "Receive our news, innovations and publications every quarter. Unsubscribe in one click.",
+    "de": "Erhalten Sie vierteljährlich unsere Neuigkeiten, Innovationen und Publikationen. Abmeldung mit einem Klick.",
+    "it": "Ricevete ogni trimestre le nostre notizie, innovazioni e pubblicazioni. Disiscrizione in un clic."
+  },
+  "strip.placeholder": {
+    "fr": "votre@email.com",
+    "en": "your@email.com",
+    "de": "ihre@email.de",
+    "it": "vostra@email.com"
+  },
+  "strip.submit": {
+    "fr": "S'inscrire →",
+    "en": "Subscribe →",
+    "de": "Anmelden →",
+    "it": "Iscriviti →"
+  },
+  "cta.eyebrow": {
+    "fr": "Démarrer un projet",
+    "en": "Start a project",
+    "de": "Projekt starten",
+    "it": "Avviare un progetto"
+  },
+  "cta.title": {
+    "fr": "Un dispositif. Une vision.<br><em>Un partenaire.</em>",
+    "en": "One device. One vision.<br><em>One partner.</em>",
+    "de": "Ein Produkt. Eine Vision.<br><em>Ein Partner.</em>",
+    "it": "Un dispositivo. Una visione.<br><em>Un partner.</em>"
+  },
+  "cta.text": {
+    "fr": "Échangeons sur votre projet : conception, fabrication, conformité. Notre équipe vous répond sous 24 heures ouvrées.",
+    "en": "Let's discuss your project: design, manufacturing, compliance. Our team will respond within one business day.",
+    "de": "Sprechen wir über Ihr Projekt: Konstruktion, Fertigung, Konformität. Unser Team antwortet innerhalb eines Werktags.",
+    "it": "Parliamo del vostro progetto: progettazione, produzione, conformità. Il nostro team risponde entro 24 ore lavorative."
+  },
+  "cta.btn.contact": {
+    "fr": "Contactez-nous",
+    "en": "Contact us",
+    "de": "Kontaktieren Sie uns",
+    "it": "Contattateci"
+  },
+  "cta.btn.about": {
+    "fr": "À propos de nous",
+    "en": "About us",
+    "de": "Über uns",
+    "it": "Chi siamo"
+  },
+  "footer.desc": {
+    "fr": "Entreprise CDMO intégrée verticalement dans les domaines des dispositifs médicaux et des sciences de la vie. Implantation Suisse · France · Tunisie.",
+    "en": "Vertically integrated CDMO in medical devices and life sciences. Switzerland · France · Tunisia.",
+    "de": "Vertikal integriertes CDMO für Medizinprodukte und Life Sciences. Schweiz · Frankreich · Tunesien.",
+    "it": "CDMO integrato verticalmente nei dispositivi medici e nelle life sciences. Svizzera · Francia · Tunisia."
+  },
+  "footer.col.company": {
+    "fr": "Société",
+    "en": "Company",
+    "de": "Unternehmen",
+    "it": "Azienda"
+  },
+  "footer.col.services": {
+    "fr": "Services",
+    "en": "Services",
+    "de": "Leistungen",
+    "it": "Servizi"
+  },
+  "footer.col.contact": {
+    "fr": "Contact",
+    "en": "Contact",
+    "de": "Kontakt",
+    "it": "Contatto"
+  },
+  "footer.link.about": {
+    "fr": "À propos",
+    "en": "About",
+    "de": "Über uns",
+    "it": "Chi siamo"
+  },
+  "footer.link.founders": {
+    "fr": "Fondateurs",
+    "en": "Founders",
+    "de": "Gründer",
+    "it": "Fondatori"
+  },
+  "footer.link.values": {
+    "fr": "Nos valeurs",
+    "en": "Our values",
+    "de": "Unsere Werte",
+    "it": "I nostri valori"
+  },
+  "footer.link.environment": {
+    "fr": "Environnement",
+    "en": "Environment",
+    "de": "Umwelt",
+    "it": "Ambiente"
+  },
+  "footer.link.careers": {
+    "fr": "Carrières",
+    "en": "Careers",
+    "de": "Karriere",
+    "it": "Carriere"
+  },
+  "footer.link.design": {
+    "fr": "Design & Développement",
+    "en": "Design & Development",
+    "de": "Design & Entwicklung",
+    "it": "Progettazione & Sviluppo"
+  },
+  "footer.link.manufacturing": {
+    "fr": "Fabrication",
+    "en": "Manufacturing",
+    "de": "Fertigung",
+    "it": "Produzione"
+  },
+  "footer.link.forceone": {
+    "fr": "Force One",
+    "en": "Force One",
+    "de": "Force One",
+    "it": "Force One"
+  },
+  "footer.link.clients": {
+    "fr": "Nos clients",
+    "en": "Our clients",
+    "de": "Unsere Kunden",
+    "it": "I nostri clienti"
+  },
+  "footer.link.news": {
+    "fr": "News & Media",
+    "en": "News & Media",
+    "de": "News & Medien",
+    "it": "News & Media"
+  },
+  "footer.hq": {
+    "fr": "Siège · Suisse",
+    "en": "Headquarters · Switzerland",
+    "de": "Hauptsitz · Schweiz",
+    "it": "Sede · Svizzera"
+  },
+  "footer.geneva": {
+    "fr": "Genève, Suisse",
+    "en": "Geneva, Switzerland",
+    "de": "Genf, Schweiz",
+    "it": "Ginevra, Svizzera"
+  },
+  "footer.email": {
+    "fr": "Email",
+    "en": "Email",
+    "de": "E-Mail",
+    "it": "Email"
+  },
+  "footer.newsletter": {
+    "fr": "Newsletter",
+    "en": "Newsletter",
+    "de": "Newsletter",
+    "it": "Newsletter"
+  },
+  "footer.subscribe": {
+    "fr": "S'inscrire →",
+    "en": "Subscribe →",
+    "de": "Anmelden →",
+    "it": "Iscriviti →"
+  },
+  "footer.copy": {
+    "fr": "© 2026 Circum Life Sciences. Tous droits réservés.",
+    "en": "© 2026 Circum Life Sciences. All rights reserved.",
+    "de": "© 2026 Circum Life Sciences. Alle Rechte vorbehalten.",
+    "it": "© 2026 Circum Life Sciences. Tutti i diritti riservati."
+  },
+  "footer.legal.mentions": {
+    "fr": "Mentions légales",
+    "en": "Legal notice",
+    "de": "Impressum",
+    "it": "Note legali"
+  },
+  "footer.legal.privacy": {
+    "fr": "Confidentialité",
+    "en": "Privacy",
+    "de": "Datenschutz",
+    "it": "Privacy"
+  },
+  "footer.legal.cookies": {
+    "fr": "Cookies",
+    "en": "Cookies",
+    "de": "Cookies",
+    "it": "Cookie"
+  },
+  "meta.home.title": {
+    "fr": "Circum Life Sciences · Laboratoire CDMO intégré",
+    "en": "Circum Life Sciences · Integrated CDMO laboratory",
+    "de": "Circum Life Sciences · Integriertes CDMO-Labor",
+    "it": "Circum Life Sciences · Laboratorio CDMO integrato"
+  },
+  "meta.apropos.title": {
+    "fr": "À propos · Circum Life Sciences",
+    "en": "About · Circum Life Sciences",
+    "de": "Über uns · Circum Life Sciences",
+    "it": "Chi siamo · Circum Life Sciences"
+  },
+  "meta.fondateurs.title": {
+    "fr": "Les fondateurs · Circum Life Sciences",
+    "en": "Founders · Circum Life Sciences",
+    "de": "Gründer · Circum Life Sciences",
+    "it": "Fondatori · Circum Life Sciences"
+  },
+  "meta.design.title": {
+    "fr": "Design & Développement · Circum Life Sciences",
+    "en": "Design & Development · Circum Life Sciences",
+    "de": "Design & Entwicklung · Circum Life Sciences",
+    "it": "Progettazione & Sviluppo · Circum Life Sciences"
+  },
+  "meta.fabrication.title": {
+    "fr": "Fabrication · Circum Life Sciences",
+    "en": "Manufacturing · Circum Life Sciences",
+    "de": "Fertigung · Circum Life Sciences",
+    "it": "Produzione · Circum Life Sciences"
+  },
+  "meta.clients.title": {
+    "fr": "Nos clients · Circum Life Sciences",
+    "en": "Our clients · Circum Life Sciences",
+    "de": "Unsere Kunden · Circum Life Sciences",
+    "it": "I nostri clienti · Circum Life Sciences"
+  },
+  "meta.news.title": {
+    "fr": "News & Media · Circum Life Sciences",
+    "en": "News & Media · Circum Life Sciences",
+    "de": "News & Medien · Circum Life Sciences",
+    "it": "News & Media · Circum Life Sciences"
+  },
+  "meta.newsletter.title": {
+    "fr": "Newsletter · Circum Life Sciences",
+    "en": "Newsletter · Circum Life Sciences",
+    "de": "Newsletter · Circum Life Sciences",
+    "it": "Newsletter · Circum Life Sciences"
+  },
+  "meta.carrieres.title": {
+    "fr": "Carrières · Circum Life Sciences",
+    "en": "Careers · Circum Life Sciences",
+    "de": "Karriere · Circum Life Sciences",
+    "it": "Carriere · Circum Life Sciences"
+  },
+  "meta.contact.title": {
+    "fr": "Contact · Circum Life Sciences",
+    "en": "Contact · Circum Life Sciences",
+    "de": "Kontakt · Circum Life Sciences",
+    "it": "Contatto · Circum Life Sciences"
+  },
+  "form.error.required": {
+    "fr": "Veuillez compléter les champs obligatoires.",
+    "en": "Please complete all required fields.",
+    "de": "Bitte füllen Sie alle Pflichtfelder aus.",
+    "it": "Completate tutti i campi obbligatori."
+  },
+  "form.success.newsletter": {
+    "fr": "✓ Merci ! Vous êtes inscrit à notre newsletter trimestrielle. Vous recevrez le prochain numéro à la fin du trimestre.",
+    "en": "✓ Thank you! You are subscribed to our quarterly newsletter. You will receive the next issue at the end of the quarter.",
+    "de": "✓ Vielen Dank! Sie sind für unseren vierteljährlichen Newsletter angemeldet. Die nächste Ausgabe erhalten Sie zum Quartalsende.",
+    "it": "✓ Grazie! Siete iscritti alla nostra newsletter trimestrale. Riceverete il prossimo numero a fine trimestre."
+  },
+  "form.success.careers": {
+    "fr": "✓ Votre candidature a bien été reçue. Notre équipe RH vous recontactera sous 5 jours ouvrés.",
+    "en": "✓ Your application has been received. Our HR team will contact you within 5 business days.",
+    "de": "✓ Ihre Bewerbung wurde erhalten. Unser HR-Team meldet sich innerhalb von 5 Werktagen.",
+    "it": "✓ La vostra candidatura è stata ricevuta. Il nostro team HR vi ricontatterà entro 5 giorni lavorativi."
+  },
+  "form.success.contact": {
+    "fr": "✓ Votre demande a été envoyée. Un membre de notre équipe commerciale vous répondra sous 24 heures ouvrées.",
+    "en": "✓ Your request has been sent. A member of our commercial team will respond within one business day.",
+    "de": "✓ Ihre Anfrage wurde gesendet. Unser Vertriebsteam antwortet innerhalb eines Werktags.",
+    "it": "✓ La vostra richiesta è stata inviata. Un membro del team commerciale risponderà entro 24 ore lavorative."
+  },
+  "form.success.default": {
+    "fr": "✓ Votre demande a bien été envoyée.",
+    "en": "✓ Your request has been sent successfully.",
+    "de": "✓ Ihre Anfrage wurde erfolgreich gesendet.",
+    "it": "✓ La vostra richiesta è stata inviata con successo."
+  },
+  "form.sending": {
+    "fr": "Envoi en cours...",
+    "en": "Sending...",
+    "de": "Wird gesendet...",
+    "it": "Invio in corso..."
+  },
+  "breadcrumb.home": {
+    "fr": "Accueil",
+    "en": "Home",
+    "de": "Startseite",
+    "it": "Home"
+  },
+  "logo.alt": {
+    "fr": "Circum Life Sciences",
+    "en": "Circum Life Sciences",
+    "de": "Circum Life Sciences",
+    "it": "Circum Life Sciences"
+  },
+  "btn.explore": {
+    "fr": "Explorer →",
+    "en": "Explore →",
+    "de": "Entdecken →",
+    "it": "Esplora →"
+  }
+}

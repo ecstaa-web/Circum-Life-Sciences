@@ -1,0 +1,434 @@
+{
+  "home.hero_eyebrow.1": {
+    "fr": "Laboratoire CDMO indépendant · Dispositifs médicaux",
+    "en": "Independent CDMO laboratory · Medical devices",
+    "de": "Unabhängiges CDMO-Labor · Medizinprodukte",
+    "it": "Laboratorio CDMO indipendente · Dispositivi medici"
+  },
+  "home.hero_title.2": {
+    "fr": "Concevoir, développer<br>et fabriquer <em>les dispositifs médicaux</em><br><strong>de demain.</strong>",
+    "en": "Design, develop<br>and manufacture <em>the medical devices</em><br><strong>of tomorrow.</strong>",
+    "de": "Entwickeln, konstruieren<br>und fertigen <em>die Medizinprodukte</em><br><strong>von morgen.</strong>",
+    "it": "Progettare, sviluppare<br>e produrre <em>i dispositivi medici</em><br><strong>di domani.</strong>"
+  },
+  "home.hero_subtitle.3": {
+    "fr": "Circum Life Sciences est une entreprise CDMO intégrée verticalement, opérant dans les domaines des dispositifs médicaux et des sciences de la vie. Une couverture complète, de la conception à la fabrication.",
+    "en": "Circum Life Sciences is a vertically integrated CDMO operating in medical devices and life sciences — full coverage from design to manufacturing.",
+    "de": "Circum Life Sciences ist ein vertikal integriertes CDMO in Medizinprodukten und Life Sciences — vollständige Abdeckung von der Konstruktion bis zur Fertigung.",
+    "it": "Circum Life Sciences è un CDMO integrato verticalmente nei dispositivi medici e nelle life sciences — copertura completa dalla progettazione alla produzione."
+  },
+  "home.hero_meta.4": {
+    "fr": "Suisse · France · Tunisie",
+    "en": "Switzerland · France · Tunisia",
+    "de": "Schweiz · Frankreich · Tunesien",
+    "it": "Svizzera · Francia · Tunisia"
+  },
+  "home.hero_meta.5": {
+    "fr": "3 sites · 1 équipe · Couverture CDMO complète",
+    "en": "3 sites · 1 team · Full CDMO coverage",
+    "de": "3 Standorte · 1 Team · Vollständige CDMO-Abdeckung",
+    "it": "3 siti · 1 team · Copertura CDMO completa"
+  },
+  "home.mission_title.5": {
+    "fr": "Soutenir notre industrie avec <strong>des solutions innovantes</strong> et <em>fiables.</em>",
+    "en": "Supporting our industry with <strong>innovative</strong> and <em>reliable</em> solutions.",
+    "de": "Unsere Branche mit <strong>innovativen</strong> und <em>zuverlässigen</em> Lösungen unterstützen.",
+    "it": "Sostenere il nostro settore con soluzioni <strong>innovative</strong> e <em>affidabili.</em>"
+  },
+  "home.mission_text.6": {
+    "fr": "Notre raison d'être : améliorer les traitements de santé pour le compte de nos partenaires. Nous proposons une large gamme de technologies médicales et adaptons notre offre à vos besoins spécifiques · parce que vos exigences sont uniques.",
+    "en": "Our purpose: improving healthcare treatments for our partners. We offer a broad range of medical technologies tailored to your specific needs — because your requirements are unique.",
+    "de": "Unser Auftrag: Gesundheitsversorgung für unsere Partner verbessern. Wir bieten ein breites Spektrum medizinischer Technologien, angepasst an Ihre spezifischen Anforderungen.",
+    "it": "La nostra missione: migliorare i trattamenti sanitari per i nostri partner. Offriamo un'ampia gamma di tecnologie mediche adattate alle vostre esigenze specifiche."
+  },
+  "home.mission_text.7": {
+    "fr": "Notre approche globale nous permet d'offrir à nos clients des produits innovants et fiables, d'accélérer leur mise sur le marché et de garantir leur succès. Notre flexibilité nous permet de collaborer avec des entreprises de toutes tailles · des startups aux plus grandes entreprises mondiales de dispositifs médicaux.",
+    "en": "Our integrated approach delivers innovative, reliable products, accelerates time to market and ensures success. We work with companies of all sizes — from startups to global medtech leaders.",
+    "de": "Unser ganzheitlicher Ansatz liefert innovative, zuverlässige Produkte, beschleunigt die Markteinführung und sichert den Erfolg. Wir arbeiten mit Unternehmen jeder Größe.",
+    "it": "Il nostro approccio integrato offre prodotti innovativi e affidabili, accelera il time to market e garantisce il successo. Collaboriamo con aziende di ogni dimensione."
+  },
+  "home.section_label.8": {
+    "fr": "Notre mission",
+    "en": "Our mission",
+    "de": "Unsere Mission",
+    "it": "La nostra missione"
+  },
+  "home.section_label.9": {
+    "fr": "Notre expertise",
+    "en": "Our expertise",
+    "de": "Unsere Expertise",
+    "it": "La nostra expertise"
+  },
+  "home.section_label.10": {
+    "fr": "Implantation",
+    "en": "Locations",
+    "de": "Standorte",
+    "it": "Presenza"
+  },
+  "home.section_label.11": {
+    "fr": "Les trois fondateurs",
+    "en": "The three founders",
+    "de": "Die drei Gründer",
+    "it": "I tre fondatori"
+  },
+  "home.section_title.12": {
+    "fr": "Trois piliers, <em>une seule chaîne de valeur.</em>",
+    "en": "Three pillars, <em>one value chain.</em>",
+    "de": "Drei Säulen, <em>eine Wertschöpfungskette.</em>",
+    "it": "Tre pilastri, <em>una sola catena del valore.</em>"
+  },
+  "home.section_title.13": {
+    "fr": "Trois expertises, <em>une exigence partagée.</em>",
+    "en": "Three areas of expertise, <em>one shared standard.</em>",
+    "de": "Drei Kompetenzen, <em>ein gemeinsamer Anspruch.</em>",
+    "it": "Tre competenze, <em>un'exigenza condivisa.</em>"
+  },
+  "home.section_lead.14": {
+    "fr": "De la première esquisse jusqu'aux volumes de série, Circum couvre l'intégralité du cycle de vie d'un dispositif médical avec une intégration verticale réelle.",
+    "en": "De la première esquisse jusqu'aux volumes of série, Circum couvre l'intégralité of the cycle of vie d'a dispositif médical with a intégration verticale réelle.",
+    "de": "De la première esquisse jusqu'aux volumes de série, Circum couvre l'intégralité du cycle de vie d'un dispositif médical mit une intégration verticale réelle.",
+    "it": "De la première esquisse jusqu'aux volumes de série, Circum couvre l'intégralité du cycle de vie d'un dispositif médical con une intégration verticale réelle."
+  },
+  "home.pillar_title.15": {
+    "fr": "Design & Développement",
+    "en": "Design & Développement",
+    "de": "Design & Développement",
+    "it": "Design & Développement"
+  },
+  "home.pillar_title.16": {
+    "fr": "Fabrication intégrée",
+    "en": "Integrated manufacturing",
+    "de": "Integrierte Fertigung",
+    "it": "Produzione integrata"
+  },
+  "home.pillar_title.17": {
+    "fr": "Conformité & Qualité",
+    "en": "Compliance & Quality",
+    "de": "Konformität & Qualität",
+    "it": "Conformità & Qualità"
+  },
+  "home.pillar_text.18": {
+    "fr": "Conception industrielle, qualité réglementaire et validation : un parcours coordonné pour transformer l'idée en dispositif maîtrisé.",
+    "en": "Conception industrielle, qualité réglementaire and validation : a parcours coordonné for transformer l'idée en dispositif maîtrisé.",
+    "de": "Conception industrielle, qualité réglementaire und validation : un parcours coordonné für transformer l'idée en dispositif maîtrisé.",
+    "it": "Conception industrielle, qualité réglementaire e validation : un parcours coordonné per transformer l'idée en dispositif maîtrisé."
+  },
+  "home.pillar_text.19": {
+    "fr": "Force One : 8 000 m² de production dédiés, cleanrooms qualifiées, moulage, assemblage et stérilisation maîtrisés en interne.",
+    "en": "Force One : 8 000 m² of production dédiés, cleanrooms qualifiées, moulage, assemblage and stérilisation maîtrisés en interne.",
+    "de": "Force One : 8 000 m² de production dédiés, cleanrooms qualifiées, moulage, assemblage und stérilisation maîtrisés en interne.",
+    "it": "Force One : 8 000 m² de production dédiés, cleanrooms qualifiées, moulage, assemblage e stérilisation maîtrisés en interne."
+  },
+  "home.pillar_text.20": {
+    "fr": "ISO 13485, MDR EU 2017/745, FDA 21 CFR 820 : la conformité n'est pas une contrainte, c'est notre infrastructure de base.",
+    "en": "ISO 13485, MDR EU 2017/745, FDA 21 CFR 820 : la conformité n'est pas a contrainte, c'est our infrastructure of base.",
+    "de": "ISO 13485, MDR EU 2017/745, FDA 21 CFR 820 : la conformité n'est pas une contrainte, c'est notre infrastructure de base.",
+    "it": "ISO 13485, MDR EU 2017/745, FDA 21 CFR 820 : la conformité n'est pas une contrainte, c'est notre infrastructure de base."
+  },
+  "home.pillar_list_item.21": {
+    "fr": "Conception industrielle",
+    "en": "Industrial design",
+    "de": "Industrielle Konstruktion",
+    "it": "Progettazione industriale"
+  },
+  "home.pillar_list_item.22": {
+    "fr": "Qualité & Affaires réglementaires",
+    "en": "Qualité & Affaires réglementaires",
+    "de": "Qualité & Affaires réglementaires",
+    "it": "Qualité & Affaires réglementaires"
+  },
+  "home.pillar_list_item.23": {
+    "fr": "Laboratoire & V&V",
+    "en": "Laboratoire & V&V",
+    "de": "Laboratoire & V&V",
+    "it": "Laboratoire & V&V"
+  },
+  "home.pillar_list_item.24": {
+    "fr": "Force One · site principal",
+    "en": "Force One · site principal",
+    "de": "Force One · site principal",
+    "it": "Force One · site principal"
+  },
+  "home.pillar_list_item.25": {
+    "fr": "Moulage par injection",
+    "en": "Injection molding",
+    "de": "Spritzguss",
+    "it": "Stampaggio a iniezione"
+  },
+  "home.pillar_list_item.26": {
+    "fr": "Assemblage & Stérilisation",
+    "en": "Assembly & Sterilization",
+    "de": "Montage & Sterilisation",
+    "it": "Assemblaggio & Sterilizzazione"
+  },
+  "home.pillar_list_item.27": {
+    "fr": "Système qualité ISO 13485",
+    "en": "Système qualité ISO 13485",
+    "de": "Système qualité ISO 13485",
+    "it": "Système qualité ISO 13485"
+  },
+  "home.pillar_list_item.28": {
+    "fr": "Marquage CE · MDR EU",
+    "en": "Marquage CE · MDR EU",
+    "de": "Marquage CE · MDR EU",
+    "it": "Marquage CE · MDR EU"
+  },
+  "home.pillar_list_item.29": {
+    "fr": "Approche FDA · États-Unis",
+    "en": "Approche FDA · États-Unis",
+    "de": "Approche FDA · États-Unis",
+    "it": "Approche FDA · États-Unis"
+  },
+  "home.pillar_link.30": {
+    "fr": "Explorer →",
+    "en": "Explore →",
+    "de": "Entdecken →",
+    "it": "Esplora →"
+  },
+  "home.pillar_link.31": {
+    "fr": "Explorer →",
+    "en": "Explore →",
+    "de": "Entdecken →",
+    "it": "Esplora →"
+  },
+  "home.pillar_link.32": {
+    "fr": "Explorer →",
+    "en": "Explore →",
+    "de": "Entdecken →",
+    "it": "Esplora →"
+  },
+  "home.figure_label.33": {
+    "fr": "Sites européens",
+    "en": "European sites",
+    "de": "Europäische Standorte",
+    "it": "Siti europei"
+  },
+  "home.figure_label.34": {
+    "fr": "Force One · Tunisie",
+    "en": "Force One · Tunisia",
+    "de": "Force One · Tunesien",
+    "it": "Force One · Tunisia"
+  },
+  "home.figure_label.35": {
+    "fr": "Opérateurs qualifiés",
+    "en": "Qualified operators",
+    "de": "Qualifizierte Mitarbeiter",
+    "it": "Operatori qualificati"
+  },
+  "home.figure_label.36": {
+    "fr": "Intégration verticale",
+    "en": "Vertical integration",
+    "de": "Vertikale Integration",
+    "it": "Integrazione verticale"
+  },
+  "home.world_title.37": {
+    "fr": "Circum dans le monde.",
+    "en": "Circum in le monde.",
+    "de": "Circum dans le monde.",
+    "it": "Circum dans le monde."
+  },
+  "home.world_text.38": {
+    "fr": "<span class=\"section-label\">Implantation</span><h2 class=\"world-title\"><strong>Circum</strong> dans <em>le monde.</em></h2><p class=\"world-text\">Notre architecture tripartite combine la rigueur réglementaire suisse, la créativité française et l'efficacité industrielle méditerranéenne. Trois sites, une seule équipe, une seule chaîne de valeur intégrée.</p><a href=\"contact.html\"  class=\"btn btn-outline-white\"><span>Nous rencontrer</span><span class=\"btn-arrow\">→</span></a>",
+    "en": "<span class=\"section-label\">Locations</span>\n      <h2 class=\"world-title\"><strong>Circum</strong>dans<em>le monde.</em></h2>\n      <p class=\"world-text\">Our architecture tripartite combine la rigueur réglementaire suisse, la créativité française and l'efficacité industrielle méditerranéenne. Trois sites, a seule équipe, a seule chaîne of valeur intégrée.</p>\n      <a href=\"contact.html\"  class=\"btn btn-outline-white\"><span>Meet us</span><span class=\"btn-arrow\">→</span></a>",
+    "de": "<span class=\"section-label\">Standorte</span>\n      <h2 class=\"world-title\"><strong>Circum</strong>dans<em>le monde.</em></h2>\n      <p class=\"world-text\">Unsere architecture tripartite combine la rigueur réglementaire suisse, la créativité française und l'efficacité industrielle méditerranéenne. Trois sites, une seule équipe, une seule chaîne de valeur intégrée.</p>\n      <a href=\"contact.html\"  class=\"btn btn-outline-white\"><span>Uns treffen</span><span class=\"btn-arrow\">→</span></a>",
+    "it": "<span class=\"section-label\">Presenza</span>\n      <h2 class=\"world-title\"><strong>Circum</strong>dans<em>le monde.</em></h2>\n      <p class=\"world-text\">La nostra architecture tripartite combine la rigueur réglementaire suisse, la créativité française e l'efficacité industrielle méditerranéenne. Trois sites, une seule équipe, une seule chaîne de valeur intégrée.</p>\n      <a href=\"contact.html\"  class=\"btn btn-outline-white\"><span>Incontrateci</span><span class=\"btn-arrow\">→</span></a>"
+  },
+  "home.world_site_city.39": {
+    "fr": "Genève · Suisse",
+    "en": "Geneva · Switzerland",
+    "de": "Genf · Schweiz",
+    "it": "Ginevra · Svizzera"
+  },
+  "home.world_site_city.40": {
+    "fr": "Lyon · France",
+    "en": "Lyon · France",
+    "de": "Lyon · Frankreich",
+    "it": "Lione · Francia"
+  },
+  "home.world_site_city.41": {
+    "fr": "Tunis · Tunisie",
+    "en": "Tunis · Tunisia",
+    "de": "Tunis · Tunesien",
+    "it": "Tunisi · Tunisia"
+  },
+  "home.world_site_role.42": {
+    "fr": "Siège · Gouvernance",
+    "en": "Headquarters · Governance",
+    "de": "Hauptsitz · Governance",
+    "it": "Sede · Governance"
+  },
+  "home.world_site_role.43": {
+    "fr": "R&D · QARA · Laboratoire",
+    "en": "R&D · QARA · Laboratory",
+    "de": "F&E · QARA · Labor",
+    "it": "R&S · QARA · Laboratorio"
+  },
+  "home.world_site_role.44": {
+    "fr": "Force One · Production",
+    "en": "Force One · Production",
+    "de": "Force One · Produktion",
+    "it": "Force One · Produzione"
+  },
+  "home.founder_name.45": {
+    "fr": "Anne Reiser",
+    "en": "Anne Reiser",
+    "de": "Anne Reiser",
+    "it": "Anne Reiser"
+  },
+  "home.founder_name.46": {
+    "fr": "Mohamed Rekik",
+    "en": "Mohamed Rekik",
+    "de": "Mohamed Rekik",
+    "it": "Mohamed Rekik"
+  },
+  "home.founder_name.47": {
+    "fr": "Serge Barneaud",
+    "en": "Serge Barneaud",
+    "de": "Serge Barneaud",
+    "it": "Serge Barneaud"
+  },
+  "home.founder_role.48": {
+    "fr": "Présidente",
+    "en": "President",
+    "de": "Präsidentin",
+    "it": "Presidente"
+  },
+  "home.founder_role.49": {
+    "fr": "Directeur général",
+    "en": "Chief Executive Officer",
+    "de": "Geschäftsführer",
+    "it": "Direttore generale"
+  },
+  "home.founder_role.50": {
+    "fr": "Directeur technique",
+    "en": "Chief Technical Officer",
+    "de": "Technischer Direktor",
+    "it": "Direttore tecnico"
+  },
+  "home.founder_bio.51": {
+    "fr": "Présidente de Circum depuis sa fondation. Sa conviction : un CDMO européen doit structurer la confiance avec rigueur et long-terme.",
+    "en": "Présidente of Circum depuis sa fondation. Sa conviction : a CDMO européen doit structurer la confiance with rigueur and long-terme.",
+    "de": "Présidente de Circum depuis sa fondation. Sa conviction : un CDMO européen doit structurer la confiance mit rigueur und long-terme.",
+    "it": "Présidente de Circum depuis sa fondation. Sa conviction : un CDMO européen doit structurer la confiance con rigueur e long-terme."
+  },
+  "home.founder_bio.52": {
+    "fr": "Ingénieur de formation, il a structuré Force One pierre par pierre en Tunisie. Vingt ans de fabrication de dispositifs médicaux exigeants.",
+    "en": "Ingénieur of formation, il a structuré Force One pierre par pierre en Tunisie. Vingt ans of fabrication of medical devices exigeants.",
+    "de": "Ingénieur de formation, il a structuré Force One pierre par pierre en Tunisie. Vingt ans de fabrication de Medizinprodukte exigeants.",
+    "it": "Ingénieur de formation, il a structuré Force One pierre par pierre en Tunisie. Vingt ans de fabrication de dispositivi medici exigeants."
+  },
+  "home.founder_bio.53": {
+    "fr": "Trente ans dans le développement de produits médicaux complexes. Croit profondément à la co-conception entre Circum et ses clients.",
+    "en": "Trente ans in le développement of produits médicaux complexes. Croit profondément to la co-conception entre Circum and ses clients.",
+    "de": "Trente ans dans le développement de produits médicaux complexes. Croit profondément à la co-conception entre Circum und ses clients.",
+    "it": "Trente ans dans le développement de produits médicaux complexes. Croit profondément à la co-conception entre Circum e ses clients."
+  },
+  "home.newsletter_strip_title.54": {
+    "fr": "Newsletter trimestrielle. Restez informé.",
+    "en": "Newsletter trimestrielle. Restez informé.",
+    "de": "Newsletter trimestrielle. Restez informé.",
+    "it": "Newsletter trimestrielle. Restez informé."
+  },
+  "home.newsletter_strip_text.55": {
+    "fr": "Recevez chaque trimestre nos actualités, innovations et publications. Désinscription en un clic.",
+    "en": "Recevez chaque trimestre nos actualités, innovations and publications. Désinscription en a clic.",
+    "de": "Recevez chaque trimestre nos actualités, innovations und publications. Désinscription en un clic.",
+    "it": "Recevez chaque trimestre nos actualités, innovations e publications. Désinscription en un clic."
+  },
+  "home.cta_final_eyebrow.56": {
+    "fr": "Démarrer un projet",
+    "en": "Démarrer a projet",
+    "de": "Démarrer un projet",
+    "it": "Démarrer un projet"
+  },
+  "home.cta_final_title.57": {
+    "fr": "Un dispositif. Une vision.Un partenaire.",
+    "en": "Un dispositif. Une vision.Un partenaire.",
+    "de": "Un dispositif. Une vision.Un partenaire.",
+    "it": "Un dispositif. Une vision.Un partenaire."
+  },
+  "home.cta_final_text.58": {
+    "fr": "Échangeons sur votre projet : conception, fabrication, conformité. Notre équipe vous répond sous 24 heures ouvrées.",
+    "en": "Échangeons on votre projet : conception, fabrication, conformité. Our équipe vous répond sous 24 heures ouvrées.",
+    "de": "Échangeons sur votre projet : conception, fabrication, conformité. Unsere équipe vous répond sous 24 heures ouvrées.",
+    "it": "Échangeons sur votre projet : conception, fabrication, conformité. La nostra équipe vous répond sous 24 heures ouvrées."
+  },
+  "home.footer_desc.59": {
+    "fr": "Entreprise CDMO intégrée verticalement dans les domaines des dispositifs médicaux et des sciences de la vie. Implantation Suisse · France · Tunisie.",
+    "en": "Entreprise CDMO vertically integrated in the domaines medical devices and life sciences. Implantation Suisse · France · Tunisie.",
+    "de": "Entreprise CDMO intégrée verticalement dans les domaines des Medizinprodukte und des Life Sciences. Implantation Suisse · France · Tunisie.",
+    "it": "Entreprise CDMO intégrée verticalement dans les domaines des dispositivi medici e des life sciences. Implantation Suisse · France · Tunisie."
+  },
+  "home.footer_col_title.60": {
+    "fr": "Société",
+    "en": "Société",
+    "de": "Société",
+    "it": "Société"
+  },
+  "home.footer_col_title.61": {
+    "fr": "Services",
+    "en": "Services",
+    "de": "Services",
+    "it": "Services"
+  },
+  "home.footer_col_title.62": {
+    "fr": "Contact",
+    "en": "Contact",
+    "de": "Contact",
+    "it": "Contact"
+  },
+  "home.nav_mobile_title.63": {
+    "fr": "À propos",
+    "en": "About",
+    "de": "Über uns",
+    "it": "Chi siamo"
+  },
+  "home.nav_mobile_title.64": {
+    "fr": "Services",
+    "en": "Services",
+    "de": "Services",
+    "it": "Services"
+  },
+  "home.btn.1": {
+    "fr": "Découvrir Circum",
+    "en": "Discover Circum",
+    "de": "Circum entdecken",
+    "it": "Scopri Circum"
+  },
+  "home.btn.2": {
+    "fr": "Nous contacter",
+    "en": "Contact us",
+    "de": "Kontaktieren Sie uns",
+    "it": "Contattateci"
+  },
+  "home.btn.3": {
+    "fr": "Nous rencontrer",
+    "en": "Meet us",
+    "de": "Uns treffen",
+    "it": "Incontrateci"
+  },
+  "home.btn.4": {
+    "fr": "Découvrir les fondateurs",
+    "en": "Meet the founders",
+    "de": "Die Gründer kennenlernen",
+    "it": "Scopri i fondatori"
+  },
+  "home.btn.5": {
+    "fr": "Contactez-nous",
+    "en": "Contactez-nous",
+    "de": "Contactez-nous",
+    "it": "Contactez-nous"
+  },
+  "home.btn.6": {
+    "fr": "À propos de nous",
+    "en": "À propos of nous",
+    "de": "À propos de nous",
+    "it": "À propos de nous"
+  },
+  "home.placeholder.1": {
+    "fr": "votre@email.com",
+    "en": "your@email.com",
+    "de": "ihre@email.de",
+    "it": "vostra@email.com"
+  }
+}

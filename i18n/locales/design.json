@@ -1,0 +1,302 @@
+{
+  "design.page_hero_eyebrow.1": {
+    "fr": "De l'idée au prototype validé",
+    "en": "De l'idée au prototype validé",
+    "de": "De l'idée au prototype validé",
+    "it": "De l'idée au prototype validé"
+  },
+  "design.page_hero_title.2": {
+    "fr": "Design & Développement.",
+    "en": "Design & Développement.",
+    "de": "Design & Développement.",
+    "it": "Design & Développement."
+  },
+  "design.page_hero_subtitle.3": {
+    "fr": "Conception, qualité, laboratoire, validation : un parcours coordonné pour transformer votre idée en dispositif médical maîtrisé et conforme.",
+    "en": "Conception, qualité, laboratoire, validation : a parcours coordonné for transformer votre idée en dispositif médical maîtrisé and conforme.",
+    "de": "Conception, qualité, laboratoire, validation : un parcours coordonné für transformer votre idée en dispositif médical maîtrisé und conforme.",
+    "it": "Conception, qualité, laboratoire, validation : un parcours coordonné per transformer votre idée en dispositif médical maîtrisé e conforme."
+  },
+  "design.page_hero_breadcrumb.4": {
+    "fr": "<a href=\"index.html\" >Accueil</a><span class=\"page-hero-breadcrumb-sep\">/</span><span>Design & Développement</span>",
+    "en": "<a href=\"index.html\" >Home</a><span class=\"page-hero-breadcrumb-sep\">/</span><span>Design & Développement</span>",
+    "de": "<a href=\"index.html\" >Startseite</a><span class=\"page-hero-breadcrumb-sep\">/</span><span>Design & Développement</span>",
+    "it": "<a href=\"index.html\" >Home</a><span class=\"page-hero-breadcrumb-sep\">/</span><span>Design & Développement</span>"
+  },
+  "design.hero_eyebrow.5": {
+    "fr": "De l'idée au prototype validé",
+    "en": "De l'idée au prototype validé",
+    "de": "De l'idée au prototype validé",
+    "it": "De l'idée au prototype validé"
+  },
+  "design.hero_title.6": {
+    "fr": "Design & Développement.",
+    "en": "Design & Développement.",
+    "de": "Design & Développement.",
+    "it": "Design & Développement."
+  },
+  "design.hero_subtitle.7": {
+    "fr": "Conception, qualité, laboratoire, validation : un parcours coordonné pour transformer votre idée en dispositif médical maîtrisé et conforme.",
+    "en": "Conception, qualité, laboratoire, validation : a parcours coordonné for transformer votre idée en dispositif médical maîtrisé and conforme.",
+    "de": "Conception, qualité, laboratoire, validation : un parcours coordonné für transformer votre idée en dispositif médical maîtrisé und conforme.",
+    "it": "Conception, qualité, laboratoire, validation : un parcours coordonné per transformer votre idée en dispositif médical maîtrisé e conforme."
+  },
+  "design.section_label.8": {
+    "fr": "01 · Conception",
+    "en": "01 · Conception",
+    "de": "01 · Conception",
+    "it": "01 · Conception"
+  },
+  "design.section_label.9": {
+    "fr": "02 · Qualité & Réglementaire",
+    "en": "02 · Qualité & Réglementaire",
+    "de": "02 · Qualité & Réglementaire",
+    "it": "02 · Qualité & Réglementaire"
+  },
+  "design.section_label.10": {
+    "fr": "03 · Laboratoire",
+    "en": "03 · Laboratoire",
+    "de": "03 · Laboratoire",
+    "it": "03 · Laboratoire"
+  },
+  "design.section_label.11": {
+    "fr": "04 · Vérification & Validation",
+    "en": "04 · Vérification & Validation",
+    "de": "04 · Vérification & Validation",
+    "it": "04 · Vérification & Validation"
+  },
+  "design.section_title.12": {
+    "fr": "La conception industrielle au service du soin.",
+    "en": "La conception industrielle au service of the soin.",
+    "de": "La conception industrielle au service du soin.",
+    "it": "La conception industrielle au service du soin."
+  },
+  "design.section_title.13": {
+    "fr": "QARA · au cœur de chaque programme.",
+    "en": "QARA · au cœur of chaque programme.",
+    "de": "QARA · au cœur de chaque programme.",
+    "it": "QARA · au cœur de chaque programme."
+  },
+  "design.section_title.14": {
+    "fr": "Un laboratoire de tests intégré.",
+    "en": "Un laboratoire of tests intégré.",
+    "de": "Un laboratoire de tests intégré.",
+    "it": "Un laboratoire de tests intégré."
+  },
+  "design.section_title.15": {
+    "fr": "V&V · la dernière barrière de confiance.",
+    "en": "V&V · la dernière barrière of confiance.",
+    "de": "V&V · la dernière barrière de confiance.",
+    "it": "V&V · la dernière barrière de confiance."
+  },
+  "design.prose_enhanced.16": {
+    "fr": "<p>Notre pôle Qualité et Affaires Réglementaires (QARA) basé à Lyon est le garant de la conformité de chaque produit Circum. Nous prenons en charge l'ensemble des activités réglementaires nécessaires à la mise sur le marché de votre dispositif.</p>",
+    "en": "<p>Our pôle Qualité and Affaires Réglementaires (QARA) basé to Lyon est le garant of la conformité of chaque produit Circum. We prenons en charge l'ensemble activités réglementaires nécessaires to la time to market of votre dispositif.</p>",
+    "de": "<p>Unsere pôle Qualité und Affaires Réglementaires (QARA) basé à Lyon est le garant de la conformité de chaque produit Circum. Wir prenons en charge l'ensemble des activités réglementaires nécessaires à la mise sur le marché de votre dispositif.</p>",
+    "it": "<p>La nostra pôle Qualité e Affaires Réglementaires (QARA) basé à Lyon est le garant de la conformité de chaque produit Circum. Noi prenons en charge l'ensemble des activités réglementaires nécessaires à la mise sur le marché de votre dispositif.</p>"
+  },
+  "design.prose_enhanced.17": {
+    "fr": "<p>La vérification et la validation closent le cycle de développement. Elles apportent la preuve formelle, documentée et opposable, que votre dispositif répond aux spécifications définies en amont et aux besoins de l'utilisateur final.</p>",
+    "en": "<p>La vérification and la validation closent le cycle of développement. Elthe apportent la preuve formelle, documentée and opposable, que votre dispositif répond aux spécifications définies en amont and aux besoins of l'utilisateur final.</p>",
+    "de": "<p>La vérification und la validation closent le cycle de développement. Elles apportent la preuve formelle, documentée und opposable, que votre dispositif répond aux spécifications définies en amont und aux besoins de l'utilisateur final.</p>",
+    "it": "<p>La vérification e la validation closent le cycle de développement. Elles apportent la preuve formelle, documentée e opposable, que votre dispositif répond aux spécifications définies en amont e aux besoins de l'utilisateur final.</p>"
+  },
+  "design.highlight_quote.18": {
+    "fr": "Nous ne livrons pas seulement des dispositifs : nous livrons des dispositifs qui obtiennent leur certification du premier coup. Audits clients européens et nord-américains passés sans réserve depuis 2023. — Pôle QARA, Lyon",
+    "en": "We ne livrons pas seulement dispositifs : we livrons dispositifs qui obtiennent leur certification of the premier coup. Audits clients européens and nord-américains passés sans réserve depuis 2023. — Pôle QARA, Lyon",
+    "de": "Wir ne livrons pas seulement des dispositifs : nous livrons des dispositifs qui obtiennent leur certification du premier coup. Audits clients européens und nord-américains passés sans réserve depuis 2023. — Pôle QARA, Lyon",
+    "it": "Noi ne livrons pas seulement des dispositifs : nous livrons des dispositifs qui obtiennent leur certification du premier coup. Audits clients européens e nord-américains passés sans réserve depuis 2023. — Pôle QARA, Lyon"
+  },
+  "design.service_card_title.19": {
+    "fr": "Design industriel",
+    "en": "Design industriel",
+    "de": "Design industriel",
+    "it": "Design industriel"
+  },
+  "design.service_card_title.20": {
+    "fr": "Documentation technique",
+    "en": "Documentation technique",
+    "de": "Documentation technique",
+    "it": "Documentation technique"
+  },
+  "design.service_card_title.21": {
+    "fr": "Biocompatibilité · ISO 10993",
+    "en": "Biocompatibilité · ISO 10993",
+    "de": "Biocompatibilité · ISO 10993",
+    "it": "Biocompatibilité · ISO 10993"
+  },
+  "design.service_card_title.22": {
+    "fr": "Vieillissement accéléré",
+    "en": "Vieillissement accéléré",
+    "de": "Vieillissement accéléré",
+    "it": "Vieillissement accéléré"
+  },
+  "design.service_card_title.23": {
+    "fr": "Tests mécaniques",
+    "en": "Tests mécaniques",
+    "de": "Tests mécaniques",
+    "it": "Tests mécaniques"
+  },
+  "design.service_card_title.24": {
+    "fr": "Validation stérilité",
+    "en": "Validation stérilité",
+    "de": "Validation stérilité",
+    "it": "Validation stérilité"
+  },
+  "design.service_card_text.25": {
+    "fr": "Ergonomie, architecture produit, prise en compte des contraintes d'utilisation cliniques. Co-conception avec votre équipe.",
+    "en": "Ergonomie, architecture produit, prise en compte contraintes d'utilisation cliniques. Co-conception with votre équipe.",
+    "de": "Ergonomie, architecture produit, prise en compte des contraintes d'utilisation cliniques. Co-conception mit votre équipe.",
+    "it": "Ergonomie, architecture produit, prise en compte des contraintes d'utilisation cliniques. Co-conception con votre équipe."
+  },
+  "design.service_card_text.26": {
+    "fr": "Construction du dossier technique conforme MDR/IVDR. Gestion documentaire centralisée, traçabilité complète des révisions.",
+    "en": "Construction of the dossier technique conforme MDR/IVDR. Gestion documentaire centralisée, traçabilité complète révisions.",
+    "de": "Construction du dossier technique conforme MDR/IVDR. Gestion documentaire centralisée, traçabilité complète des révisions.",
+    "it": "Construction du dossier technique conforme MDR/IVDR. Gestion documentaire centralisée, traçabilité complète des révisions."
+  },
+  "design.service_card_text.27": {
+    "fr": "Évaluation biologique des matériaux et dispositifs en contact avec le corps humain. Stratégie d'essais adaptée au type et durée de contact.",
+    "en": "Évaluation biologique matériaux and dispositifs en contact with le corps humain. Stratégie d'essais adaptée au type and durée of contact.",
+    "de": "Évaluation biologique des matériaux und dispositifs en contact mit le corps humain. Stratégie d'essais adaptée au type und durée de contact.",
+    "it": "Évaluation biologique des matériaux e dispositifs en contact con le corps humain. Stratégie d'essais adaptée au type e durée de contact."
+  },
+  "design.service_card_text.28": {
+    "fr": "Étude de la durée de vie du dispositif et de son emballage. Conditions normalisées ASTM F1980.",
+    "en": "Étude of la durée of vie of the dispositif and of son emballage. Conditions normalisées ASTM F1980.",
+    "de": "Étude de la durée de vie du dispositif und de son emballage. Conditions normalisées ASTM F1980.",
+    "it": "Étude de la durée de vie du dispositif e de son emballage. Conditions normalisées ASTM F1980."
+  },
+  "design.service_card_text.29": {
+    "fr": "Contraintes mécaniques, résistance à la rupture, fatigue, contrôles dimensionnels métrologiques.",
+    "en": "Contraintes mécaniques, résistance to la rupture, fatigue, contrôthe dimensionnels métrologiques.",
+    "de": "Contraintes mécaniques, résistance à la rupture, fatigue, contrôles dimensionnels métrologiques.",
+    "it": "Contraintes mécaniques, résistance à la rupture, fatigue, contrôles dimensionnels métrologiques."
+  },
+  "design.service_card_text.30": {
+    "fr": "Tests de stérilité, validation des cycles de stérilisation, contrôles environnementaux.",
+    "en": "Tests of stérilité, validation cycthe of stérilisation, contrôthe environnementaux.",
+    "de": "Tests de stérilité, validation des cycles de stérilisation, contrôles environnementaux.",
+    "it": "Tests de stérilité, validation des cycles de stérilisation, contrôles environnementaux."
+  },
+  "design.feature_block_title.31": {
+    "fr": "Vérification",
+    "en": "Vérification",
+    "de": "Vérification",
+    "it": "Vérification"
+  },
+  "design.feature_block_title.32": {
+    "fr": "Validation",
+    "en": "Validation",
+    "de": "Validation",
+    "it": "Validation"
+  },
+  "design.feature_block_title.33": {
+    "fr": "Validation des process de fabrication",
+    "en": "Validation process of fabrication",
+    "de": "Validation des process de fabrication",
+    "it": "Validation des process de fabrication"
+  },
+  "design.feature_block_text.34": {
+    "fr": "Démonstration que le dispositif répond aux spécifications de conception. Tests laboratoire, contrôles dimensionnels, tests fonctionnels, vérification des matériaux. Pour chaque exigence du cahier des charges, un protocole de vérification est défini, exécuté et tracé.",
+    "en": "Démonstration que le dispositif répond aux spécifications of conception. Tests laboratoire, contrôthe dimensionnels, tests fonctionnels, vérification matériaux. Pour chaque exigence of the cahier charges, a protocole of vérification est défini, exécuté and tracé.",
+    "de": "Démonstration que le dispositif répond aux spécifications de conception. Tests laboratoire, contrôles dimensionnels, tests fonctionnels, vérification des matériaux. Pour chaque exigence du cahier des charges, un protocole de vérification est défini, exécuté und tracé.",
+    "it": "Démonstration que le dispositif répond aux spécifications de conception. Tests laboratoire, contrôles dimensionnels, tests fonctionnels, vérification des matériaux. Pour chaque exigence du cahier des charges, un protocole de vérification est défini, exécuté e tracé."
+  },
+  "design.feature_block_text.35": {
+    "fr": "Démonstration que le dispositif répond aux besoins de l'utilisateur dans son contexte clinique réel. Études d'utilisabilité IEC 62366, simulations cliniques, retours de panels d'utilisateurs cibles. Approche systématique de gestion des risques résiduels d'utilisation.",
+    "en": "Démonstration que le dispositif répond aux besoins of l'utilisateur in son contexte clinique réel. Étud'utilisabilité IEC 62366, simulations cliniques, retours of panels d'utilisateurs cibles. Approche systématique of gestion risques résiduels d'utilisation.",
+    "de": "Démonstration que le dispositif répond aux besoins de l'utilisateur dans son contexte clinique réel. Études d'utilisabilité IEC 62366, simulations cliniques, retours de panels d'utilisateurs cibles. Approche systématique de gestion des risques résiduels d'utilisation.",
+    "it": "Démonstration que le dispositif répond aux besoins de l'utilisateur dans son contexte clinique réel. Études d'utilisabilité IEC 62366, simulations cliniques, retours de panels d'utilisateurs cibles. Approche systématique de gestion des risques résiduels d'utilisation."
+  },
+  "design.feature_block_text.36": {
+    "fr": "IQ, OQ, PQ pour chaque process critique : moulage, assemblage, stérilisation, conditionnement. Qualification des équipements, des paramètres, des opérateurs. La validation des process transforme un prototype en produit reproductible à grande échelle.",
+    "en": "IQ, OQ, PQ for chaque process critique : moulage, assemblage, stérilisation, conditionnement. Qualification équipements, paramètres, opérateurs. La validation process transforme a prototype en produit reproductible to grande échelle.",
+    "de": "IQ, OQ, PQ für chaque process critique : moulage, assemblage, stérilisation, conditionnement. Qualification des équipements, des paramètres, des opérateurs. La validation des process transforme un prototype en produit reproductible à grande échelle.",
+    "it": "IQ, OQ, PQ per chaque process critique : moulage, assemblage, stérilisation, conditionnement. Qualification des équipements, des paramètres, des opérateurs. La validation des process transforme un prototype en produit reproductible à grande échelle."
+  },
+  "design.newsletter_strip_title.37": {
+    "fr": "Newsletter trimestrielle. Restez informé.",
+    "en": "Newsletter trimestrielle. Restez informé.",
+    "de": "Newsletter trimestrielle. Restez informé.",
+    "it": "Newsletter trimestrielle. Restez informé."
+  },
+  "design.newsletter_strip_text.38": {
+    "fr": "Recevez chaque trimestre nos actualités, innovations et publications. Désinscription en un clic.",
+    "en": "Recevez chaque trimestre nos actualités, innovations and publications. Désinscription en a clic.",
+    "de": "Recevez chaque trimestre nos actualités, innovations und publications. Désinscription en un clic.",
+    "it": "Recevez chaque trimestre nos actualités, innovations e publications. Désinscription en un clic."
+  },
+  "design.cta_final_eyebrow.39": {
+    "fr": "Démarrer un projet",
+    "en": "Démarrer a projet",
+    "de": "Démarrer un projet",
+    "it": "Démarrer un projet"
+  },
+  "design.cta_final_title.40": {
+    "fr": "Un dispositif. Une vision.Un partenaire.",
+    "en": "Un dispositif. Une vision.Un partenaire.",
+    "de": "Un dispositif. Une vision.Un partenaire.",
+    "it": "Un dispositif. Une vision.Un partenaire."
+  },
+  "design.cta_final_text.41": {
+    "fr": "Échangeons sur votre projet : conception, fabrication, conformité. Notre équipe vous répond sous 24 heures ouvrées.",
+    "en": "Échangeons on votre projet : conception, fabrication, conformité. Our équipe vous répond sous 24 heures ouvrées.",
+    "de": "Échangeons sur votre projet : conception, fabrication, conformité. Unsere équipe vous répond sous 24 heures ouvrées.",
+    "it": "Échangeons sur votre projet : conception, fabrication, conformité. La nostra équipe vous répond sous 24 heures ouvrées."
+  },
+  "design.footer_desc.42": {
+    "fr": "Entreprise CDMO intégrée verticalement dans les domaines des dispositifs médicaux et des sciences de la vie. Implantation Suisse · France · Tunisie.",
+    "en": "Entreprise CDMO vertically integrated in the domaines medical devices and life sciences. Implantation Suisse · France · Tunisie.",
+    "de": "Entreprise CDMO intégrée verticalement dans les domaines des Medizinprodukte und des Life Sciences. Implantation Suisse · France · Tunisie.",
+    "it": "Entreprise CDMO intégrée verticalement dans les domaines des dispositivi medici e des life sciences. Implantation Suisse · France · Tunisie."
+  },
+  "design.footer_col_title.43": {
+    "fr": "Société",
+    "en": "Société",
+    "de": "Société",
+    "it": "Société"
+  },
+  "design.footer_col_title.44": {
+    "fr": "Services",
+    "en": "Services",
+    "de": "Services",
+    "it": "Services"
+  },
+  "design.footer_col_title.45": {
+    "fr": "Contact",
+    "en": "Contact",
+    "de": "Contact",
+    "it": "Contact"
+  },
+  "design.nav_mobile_title.46": {
+    "fr": "À propos",
+    "en": "About",
+    "de": "Über uns",
+    "it": "Chi siamo"
+  },
+  "design.nav_mobile_title.47": {
+    "fr": "Services",
+    "en": "Services",
+    "de": "Services",
+    "it": "Services"
+  },
+  "design.btn.1": {
+    "fr": "Contactez-nous",
+    "en": "Contactez-nous",
+    "de": "Contactez-nous",
+    "it": "Contactez-nous"
+  },
+  "design.btn.2": {
+    "fr": "À propos de nous",
+    "en": "À propos of nous",
+    "de": "À propos de nous",
+    "it": "À propos de nous"
+  },
+  "design.placeholder.1": {
+    "fr": "votre@email.com",
+    "en": "your@email.com",
+    "de": "ihre@email.de",
+    "it": "vostra@email.com"
+  }
+}

@@ -1,0 +1,236 @@
+{
+  "news.page_hero_eyebrow.1": {
+    "fr": "Actualités &amp; communiqués",
+    "en": "Actualités &amp; communiqués",
+    "de": "Actualités &amp; communiqués",
+    "it": "Actualités &amp; communiqués"
+  },
+  "news.page_hero_title.2": {
+    "fr": "News &amp; Media.",
+    "en": "News &amp; Media.",
+    "de": "News &amp; Media.",
+    "it": "News &amp; Media."
+  },
+  "news.page_hero_subtitle.3": {
+    "fr": "Inaugurations, certifications, publications scientifiques, salons internationaux : suivez l'actualité de Circum Life Sciences.",
+    "en": "Inaugurations, certifications, publications scientifiques, salons internationaux : suivez l'actualité of Circum Life Sciences.",
+    "de": "Inaugurations, certifications, publications scientifiques, salons internationaux : suivez l'actualité de Circum Life Sciences.",
+    "it": "Inaugurations, certifications, publications scientifiques, salons internationaux : suivez l'actualité de Circum Life Sciences."
+  },
+  "news.page_hero_breadcrumb.4": {
+    "fr": "<a href=\"index.html\" >Accueil</a><span class=\"page-hero-breadcrumb-sep\">/</span><span>News &amp; Media</span>",
+    "en": "<a href=\"index.html\" >Home</a><span class=\"page-hero-breadcrumb-sep\">/</span><span>News &amp; Media</span>",
+    "de": "<a href=\"index.html\" >Startseite</a><span class=\"page-hero-breadcrumb-sep\">/</span><span>News &amp; Media</span>",
+    "it": "<a href=\"index.html\" >Home</a><span class=\"page-hero-breadcrumb-sep\">/</span><span>News &amp; Media</span>"
+  },
+  "news.hero_eyebrow.5": {
+    "fr": "Actualités &amp; communiqués",
+    "en": "Actualités &amp; communiqués",
+    "de": "Actualités &amp; communiqués",
+    "it": "Actualités &amp; communiqués"
+  },
+  "news.hero_title.6": {
+    "fr": "News &amp; Media.",
+    "en": "News &amp; Media.",
+    "de": "News &amp; Media.",
+    "it": "News &amp; Media."
+  },
+  "news.hero_subtitle.7": {
+    "fr": "Inaugurations, certifications, publications scientifiques, salons internationaux : suivez l'actualité de Circum Life Sciences.",
+    "en": "Inaugurations, certifications, publications scientifiques, salons internationaux : suivez l'actualité of Circum Life Sciences.",
+    "de": "Inaugurations, certifications, publications scientifiques, salons internationaux : suivez l'actualité de Circum Life Sciences.",
+    "it": "Inaugurations, certifications, publications scientifiques, salons internationaux : suivez l'actualité de Circum Life Sciences."
+  },
+  "news.news_card_tag.8": {
+    "fr": "Inauguration",
+    "en": "Inauguration",
+    "de": "Inauguration",
+    "it": "Inauguration"
+  },
+  "news.news_card_tag.9": {
+    "fr": "Certification",
+    "en": "Certification",
+    "de": "Certification",
+    "it": "Certification"
+  },
+  "news.news_card_tag.10": {
+    "fr": "Salon",
+    "en": "Salon",
+    "de": "Salon",
+    "it": "Salon"
+  },
+  "news.news_card_tag.11": {
+    "fr": "Publication",
+    "en": "Publication",
+    "de": "Publication",
+    "it": "Publication"
+  },
+  "news.news_card_tag.12": {
+    "fr": "Partenariat",
+    "en": "Partenariat",
+    "de": "Partenariat",
+    "it": "Partenariat"
+  },
+  "news.news_card_tag.13": {
+    "fr": "Investissement",
+    "en": "Investissement",
+    "de": "Investissement",
+    "it": "Investissement"
+  },
+  "news.news_card_date.14": {
+    "fr": "15 Octobre 2025",
+    "en": "15 Octobre 2025",
+    "de": "15 Octobre 2025",
+    "it": "15 Octobre 2025"
+  },
+  "news.news_card_date.15": {
+    "fr": "22 Septembre 2025",
+    "en": "22 Septembre 2025",
+    "de": "22 Septembre 2025",
+    "it": "22 Septembre 2025"
+  },
+  "news.news_card_date.16": {
+    "fr": "17 Novembre 2026",
+    "en": "17 Novembre 2026",
+    "de": "17 Novembre 2026",
+    "it": "17 Novembre 2026"
+  },
+  "news.news_card_date.17": {
+    "fr": "3 Mars 2026",
+    "en": "3 Mars 2026",
+    "de": "3 Mars 2026",
+    "it": "3 Mars 2026"
+  },
+  "news.news_card_date.18": {
+    "fr": "8 Janvier 2026",
+    "en": "8 Janvier 2026",
+    "de": "8 Janvier 2026",
+    "it": "8 Janvier 2026"
+  },
+  "news.news_card_date.19": {
+    "fr": "12 Décembre 2025",
+    "en": "12 Décembre 2025",
+    "de": "12 Décembre 2025",
+    "it": "12 Décembre 2025"
+  },
+  "news.news_card_title.20": {
+    "fr": "Inauguration officielle du site Force One",
+    "en": "Inauguration officielle of the site Force One",
+    "de": "Inauguration officielle du site Force One",
+    "it": "Inauguration officielle du site Force One"
+  },
+  "news.news_card_title.21": {
+    "fr": "Renouvellement ISO 13485 multi-sites",
+    "en": "Renouvellement ISO 13485 multi-sites",
+    "de": "Renouvellement ISO 13485 multi-sites",
+    "it": "Renouvellement ISO 13485 multi-sites"
+  },
+  "news.news_card_title.22": {
+    "fr": "Compamed &amp; Medica Düsseldorf",
+    "en": "Compamed &amp; Medica Düsseldorf",
+    "de": "Compamed &amp; Medica Düsseldorf",
+    "it": "Compamed &amp; Medica Düsseldorf"
+  },
+  "news.news_card_title.23": {
+    "fr": "Livre blanc : intégration verticale CDMO",
+    "en": "Livre blanc : intégration verticale CDMO",
+    "de": "Livre blanc : intégration verticale CDMO",
+    "it": "Livre blanc : intégration verticale CDMO"
+  },
+  "news.news_card_title.24": {
+    "fr": "Partenariat académique avec l'INSA Lyon",
+    "en": "Partenariat académique with l'INSA Lyon",
+    "de": "Partenariat académique mit l'INSA Lyon",
+    "it": "Partenariat académique con l'INSA Lyon"
+  },
+  "news.news_card_title.25": {
+    "fr": "Cleanroom C : démarrage de la construction",
+    "en": "Cleanroom C : démarrage of la construction",
+    "de": "Cleanroom C : démarrage de la construction",
+    "it": "Cleanroom C : démarrage de la construction"
+  },
+  "news.newsletter_strip_title.26": {
+    "fr": "Newsletter trimestrielle. Restez informé.",
+    "en": "Newsletter trimestrielle. Restez informé.",
+    "de": "Newsletter trimestrielle. Restez informé.",
+    "it": "Newsletter trimestrielle. Restez informé."
+  },
+  "news.newsletter_strip_text.27": {
+    "fr": "Recevez chaque trimestre nos actualités, innovations et publications. Désinscription en un clic.",
+    "en": "Recevez chaque trimestre nos actualités, innovations and publications. Désinscription en a clic.",
+    "de": "Recevez chaque trimestre nos actualités, innovations und publications. Désinscription en un clic.",
+    "it": "Recevez chaque trimestre nos actualités, innovations e publications. Désinscription en un clic."
+  },
+  "news.cta_final_eyebrow.28": {
+    "fr": "Démarrer un projet",
+    "en": "Démarrer a projet",
+    "de": "Démarrer un projet",
+    "it": "Démarrer un projet"
+  },
+  "news.cta_final_title.29": {
+    "fr": "Un dispositif. Une vision.Un partenaire.",
+    "en": "Un dispositif. Une vision.Un partenaire.",
+    "de": "Un dispositif. Une vision.Un partenaire.",
+    "it": "Un dispositif. Une vision.Un partenaire."
+  },
+  "news.cta_final_text.30": {
+    "fr": "Échangeons sur votre projet : conception, fabrication, conformité. Notre équipe vous répond sous 24 heures ouvrées.",
+    "en": "Échangeons on votre projet : conception, fabrication, conformité. Our équipe vous répond sous 24 heures ouvrées.",
+    "de": "Échangeons sur votre projet : conception, fabrication, conformité. Unsere équipe vous répond sous 24 heures ouvrées.",
+    "it": "Échangeons sur votre projet : conception, fabrication, conformité. La nostra équipe vous répond sous 24 heures ouvrées."
+  },
+  "news.footer_desc.31": {
+    "fr": "Entreprise CDMO intégrée verticalement dans les domaines des dispositifs médicaux et des sciences de la vie. Implantation Suisse · France · Tunisie.",
+    "en": "Entreprise CDMO vertically integrated in the domaines medical devices and life sciences. Implantation Suisse · France · Tunisie.",
+    "de": "Entreprise CDMO intégrée verticalement dans les domaines des Medizinprodukte und des Life Sciences. Implantation Suisse · France · Tunisie.",
+    "it": "Entreprise CDMO intégrée verticalement dans les domaines des dispositivi medici e des life sciences. Implantation Suisse · France · Tunisie."
+  },
+  "news.footer_col_title.32": {
+    "fr": "Société",
+    "en": "Société",
+    "de": "Société",
+    "it": "Société"
+  },
+  "news.footer_col_title.33": {
+    "fr": "Services",
+    "en": "Services",
+    "de": "Services",
+    "it": "Services"
+  },
+  "news.footer_col_title.34": {
+    "fr": "Contact",
+    "en": "Contact",
+    "de": "Contact",
+    "it": "Contact"
+  },
+  "news.nav_mobile_title.35": {
+    "fr": "À propos",
+    "en": "About",
+    "de": "Über uns",
+    "it": "Chi siamo"
+  },
+  "news.nav_mobile_title.36": {
+    "fr": "Services",
+    "en": "Services",
+    "de": "Services",
+    "it": "Services"
+  },
+  "news.btn.1": {
+    "fr": "Contactez-nous",
+    "en": "Contactez-nous",
+    "de": "Contactez-nous",
+    "it": "Contactez-nous"
+  },
+  "news.btn.2": {
+    "fr": "À propos de nous",
+    "en": "À propos of nous",
+    "de": "À propos de nous",
+    "it": "À propos de nous"
+  },
+  "news.placeholder.1": {
+    "fr": "votre@email.com",
+    "en": "your@email.com",
+    "de": "ihre@email.de",
+    "it": "vostra@email.com"
+  }
+}
