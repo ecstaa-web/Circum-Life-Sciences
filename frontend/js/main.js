@@ -42,18 +42,61 @@
   var STORAGE = 'circum.lang';
   var LANGS = ['fr','en','de','it'];
 
+  function detectBrowserLang() {
+    try {
+      var nav = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || navigator.userLanguage || 'fr'];
+      for (var i = 0; i < nav.length; i++) {
+        var code = (nav[i] || '').toLowerCase().split('-')[0];
+        if (LANGS.indexOf(code) > -1) return code;
+      }
+    } catch(e) {}
+    return 'fr';
+  }
+
   function getCurrentLang() {
     try {
       var saved = localStorage.getItem(STORAGE);
       if (saved && LANGS.indexOf(saved) > -1) return saved;
     } catch(e) {}
-    return 'fr';
+    // First visit: auto-detect navigator language (FR default)
+    var detected = detectBrowserLang();
+    try { localStorage.setItem(STORAGE, detected); } catch(e) {}
+    return detected;
   }
 
   function setLangActive(lang) {
     document.querySelectorAll('.lang-btn').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.lang === lang);
     });
+    moveLangIndicator(lang);
+  }
+
+  // Sliding indicator for the language pill
+  function ensureLangIndicator() {
+    var sw = document.querySelector('.lang-switch');
+    if (!sw) return null;
+    var ind = sw.querySelector('.lang-indicator');
+    if (!ind) {
+      ind = document.createElement('span');
+      ind.className = 'lang-indicator';
+      ind.setAttribute('aria-hidden', 'true');
+      sw.insertBefore(ind, sw.firstChild);
+    }
+    return ind;
+  }
+
+  function moveLangIndicator(lang) {
+    var sw = document.querySelector('.lang-switch');
+    if (!sw) return;
+    var ind = ensureLangIndicator();
+    var target = sw.querySelector('.lang-btn[data-lang="' + lang + '"]');
+    if (!ind || !target) return;
+    var swRect = sw.getBoundingClientRect();
+    var tRect = target.getBoundingClientRect();
+    var left = tRect.left - swRect.left;
+    var width = tRect.width;
+    ind.style.left = left + 'px';
+    ind.style.width = width + 'px';
   }
 
   var I18N = (typeof window.CIRCUM_I18N !== 'undefined') ? window.CIRCUM_I18N : {};
@@ -98,8 +141,11 @@
 
   function initLangSwitcher() {
     var current = getCurrentLang();
+    ensureLangIndicator();
     setLangActive(current);
     translatePage(current);
+    // Defer position to next frame so layout is settled
+    requestAnimationFrame(function(){ moveLangIndicator(current); });
     document.querySelectorAll('.lang-btn').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -109,6 +155,31 @@
         translatePage(lang);
       });
     });
+    window.addEventListener('resize', function() {
+      var saved = (function(){
+        try { return localStorage.getItem(STORAGE) || 'fr'; } catch(e) { return 'fr'; }
+      })();
+      moveLangIndicator(saved);
+    });
+  }
+
+  // ===== Nav scroll state (glass intensifies on scroll) =====
+  function initNavScroll() {
+    var nav = document.querySelector('.nav');
+    if (!nav) return;
+    var ticking = false;
+    function update() {
+      var y = window.scrollY || window.pageYOffset || 0;
+      nav.classList.toggle('scrolled', y > 12);
+      ticking = false;
+    }
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+    update();
   }
 
   // ===== File input display =====
@@ -303,6 +374,7 @@
     initMobileNav();
     initReveal();
     initLangSwitcher();
+    initNavScroll();
     initFileInputs();
     initForms();
     initHomeVideo();

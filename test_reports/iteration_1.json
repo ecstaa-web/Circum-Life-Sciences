@@ -1,0 +1,46 @@
+{
+  "summary": "Manual UI verification of the new floating liquid-glass header and quadrilingual switcher (FR/EN/DE/IT) for the Circum static site served by express on port 3000 via the preview URL. No backend testing requested. Tested home, apropos, fabrication, contact pages, scroll behavior, dropdown hover, language persistence across navigation, auto-detect on first visit, and mobile viewport.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "All pages", "issues": ["Console warning: '<link rel=preload> uses an unsupported as value' on every page — non-blocking but worth cleaning up the preload tag (likely a missing/invalid as attribute on a preload <link> in <head>)."]}
+    ]
+  },
+  "validated_behaviors": {
+    "header_liquid_glass_capsule": "PASS — .nav .nav-inner present on home, apropos, fabrication, contact (rounded capsule, white-glass background).",
+    "language_switcher_dom": "PASS — .lang-switch with 4 buttons data-lang=fr/en/de/it and .lang-indicator span injected dynamically by main.js.",
+    "sliding_indicator": "PASS — indicator computes left/width from active button (e.g. left:41px width:36.28px for EN), repositions on resize and on click.",
+    "auto_detect_first_visit": "PASS — clearing localStorage then reloading sets circum.lang to navigator language ('en' detected from Chromium en-US, FR fallback path covered in code).",
+    "localStorage_persistence": "PASS — 'circum.lang' key correctly written on click and on auto-detect.",
+    "translation_quality_home": "PASS — FR/EN/DE/IT hero strings: 'LABORATOIRE CDMO INDÉPENDANT · DISPOSITIFS MÉDICAUX' / 'INDEPENDENT CDMO LABORATORY · MEDICAL DEVICES' / 'UNABHÄNGIGES CDMO-LABOR · MEDIZINPRODUKTE' / 'LABORATORIO CDMO INDIPENDENTE · DISPOSITIVI MEDICI'.",
+    "translation_quality_apropos": "PASS — page-hero-title and section-title translate cleanly in 4 langs ('Un laboratoire CDMO intégré verticalement.' → 'A vertically integrated CDMO laboratory.' → 'Ein vertikal integriertes CDMO-Labor.' → 'Un laboratorio CDMO integrato verticalmente.'). No FR leftovers found via marker scan.",
+    "translation_quality_contact": "PASS — 'Parlons de votre projet.' / 'Let's talk about your project.' / 'Sprechen wir über Ihr Projekt.' / 'Parliamo del vostro progetto.'",
+    "translation_quality_fabrication": "PASS — DE hero: 'Integrierte Fertigung.'",
+    "nav_scroll_class_toggle": "PASS — .nav has class 'scrolled' false at y=0 and true at y=791/1000 (threshold > 12px in initNavScroll).",
+    "topbar_scrolls_away": "PASS — .topbar is position:relative and scrolls out of viewport with page (top becomes -975 at scrollY=975), while .nav stays at top:0.",
+    "dropdown_on_hover": "PASS — .nav-item > .nav-submenu (note: spec mentioned .has-dropdown but implementation uses .nav-item with chevron span .nav-link-chev). Hover sets opacity:1, visibility:visible, display:block. Submenu items translated to EN ('Our Company', 'Our Values', 'Board & Strategic Advisory', 'Environmental Policy', 'The Three Founders').",
+    "lang_persists_across_navigation": "PASS — set DE on home, navigate to fabrication.html, active button = de and hero = 'Integrierte Fertigung.'",
+    "mobile_viewport_390px": "PASS — .nav visible, .nav-toggle hamburger visible, .lang-switch capsule visible inside the header."
+  },
+  "test_report_links": [],
+  "action_items": [
+    "(Cosmetic, low priority) Fix the <link rel=preload> tag(s) producing the console warning 'uses an unsupported as value' — check the <head> preload entries in all HTML pages and either set a valid as=\"image\"/\"font\"/\"style\" or remove the tag.",
+    "(Documentation/naming consistency, optional) The review request mentioned a '.has-dropdown' class but the codebase uses '.nav-item' containing '.nav-submenu' with a '.nav-link-chev' indicator. Functionality is correct; consider aligning the documentation/README so future agents do not look for '.has-dropdown'."
+  ],
+  "critical_code_review_comments": [
+    "main.js initSmoothScroll() is defined but never invoked in the DOMContentLoaded init block — dead code (lines 271-297). Either wire it up in the init block or remove to keep the file lean.",
+    "main.js getCurrentLang() writes the auto-detected language to localStorage on every first-visit call (line 63). This is fine, but means subsequent 'first-visit' tests must explicitly clear localStorage — confirmed working in tests.",
+    "Translations rely on JSON dictionaries (window.CIRCUM_I18N) inlined per page; pages without the relevant dict key silently fall back to original HTML — acceptable, but a missing key map across all 4 langs could be linted in CI.",
+    "Code review of /app/frontend/js/main.js (385 lines) is well-structured and under the 700-line threshold; no DRY violations spotted."
+  ],
+  "updated_files": [],
+  "success_rate": { "backend": "N/A (not requested)", "frontend": "100% on the requested feature set" },
+  "test_credentials": "none required (static site, no auth)",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Static site under /app/frontend served by express (server.js) on port 3000. All UI tests must hit the public preview URL https://a1c4f8c7-55fc-404d-9fab-5cd99a4cedc7.preview.emergentagent.com/. Language is persisted in localStorage under key 'circum.lang' (values: fr|en|de|it). The dropdown trigger is '.nav-item' (NOT '.has-dropdown') and submenus are '.nav-submenu'. The sliding pill indicator is dynamically injected by main.js via ensureLangIndicator(); its position uses inline left/width in px, so width changes per language label width (FR/EN/DE/IT all 2 chars so visually similar). Topbar (.topbar) is position:relative and scrolls away with the page — this is intentional per the request. The placeholder FastAPI backend exposes only /api/health and is irrelevant for this feature.",
+  "rca of the issue": "No bugs found that block the feature; only cosmetic console warning (invalid preload) and one dead-code function (initSmoothScroll) reported as code-review notes."
+}
