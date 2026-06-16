@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Admin · Circum Life Sciences</title>
+<link href="css/main.css" rel="stylesheet"/>
+<link as="image" href="assets/img/circum-logo.png" rel="preload"/>
+<style>
+  body { background: var(--gray-50); }
+  .admin-shell { max-width: 1280px; margin: 0 auto; padding: 32px var(--gutter); }
+  .admin-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+  .admin-brand { display: flex; align-items: center; gap: 14px; }
+  .admin-brand img { height: 36px; }
+  .admin-brand strong { font-size: 18px; color: var(--blue-dark); letter-spacing: .02em; }
+  .admin-brand .tag { font-size: 11px; padding: 3px 8px; border: 1px solid var(--pink); color: var(--pink-dark); border-radius: 999px; text-transform: uppercase; letter-spacing: .08em; }
+  .admin-user { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+  .admin-user img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+  .admin-user .who { line-height: 1.2; }
+  .admin-user .who small { display: block; color: var(--text-muted); font-size: 11px; }
+
+  .login-card { max-width: 460px; margin: 80px auto; background: var(--white); padding: 48px; border: 1px solid var(--border); border-radius: 6px; text-align: center; box-shadow: 0 8px 30px rgba(32,90,153,0.06); }
+  .login-card h1 { font-size: 26px; margin-bottom: 12px; color: var(--blue-dark); }
+  .login-card p { color: var(--text-soft); margin-bottom: 28px; font-size: 14px; }
+  .gbtn { display: inline-flex; align-items: center; gap: 12px; padding: 14px 24px; background: var(--white); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 15px; transition: all .18s ease; color: var(--text); }
+  .gbtn:hover { border-color: var(--blue); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(32,90,153,.12); }
+  .gbtn svg { width: 18px; height: 18px; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 36px; }
+  .stat { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 22px; }
+  .stat .v { font-size: 36px; font-weight: 600; color: var(--blue-dark); line-height: 1; }
+  .stat .l { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--text-muted); margin-top: 8px; }
+
+  .panel { background: var(--white); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 28px; overflow: hidden; }
+  .panel-head { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .panel-head h2 { font-size: 18px; color: var(--blue-dark); }
+  .panel-head .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-mini { padding: 8px 14px; border: 1px solid var(--blue); color: var(--blue); background: var(--white); border-radius: 3px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; cursor: pointer; transition: all .15s ease; }
+  .btn-mini:hover { background: var(--blue); color: var(--white); }
+  .btn-mini.pink { border-color: var(--pink); color: var(--pink-dark); }
+  .btn-mini.pink:hover { background: var(--pink); color: var(--white); }
+  .btn-mini.danger { border-color: var(--error); color: var(--error); }
+  .btn-mini.danger:hover { background: var(--error); color: var(--white); }
+  .btn-mini.ghost { border-color: var(--border); color: var(--text-muted); }
+
+  .table-wrap { overflow-x: auto; }
+  table.admin-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.admin-tbl th { text-align: left; padding: 12px 16px; background: var(--blue-50); color: var(--blue-dark); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; border-bottom: 1px solid var(--blue-100); }
+  table.admin-tbl td { padding: 12px 16px; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+  table.admin-tbl tr:hover td { background: var(--gray-50); }
+  table.admin-tbl td.muted { color: var(--text-muted); font-size: 12px; }
+  .pill { display: inline-block; padding: 3px 8px; font-size: 11px; border-radius: 999px; background: var(--blue-50); color: var(--blue-dark); }
+  .empty { padding: 40px; text-align: center; color: var(--text-muted); font-size: 14px; }
+
+  .allow-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--gray-100); }
+  .allow-row:last-child { border-bottom: 0; }
+  .allow-row .who { flex: 1; }
+  .allow-row .who strong { color: var(--text); }
+  .allow-row .who small { display: block; color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+  .allow-add { display: flex; gap: 10px; padding: 16px; background: var(--gray-50); border-top: 1px solid var(--border); }
+  .allow-add input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 3px; }
+  .allow-add input:focus { outline: none; border-color: var(--blue); }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; padding: 14px 22px; background: var(--blue-dark); color: var(--white); border-radius: 4px; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.18); opacity: 0; transform: translateY(10px); transition: all .25s ease; z-index: 9999; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.err { background: var(--error); }
+
+  .logout { padding: 8px 14px; border: 1px solid var(--border); border-radius: 3px; background: var(--white); cursor: pointer; font-size: 12px; color: var(--text-soft); }
+  .logout:hover { color: var(--error); border-color: var(--error); }
+
+  .access-denied { background: #fdecea; border: 1px solid #f5b7b1; color: #922b21; padding: 22px; border-radius: 4px; margin-top: 24px; }
+  .loading-state { padding: 80px; text-align: center; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="admin-shell">
+  <div class="admin-header">
+    <div class="admin-brand">
+      <img alt="Circum Life Sciences" src="assets/img/circum-logo.png"/>
+      <strong>Espace Admin</strong>
+      <span class="tag">Privé</span>
+    </div>
+    <div id="user-zone"></div>
+  </div>
+
+  <div id="main-zone">
+    <div class="loading-state" data-testid="admin-loading">Chargement…</div>
+  </div>
+</div>
+
+<div class="toast" id="toast" data-testid="admin-toast"></div>
+
+<script>
+(function () {
+  var API = '/api';
+  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+  var REDIRECT_URL = window.location.origin + '/admin.html';
+
+  var mainZone = document.getElementById('main-zone');
+  var userZone = document.getElementById('user-zone');
+  var toastEl = document.getElementById('toast');
+
+  function toast(msg, isErr) {
+    toastEl.textContent = msg;
+    toastEl.className = 'toast show' + (isErr ? ' err' : '');
+    setTimeout(function () { toastEl.classList.remove('show'); }, 3000);
+  }
+
+  function escapeHTML(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) +
+        ' ' + d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return iso; }
+  }
+
+  function api(path, opts) {
+    opts = opts || {};
+    opts.credentials = 'include';
+    opts.headers = opts.headers || {};
+    return fetch(API + path, opts);
+  }
+
+  function renderLogin(deniedEmail) {
+    userZone.innerHTML = '';
+    mainZone.innerHTML =
+      '<div class="login-card" data-testid="login-card">' +
+        '<h1>Espace réservé.</h1>' +
+        '<p>Connectez-vous avec votre compte Google autorisé pour accéder aux leads et candidatures.</p>' +
+        '<button class="gbtn" id="login-btn" data-testid="login-btn">' +
+          '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.83z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38z"/></svg>' +
+          '<span>Se connecter avec Google</span>' +
+        '</button>' +
+        (deniedEmail ? '<div class="access-denied" data-testid="access-denied">Accès refusé pour <strong>' + escapeHTML(deniedEmail) + '</strong>. Cet email n\'est pas dans la liste blanche admin.</div>' : '') +
+      '</div>';
+    document.getElementById('login-btn').addEventListener('click', function () {
+      // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+      window.location.href = 'https://auth.emergentagent.com/?redirect=' + encodeURIComponent(REDIRECT_URL);
+    });
+  }
+
+  function renderDashboard(user) {
+    userZone.innerHTML =
+      '<div class="admin-user" data-testid="admin-user">' +
+        (user.picture ? '<img src="' + escapeHTML(user.picture) + '" alt=""/>' : '') +
+        '<div class="who"><strong>' + escapeHTML(user.name || user.email) + '</strong><small>' + escapeHTML(user.email) + '</small></div>' +
+        '<button class="logout" id="logout-btn" data-testid="logout-btn">Déconnexion</button>' +
+      '</div>';
+    document.getElementById('logout-btn').addEventListener('click', logout);
+
+    mainZone.innerHTML =
+      '<div class="stat-row" data-testid="stats-row">' +
+        '<div class="stat"><div class="v" id="stat-leads" data-testid="stat-leads">—</div><div class="l">Abonnés Newsletter</div></div>' +
+        '<div class="stat"><div class="v" id="stat-apps" data-testid="stat-apps">—</div><div class="l">Candidatures reçues</div></div>' +
+        '<div class="stat"><div class="v" id="stat-admins" data-testid="stat-admins">—</div><div class="l">Admins autorisés</div></div>' +
+      '</div>' +
+
+      '<div class="panel" data-testid="panel-leads">' +
+        '<div class="panel-head">' +
+          '<h2>Leads Newsletter</h2>' +
+          '<div class="actions">' +
+            '<button class="btn-mini" id="dl-leads-csv" data-testid="dl-leads-csv">Télécharger CSV</button>' +
+            '<button class="btn-mini pink" id="dl-leads-json" data-testid="dl-leads-json">Télécharger JSON</button>' +
+          '</div>' +
+        '</div>' +
+        '<div id="leads-table" class="table-wrap"></div>' +
+      '</div>' +
+
+      '<div class="panel" data-testid="panel-apps">' +
+        '<div class="panel-head">' +
+          '<h2>Candidatures Carrières</h2>' +
+          '<div class="actions">' +
+            '<button class="btn-mini" id="dl-apps-csv" data-testid="dl-apps-csv">Télécharger CSV</button>' +
+            '<button class="btn-mini pink" id="dl-apps-json" data-testid="dl-apps-json">Télécharger JSON</button>' +
+          '</div>' +
+        '</div>' +
+        '<div id="apps-table" class="table-wrap"></div>' +
+      '</div>' +
+
+      '<div class="panel" data-testid="panel-admins">' +
+        '<div class="panel-head">' +
+          '<h2>Gestion des admins</h2>' +
+        '</div>' +
+        '<div id="allowlist-list"></div>' +
+        '<form class="allow-add" id="allow-add-form" data-testid="allow-add-form">' +
+          '<input type="email" id="allow-add-email" data-testid="allow-add-email" placeholder="nouveau.admin@circumlifesciences.com" required/>' +
+          '<button class="btn-mini" type="submit" data-testid="allow-add-btn">Ajouter admin</button>' +
+        '</form>' +
+      '</div>';
+
+    document.getElementById('dl-leads-csv').addEventListener('click', function () { triggerDownload('/admin/leads.csv'); });
+    document.getElementById('dl-leads-json').addEventListener('click', function () { triggerDownload('/admin/leads.json'); });
+    document.getElementById('dl-apps-csv').addEventListener('click', function () { triggerDownload('/admin/applications.csv'); });
+    document.getElementById('dl-apps-json').addEventListener('click', function () { triggerDownload('/admin/applications.json'); });
+    document.getElementById('allow-add-form').addEventListener('submit', addAdmin);
+
+    loadLeads();
+    loadApps();
+    loadAllowlist();
+  }
+
+  function triggerDownload(path) {
+    // Use fetch to ensure credentials/cookie are sent, then create blob URL
+    api(path).then(function (r) {
+      if (r.status === 401 || r.status === 403) { toast('Session expirée', true); return null; }
+      if (!r.ok) { toast('Erreur ' + r.status, true); return null; }
+      return r.blob().then(function (blob) {
+        var disp = r.headers.get('content-disposition') || '';
+        var match = /filename="?([^"]+)"?/.exec(disp);
+        var filename = match ? match[1] : path.split('/').pop();
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 0);
+        toast('Téléchargement: ' + filename);
+      });
+    });
+  }
+
+  function loadLeads() {
+    api('/admin/leads').then(function (r) { return r.json(); }).then(function (data) {
+      document.getElementById('stat-leads').textContent = data.count;
+      var c = document.getElementById('leads-table');
+      if (!data.items.length) { c.innerHTML = '<div class="empty">Aucun abonné pour le moment.</div>'; return; }
+      var rows = data.items.map(function (l) {
+        return '<tr data-testid="lead-row">' +
+          '<td><strong>' + escapeHTML(l.firstname || '') + ' ' + escapeHTML(l.lastname || '') + '</strong></td>' +
+          '<td>' + escapeHTML(l.email) + '</td>' +
+          '<td>' + escapeHTML(l.company || '—') + '</td>' +
+          '<td>' + escapeHTML(l.role || '—') + '</td>' +
+          '<td><span class="pill">' + escapeHTML((l.lang || 'fr').toUpperCase()) + '</span></td>' +
+          '<td class="muted">' + escapeHTML(fmtDate(l.created_at)) + '</td>' +
+        '</tr>';
+      }).join('');
+      c.innerHTML = '<table class="admin-tbl"><thead><tr><th>Nom</th><th>Email</th><th>Société</th><th>Fonction</th><th>Langue</th><th>Date</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    });
+  }
+
+  function loadApps() {
+    api('/admin/applications').then(function (r) { return r.json(); }).then(function (data) {
+      document.getElementById('stat-apps').textContent = data.count;
+      var c = document.getElementById('apps-table');
+      if (!data.items.length) { c.innerHTML = '<div class="empty">Aucune candidature pour le moment.</div>'; return; }
+      var rows = data.items.map(function (a) {
+        return '<tr data-testid="app-row">' +
+          '<td><strong>' + escapeHTML(a.firstname || '') + ' ' + escapeHTML(a.lastname || '') + '</strong><br/><small style="color:var(--text-muted)">' + escapeHTML(a.email) + (a.phone ? ' · ' + escapeHTML(a.phone) : '') + '</small></td>' +
+          '<td>' + escapeHTML(a.position || '—') + '<br/><small style="color:var(--text-muted)">' + escapeHTML(a.location || '—') + '</small></td>' +
+          '<td>' + escapeHTML(a.experience || '—') + '<br/><small style="color:var(--text-muted)">Dispo: ' + escapeHTML(a.availability || '—') + '</small></td>' +
+          '<td>' + (a.cv_filename ? '<a class="btn-mini" target="_blank" rel="noopener" href="' + API + '/careers/cv/' + escapeHTML(a.id) + '" data-testid="dl-cv-btn">CV ↓</a>' : '<span class="muted">—</span>') + '</td>' +
+          '<td class="muted">' + escapeHTML(fmtDate(a.created_at)) + '</td>' +
+        '</tr>';
+      }).join('');
+      c.innerHTML = '<table class="admin-tbl"><thead><tr><th>Candidat</th><th>Poste</th><th>Expérience</th><th>CV</th><th>Date</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    });
+  }
+
+  function loadAllowlist() {
+    api('/admin/allowlist').then(function (r) { return r.json(); }).then(function (data) {
+      document.getElementById('stat-admins').textContent = data.count;
+      var c = document.getElementById('allowlist-list');
+      c.innerHTML = data.items.map(function (a) {
+        return '<div class="allow-row" data-testid="allow-row">' +
+          '<div class="who"><strong>' + escapeHTML(a.email) + '</strong><small>ajouté par ' + escapeHTML(a.added_by || '—') + ' · ' + escapeHTML(fmtDate(a.created_at)) + '</small></div>' +
+          '<button class="btn-mini danger" data-email="' + escapeHTML(a.email) + '" data-testid="allow-remove-btn">Retirer</button>' +
+        '</div>';
+      }).join('');
+      c.querySelectorAll('button.danger').forEach(function (btn) {
+        btn.addEventListener('click', function () { removeAdmin(btn.getAttribute('data-email')); });
+      });
+    });
+  }
+
+  function addAdmin(e) {
+    e.preventDefault();
+    var input = document.getElementById('allow-add-email');
+    var email = input.value.trim();
+    if (!email) return;
+    api('/admin/allowlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).then(function (r) {
+      if (!r.ok) { return r.json().then(function (j) { throw new Error(j.detail || 'error'); }); }
+      return r.json();
+    }).then(function (res) {
+      input.value = '';
+      toast(res.already_present ? 'Déjà admin' : 'Admin ajouté');
+      loadAllowlist();
+    }).catch(function (err) { toast(err.message || 'Erreur', true); });
+  }
+
+  function removeAdmin(email) {
+    if (!confirm('Retirer ' + email + ' des admins ?')) return;
+    api('/admin/allowlist/' + encodeURIComponent(email), { method: 'DELETE' })
+      .then(function (r) {
+        if (!r.ok) { return r.json().then(function (j) { throw new Error(j.detail || 'error'); }); }
+        return r.json();
+      })
+      .then(function () { toast('Admin retiré'); loadAllowlist(); })
+      .catch(function (err) { toast(err.message || 'Erreur', true); });
+  }
+
+  function logout() {
+    api('/auth/logout', { method: 'POST' }).finally(function () {
+      window.location.href = '/admin.html';
+    });
+  }
+
+  // ============ Boot ============
+  function exchangeSessionId(sessionId) {
+    return api('/auth/google/exchange', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId })
+    });
+  }
+
+  function checkAuth() {
+    api('/auth/me').then(function (r) {
+      if (r.ok) return r.json().then(renderDashboard);
+      renderLogin();
+    }).catch(function () { renderLogin(); });
+  }
+
+  // 1) Handle session_id from URL fragment (returning from Google auth)
+  if (window.location.hash && window.location.hash.indexOf('session_id=') !== -1) {
+    var sid = window.location.hash.replace(/^#/, '').split('&').reduce(function (acc, kv) {
+      var p = kv.split('='); acc[p[0]] = decodeURIComponent(p[1] || ''); return acc;
+    }, {}).session_id;
+    // clean URL immediately
+    history.replaceState(null, '', window.location.pathname);
+    if (sid) {
+      exchangeSessionId(sid).then(function (r) {
+        if (r.ok) {
+          checkAuth();
+        } else {
+          return r.json().then(function (j) {
+            if (r.status === 403) {
+              var denied = '';
+              if (j && j.detail) {
+                var m = /:\s*([^\s]+@[^\s]+)/.exec(j.detail);
+                if (m) denied = m[1];
+              }
+              renderLogin(denied);
+            } else { renderLogin(); }
+          }).catch(function () { renderLogin(); });
+        }
+      }).catch(function () { renderLogin(); });
+      return;
+    }
+  }
+
+  // 2) Otherwise check existing session
+  checkAuth();
+})();
+</script>
+</body>
+</html>

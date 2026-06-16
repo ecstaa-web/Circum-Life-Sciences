@@ -1,0 +1,66 @@
+{
+  "summary": "Iteration 4 — Full backend + frontend testing of the new Admin module (Emergent Google Auth allow-list, leads/applications listing, CSV/JSON exports, allow-list management) plus regression of public endpoints. ALL 31 backend pytest cases pass and ALL 6 UI phases on /admin.html pass. No issues found; the feature is production-ready for the test harness.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "validated_behaviors": {
+    "POST /api/auth/google/exchange invalid session_id": "PASS — returns 401",
+    "GET /api/auth/me without auth": "PASS — 401",
+    "GET /api/auth/me with valid Bearer": "PASS — returns user with email=stag3@circumlifesciences.com",
+    "POST /api/auth/logout without session": "PASS — 200 {ok:true}",
+    "Admin endpoints without auth (leads, applications, allowlist, all CSV/JSON variants)": "PASS — all 401",
+    "Admin endpoints with non-allowlisted user (notadmin@example.com)": "PASS — 403 on leads/applications/allowlist",
+    "GET /api/admin/leads": "PASS — {count:N, items:[]} N>=6 with full schema (id, firstname, lastname, email, created_at...)",
+    "GET /api/admin/applications": "PASS — {count, items} with full schema",
+    "GET /api/admin/leads.csv": "PASS — Content-Type text/csv; charset=utf-8, Content-Disposition: attachment; filename=\"circum_leads.csv\", header row contains 'email'",
+    "GET /api/admin/leads.json": "PASS — application/json, Content-Disposition attachment filename=\"circum_leads.json\"",
+    "GET /api/admin/applications.csv": "PASS — text/csv + attachment + filename=\"circum_applications.csv\"",
+    "GET /api/admin/applications.json": "PASS — application/json + attachment + filename=\"circum_applications.json\"",
+    "GET /api/admin/allowlist": "PASS — contains stag3@circumlifesciences.com by default (seed startup)",
+    "POST /api/admin/allowlist + GET verify": "PASS — new admin appears in list after add",
+    "DELETE /api/admin/allowlist/<email> + GET verify": "PASS — removed admin disappears from list",
+    "POST /api/admin/allowlist invalid email": "PASS — 422 (Pydantic EmailStr)",
+    "DELETE self": "PASS — 400 'You cannot remove yourself'",
+    "DELETE last remaining admin": "PASS — 400 'At least one admin must remain'",
+    "Regression GET /api/health": "PASS",
+    "Regression GET /api/news (6 items)": "PASS",
+    "Regression POST /api/newsletter/subscribe": "PASS",
+    "Regression POST /api/careers/apply (PDF)": "PASS",
+    "UI /admin.html without cookie": "PASS — login-card + login-btn visible (data-testid present)",
+    "UI /admin.html with valid session cookie": "PASS — admin-user header, panel-leads, panel-apps, panel-admins, stat-leads/apps/admins all render",
+    "UI stats populated": "PASS — stat-leads=8, stat-apps=5, stat-admins=1 (all numeric)",
+    "UI table rows": "PASS — lead-row, app-row, allow-row each >=1",
+    "UI add admin via allow-add-form/allow-add-btn": "PASS — new allow-row appears immediately",
+    "UI remove admin via allow-remove-btn (with confirm())": "PASS — row disappears, count restored",
+    "UI download buttons (dl-leads-csv/json, dl-apps-csv/json)": "PASS — fetch with cookie returns 200 + attachment for all 4; explicit dl-leads-csv click triggers browser download event with filename 'circum_leads.csv'"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_admin_api.py",
+    "/app/backend/tests/test_circum_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend: in /api/admin/leads.csv and similar, `_csv_stream(rows, headers)` sets Content-Type='text/csv; charset=utf-8' but the helper passes that via media_type — Content-Disposition is set on the response object afterward. Working correctly, but consider using a single helper that returns a fully-configured Response to keep it DRY.",
+    "Auth: /api/auth/google/exchange returns 403 with the offending email in `detail` ('Email not in admin allow-list: foo@bar.com'). The admin.html UI parses this with regex; if the message format ever changes the access-denied banner will silently show empty. Consider returning a structured JSON body like {detail:'forbidden', email:'foo@bar.com'} for robustness. Not blocking.",
+    "Allow-list DELETE ordering: `total <= 1` check fires before the `email == caller` check. When caller is the only admin and tries to remove self, the error becomes 'At least one admin must remain' instead of 'You cannot remove yourself'. Both are acceptable but the message order may surprise testers — documented as expected in our test_allowlist_last_admin_via_second_session.",
+    "admin.html (~370 lines) is fine but mixes login + dashboard + 3 panels + all fetchers inline. If it grows further, consider splitting JS into /app/frontend/js/admin.js with module pattern.",
+    "Minor: triggerDownload() doesn't surface a stable success/error testid on the toast (the toast text changes); fine for now since data-testid='admin-toast' exists."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_admin_api.py (new — 22 new test cases for admin module)"
+  ],
+  "success_rate": {
+    "backend": "100% (31/31 pytest passed in 4.5s — 22 new admin tests + 9 regression)",
+    "frontend": "100% (6/6 UI phases passed on /admin.html)"
+  },
+  "test_credentials": "/app/memory/test_credentials.md valid. Admin allow-list seeded with stag3@circumlifesciences.com. Sessions injected via mongosh per /app/auth_testing.md.",
+  "seed_data_creation": "Per-test sessions ('test_session_*', 'ui_test_*') and temp admins ('test_uiadmin_*', 'test_admin_*', 'test_only_*', 'test_buffer_*') were created during tests and all cleaned up at the end. admin_allowlist restored to exactly {stag3@circumlifesciences.com}. No production data touched.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All admin endpoints and the /admin.html UI are fully functional. Reusable test suite at /app/backend/tests/test_admin_api.py uses mongosh to create disposable Bearer sessions — pattern works for any future auth-gated endpoint. Cookie-based UI testing uses the same token via context.add_cookies (domain b709274e-5200-48ec-baa8-751e87349ea7.preview.emergentagent.com, httpOnly, secure, sameSite=None). For UI runs, prefer wait_until='domcontentloaded' instead of 'networkidle' — the page makes a long-poll-style auth check that can keep the network busy briefly. Use page.expect_download() to validate the dl-* buttons. The 'last admin must remain' guard is only triggered via a SECOND admin session deleting itself when only one admin exists; can't reach it directly when caller==last admin because self-removal check fires first.",
+  "rca of the issue": "No issues identified."
+}
