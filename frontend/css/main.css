@@ -1322,9 +1322,21 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   font-size: 12px;
   color: rgba(255,255,255,0.5);
 }
-.footer-legal { display: flex; gap: 22px; }
+.footer-legal { display: flex; gap: 22px; align-items: center; }
 .footer-legal a { color: rgba(255,255,255,0.5); transition: color 0.2s; }
 .footer-legal a:hover { color: var(--pink-light); }
+.footer-admin-link {
+  display: inline-block;
+  width: 14px; height: 14px;
+  line-height: 12px;
+  text-align: center;
+  border-radius: 50%;
+  color: rgba(255,255,255,0.18) !important;
+  font-size: 18px;
+  margin-left: 6px;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.footer-admin-link:hover { color: var(--pink-light) !important; transform: scale(1.25); }
 
 /* ----- TEXT CONTENT (interior pages) ----- */
 .prose {

@@ -324,30 +324,62 @@
 
   function initSmoothScroll() {
     if (!('requestAnimationFrame' in window) || !('addEventListener' in window)) return;
+    // Skip on touch devices: native momentum is smoother than JS lerp.
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     var targetScroll = window.scrollY;
     var isAnimating = false;
+    var ease = 0.12; // lower = smoother but slower
+
+    function maxScroll() {
+      return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    }
 
     function animate() {
       var current = window.scrollY;
       var delta = targetScroll - current;
       if (Math.abs(delta) < 0.5) {
+        window.scrollTo(0, targetScroll);
         isAnimating = false;
         return;
       }
-      window.scrollTo(0, current + delta * 0.14);
+      window.scrollTo(0, current + delta * ease);
       requestAnimationFrame(animate);
     }
 
+    // Keep target in sync if user scrolls via keyboard, anchor, or programmatic scroll
+    window.addEventListener('scroll', function () {
+      if (!isAnimating) targetScroll = window.scrollY;
+    }, { passive: true });
+
     window.addEventListener('wheel', function(event) {
       if (event.ctrlKey || event.metaKey || event.altKey) return;
+      // Ignore very small touchpad deltas to keep native feel on macOS trackpads using pixel mode
+      // Only smooth-lerp for real mouse-wheel "lines/pages" mode (deltaMode > 0) and large pixel deltas.
+      var d = event.deltaY;
+      if (event.deltaMode === 0 && Math.abs(d) < 25) return;
       event.preventDefault();
-      targetScroll += event.deltaY * 1.2;
-      targetScroll = Math.max(0, Math.min(targetScroll, document.documentElement.scrollHeight - window.innerHeight));
+      targetScroll = Math.max(0, Math.min(targetScroll + d * 1.1, maxScroll()));
       if (!isAnimating) {
         isAnimating = true;
         requestAnimationFrame(animate);
       }
     }, { passive: false });
+
+    // Smooth anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href');
+        if (!href || href === '#' || href.length < 2) return;
+        var target = document.getElementById(href.slice(1));
+        if (!target) return;
+        e.preventDefault();
+        var rect = target.getBoundingClientRect();
+        targetScroll = Math.max(0, Math.min(window.scrollY + rect.top - 80, maxScroll()));
+        if (!isAnimating) { isAnimating = true; requestAnimationFrame(animate); }
+      });
+    });
   }
 
   function scrollToHash() {
@@ -479,6 +511,7 @@
     initHomeVideo();
     initCountUpAnimation();
     initDynamicNews();
+    initSmoothScroll();
     scrollToHash();
   });
 })();

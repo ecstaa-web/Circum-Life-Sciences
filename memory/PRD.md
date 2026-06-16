@@ -52,6 +52,10 @@ Itérations:
 - Page admin vanilla JS avec design Circum (bleu #205a99, rose #f365b4).
 - 31/31 tests backend + 6/6 phases UI PASS.
 
+### 16 Jan 2026 — Admin link discret + smooth scroll
+- Lien admin subtil (point `·`) ajouté dans `.footer-legal` de toutes les pages publiques (data-testid `footer-admin-link`).
+- Smooth scroll JS activé (lerp ease 0.12) avec garde-fous: skip sur pointer:coarse (mobile/tablette) et prefers-reduced-motion, ignore les petits deltas de touchpad, smooth anchor scrolling sur les liens `#hash`.
+
 ## Backlog
 - P1: Notifications email (SendGrid/Resend) à chaque nouveau lead/candidature
 - P1: Audit log (qui a ajouté/retiré un admin et quand) — déjà présent sur add (champ `added_by`), à étendre sur delete
