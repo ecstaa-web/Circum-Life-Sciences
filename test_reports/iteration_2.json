@@ -1,0 +1,88 @@
+{
+  "summary": "Backend 100% pass (9/9 pytest). Frontend has a CRITICAL i18n bug: data-i18n-html attributes are placed on .form-group wrappers that contain BOTH the <label> AND the <input>. The translatePage() function in main.js runs el.innerHTML = dict[key] for every [data-i18n-html] element, which OVERWRITES the inputs. Result: newsletter and careers forms render visually (label text appears) but their input fields are destroyed in the DOM, so the user cannot submit the form (no name/email/etc. submitted). Additionally, the newsletter strip form (footer-style on /news.html and /carrieres.html) has an <input type='email'> with NO name='email' attribute, so JS submitNewsletter() reads empty string and the request fails with 422.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Newsletter form on /newsletter.html",
+        "issue": "Inputs (name=firstname/lastname/email/company/role) and #nl-consent checkbox are wiped from the DOM by i18n translation. Root cause: <div class='form-group' data-i18n-html='newsletter.form_label.12'> contains both the <label> and the <input>; main.js translatePage() sets innerHTML = 'Prénom *' (plain text), destroying the input element. Form is unusable.",
+        "selector": "[data-testid='newsletter-form'] input[name='firstname']",
+        "priority": "CRITICAL"
+      },
+      {
+        "component": "Careers form on /carrieres.html",
+        "issue": "Same root cause as newsletter: form-group wrappers carry data-i18n-html='carrieres.form_label.16' etc., which overwrite their inner inputs (firstname, lastname, email, phone, availability, message, consent checkbox). After translation runs, inputs no longer exist.",
+        "selector": "[data-testid='careers-form'] input[name='firstname']",
+        "priority": "CRITICAL"
+      },
+      {
+        "component": "Newsletter strip form on /news.html and /carrieres.html",
+        "issue": "The email input has no name attribute: <input aria-label='Adresse email' placeholder='votre@email.com' required type='email'/>. submitNewsletter() in main.js reads form.querySelector('[name=email]').value which returns '', so the POST body sends empty email/firstname and the API responds 422 string_too_short.",
+        "selector": "form.newsletter-strip-form input[type='email']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Newsletter subscribe via /newsletter.html",
+        "issue": "Cannot trigger a real POST because inputs do not exist post-translation. End-to-end UI submission is broken.",
+        "affected_selectors": ["[data-testid='newsletter-form'] input[name='firstname']", "[data-testid='newsletter-form'] input[name='email']", "#nl-consent"]
+      },
+      {
+        "flow": "Careers application submit via /carrieres.html",
+        "issue": "Same: inputs destroyed by i18n innerHTML overwrite; form cannot be submitted by a real user.",
+        "affected_selectors": ["[data-testid='careers-form'] input[name='firstname']", "[data-testid='careers-form'] input[name='cv']", "#careers-consent"]
+      },
+      {
+        "flow": "Newsletter strip submit",
+        "issue": "Email never reaches backend due to missing name attribute; backend returns 422.",
+        "affected_selectors": ["form.newsletter-strip-form input[type='email']"]
+      }
+    ],
+    "design_issues": []
+  },
+  "validated_behaviors": {
+    "GET /api/health": "PASS (status ok)",
+    "GET /api/news returns 6 seeded items with expected titles": "PASS",
+    "POST /api/newsletter/subscribe success + already_subscribed idempotent": "PASS (verified via direct API call)",
+    "POST /api/newsletter/subscribe rejects consent=false with 400": "PASS",
+    "POST /api/newsletter/subscribe rejects invalid email with 422": "PASS",
+    "POST /api/careers/apply success with PDF returns {ok:true,id:...}": "PASS",
+    "POST /api/careers/apply rejects .txt extension with 400": "PASS",
+    "POST /api/careers/apply rejects consent=false with 400": "PASS",
+    "Dynamic news on /news.html (data-testid='news-card-0..5')": "PASS - 6 cards rendered from /api/news, titles include 'Compamed & Medica Düsseldorf', 'Inauguration officielle du site Force One', 'Renouvellement ISO 13485 multi-sites'"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_circum_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "FIX i18n bug: move every data-i18n-html attribute OFF the .form-group wrapper and PLACE it ON the inner <label> element only (or use data-i18n on the label text node). Currently main.js translatePage() does el.innerHTML = dict[key] which wipes child <input>. Affected files: /app/frontend/newsletter.html (form-group elements with data-i18n-html='newsletter.form_label.12..18' and 'newsletter.form_checkbox.19'), /app/frontend/carrieres.html (carrieres.form_label.16..24 and carrieres.form_checkbox.26). Same pattern likely exists on /contact.html — verify.",
+    "FIX strip newsletter input: add name='email' attribute to <input type='email'> inside form.newsletter-strip-form on /app/frontend/news.html and /app/frontend/carrieres.html (and any other page that embeds the strip).",
+    "Alternative fix (safer, single point of change): in /app/frontend/js/main.js translatePage(), when processing [data-i18n-html] elements that contain form controls (input/select/textarea/button), set the text only on the FIRST text node or only on a child <span>/<label>, NOT replace the whole innerHTML. Or skip elements that contain form controls.",
+    "After fix, re-run /app/backend/tests/test_circum_api.py (already passing) and re-test UI flows: newsletter full-form submit (incl. duplicate email -> already_subscribed=true UI message), careers form with PDF upload, and strip form on /news.html + /carrieres.html."
+  ],
+  "critical_code_review_comments": [
+    "main.js translatePage(): replacing innerHTML on a container that holds form controls is a footgun. The whole feature should only translate text nodes — either restrict data-i18n-html to text-only elements (span, h1, p) or implement a guard: if (el.querySelector('input,select,textarea,button')) skip and log a warning.",
+    "Strip newsletter form: the input lacks both name and id; relying on placeholder is wrong. Add name='email' (minimum) and consider also adding a hidden consent flag or a small consent checkbox to comply with GDPR before storing the email in newsletter_subscribers.",
+    "server.py newsletter_subscribe handler does not check the email shape via lowercased uniqueness collation index — works in practice (we lowercase manually) but a unique index on email would prevent races.",
+    "server.py careers_apply: 'consent' is sent as Form('true') string; current parsing accepts 'true/on/1/yes'. Frontend sends the checkbox value which by default is 'on' — OK. But add a unit test on the boolean coercion if you change it.",
+    "Code is under the 700-line threshold per file and DRY; no critical structural issue beyond the i18n bug."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_circum_api.py (new)"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 pytest)",
+    "frontend": "33% — dynamic news loading works; both real form integrations (newsletter full + careers) and the strip newsletter are broken end-to-end from the UI."
+  },
+  "test_credentials": "none required",
+  "seed_data_creation": "Backend seeds 6 news items at startup if collection empty — verified. Some TEST_-prefixed newsletter_subscribers and careers_applications were inserted by tests; harmless.",
+  "retest_needed": true,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "All backend endpoints are healthy and reachable at https://b709274e-5200-48ec-baa8-751e87349ea7.preview.emergentagent.com/api/. The pytest suite at /app/backend/tests/test_circum_api.py is the single source of truth for backend regressions and runs in <1s. The CRITICAL bug to retest is whether the i18n innerHTML overwrite still kills the input fields inside .form-group[data-i18n-html] containers — verify via page.evaluate(() => document.querySelector('[data-testid=\"newsletter-form\"] input[name=\"firstname\"]') !== null) AFTER initLangSwitcher/translatePage has run. Also retest the strip form on /news.html and /carrieres.html submits a non-empty email (POST body should include email=…@… not empty).",
+  "rca of the issue": "Root cause: HTML pages were generated with data-i18n-html attributes applied at the .form-group level (one i18n key per group). The translation engine in /app/frontend/js/main.js (translatePage, lines 112-115) executes el.innerHTML = dict[key] for every [data-i18n-html] element on every language switch and on page load (initLangSwitcher -> translatePage(current)). Because the dictionary values are plain text labels (e.g., 'First name *') with no <input> markup, the entire form-group is rewritten to contain just the label text — destroying the input, the required attribute, the name attribute, and the consent checkbox. This is why the page LOOKS fine (label text visible) but the JS form submitter cannot read any field value and a real user cannot type into the form either. Mitigation: either move data-i18n-html attributes onto the <label> child element (smallest change, but requires editing every HTML form-group), or harden translatePage() to skip elements containing form controls (single-file change in main.js, recommended). Reproduction: open /newsletter.html, in DevTools run document.querySelector('[data-testid=\"newsletter-form\"] input[name=\"firstname\"]') — returns null after page load."
+}

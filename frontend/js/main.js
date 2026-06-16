@@ -200,13 +200,67 @@
     });
   }
 
-  // ===== Form submission (demo, no backend) =====
+  // ===== Form submission (real backend) =====
+  var API_BASE = (window.CIRCUM_API_BASE || '') + '/api';
+
+  function showMessage(messageEl, text, isError) {
+    if (!messageEl) return;
+    messageEl.classList.remove('show', 'error');
+    messageEl.classList.add('show');
+    if (isError) messageEl.classList.add('error');
+    messageEl.textContent = text;
+    try { window.scrollTo({ top: messageEl.offsetTop - 100, behavior: 'smooth' }); } catch (e) {}
+  }
+
+  function submitNewsletter(form) {
+    var consentCb = form.querySelector('input[type="checkbox"][id*="consent"], input[type="checkbox"][required]');
+    var data = {
+      firstname: (form.querySelector('[name="firstname"]') || {}).value || '',
+      lastname: (form.querySelector('[name="lastname"]') || {}).value || '',
+      email: (form.querySelector('[name="email"]') || {}).value || '',
+      company: (form.querySelector('[name="company"]') || {}).value || '',
+      role: (form.querySelector('[name="role"]') || {}).value || '',
+      lang: (form.querySelector('[name="lang"]') || {}).value || getCurrentLang(),
+      consent: consentCb ? !!consentCb.checked : true
+    };
+    // strip-form (email only): synthesize names
+    if (!data.firstname && data.email) data.firstname = data.email.split('@')[0];
+    if (!data.lastname) data.lastname = '-';
+    return fetch(API_BASE + '/newsletter/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  }
+
+  function submitCareers(form) {
+    var fd = new FormData(form);
+    return fetch(API_BASE + '/careers/apply', { method: 'POST', body: fd });
+  }
+
+  function submitContact(form) {
+    // No dedicated endpoint -> reuse newsletter store as a generic lead (best-effort), or fail gracefully.
+    var data = {
+      firstname: (form.querySelector('[name="firstname"]') || {}).value || 'Contact',
+      lastname: (form.querySelector('[name="lastname"]') || {}).value || '-',
+      email: (form.querySelector('[name="email"]') || {}).value || '',
+      company: (form.querySelector('[name="company"]') || {}).value || '',
+      role: (form.querySelector('[name="subject"]') || form.querySelector('[name="role"]') || {}).value || '',
+      lang: getCurrentLang(),
+      consent: true
+    };
+    return fetch(API_BASE + '/newsletter/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+  }
+
   function initForms() {
     document.querySelectorAll('form[data-form]').forEach(function(form) {
       form.addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // Basic required validation
         var required = form.querySelectorAll('[required]');
         var valid = true;
         required.forEach(function(field) {
@@ -219,46 +273,38 @@
         });
 
         var messageEl = form.querySelector('.form-message');
+        var type = form.dataset.form;
+        var L = I18N[getCurrentLang()] || {};
+
         if (!valid) {
-          if (messageEl) {
-            messageEl.classList.remove('show');
-            messageEl.classList.add('show', 'error');
-            var errKey = 'form.error.required';
-            messageEl.textContent = (I18N[getCurrentLang()] && I18N[getCurrentLang()][errKey]) || 'Veuillez compléter les champs obligatoires.';
-          }
+          showMessage(messageEl, L['form.error.required'] || 'Veuillez compléter les champs obligatoires.', true);
           return;
         }
 
-        // Simulate submit
         var submitBtn = form.querySelector('[type="submit"]');
+        var orig = submitBtn ? submitBtn.innerHTML : '';
         if (submitBtn) {
-          var orig = submitBtn.innerHTML;
           submitBtn.disabled = true;
-          var sendingKey = 'form.sending';
-          var cur = getCurrentLang();
-          submitBtn.innerHTML = (I18N[cur] && I18N[cur][sendingKey]) || 'Envoi en cours...';
-          setTimeout(function() {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = orig;
-            form.reset();
-            if (messageEl) {
-              messageEl.classList.remove('error');
-              messageEl.classList.add('show');
-              var type = form.dataset.form;
-              var L = I18N[getCurrentLang()] || {};
-              if (type === 'newsletter') {
-                messageEl.textContent = L['form.success.newsletter'] || messageEl.textContent;
-              } else if (type === 'careers') {
-                messageEl.textContent = L['form.success.careers'] || messageEl.textContent;
-              } else if (type === 'contact') {
-                messageEl.textContent = L['form.success.contact'] || messageEl.textContent;
-              } else {
-                messageEl.textContent = L['form.success.default'] || messageEl.textContent;
-              }
-              window.scrollTo({ top: messageEl.offsetTop - 100, behavior: 'smooth' });
-            }
-          }, 1200);
+          submitBtn.innerHTML = L['form.sending'] || 'Envoi en cours...';
         }
+
+        var req;
+        if (type === 'newsletter') req = submitNewsletter(form);
+        else if (type === 'careers') req = submitCareers(form);
+        else if (type === 'contact') req = submitContact(form);
+        else req = submitContact(form);
+
+        req.then(function(res) {
+          return res.ok ? res.json() : res.json().then(function(j) { throw new Error(j.detail || 'error'); }).catch(function() { throw new Error('HTTP ' + res.status); });
+        }).then(function() {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = orig; }
+          form.reset();
+          var successKey = 'form.success.' + (type || 'default');
+          showMessage(messageEl, L[successKey] || L['form.success.default'] || 'Merci, votre demande a bien été envoyée.', false);
+        }).catch(function(err) {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = orig; }
+          showMessage(messageEl, (L['form.error.server'] || 'Erreur lors de l\'envoi. Veuillez réessayer.') + ' (' + (err.message || 'network') + ')', true);
+        });
       });
     });
   }
@@ -369,6 +415,51 @@
     updateCount();
   }
 
+  // ===== Dynamic news loader =====
+  function formatDateForLocale(iso, lang) {
+    try {
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return iso;
+      var localeMap = { fr: 'fr-FR', en: 'en-GB', de: 'de-DE', it: 'it-IT' };
+      var locale = localeMap[lang] || 'fr-FR';
+      return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch (e) { return iso; }
+  }
+
+  function escapeHTML(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function initDynamicNews() {
+    if ((document.body.dataset || {}).page !== 'news') return;
+    var grid = document.querySelector('.news-grid');
+    if (!grid) return;
+
+    fetch(API_BASE + '/news').then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(items) {
+      if (!Array.isArray(items) || !items.length) return;
+      var lang = getCurrentLang();
+      grid.innerHTML = items.map(function(n, idx) {
+        var variant = n.variant && n.variant !== 1 ? ' v' + n.variant : '';
+        return '' +
+          '<article class="news-card reveal visible" data-testid="news-card-' + idx + '">' +
+            '<div class="news-card-visual' + variant + '">' +
+              '<span class="news-card-tag">' + escapeHTML(n.tag) + '</span>' +
+            '</div>' +
+            '<div class="news-card-body">' +
+              '<div class="news-card-date">' + escapeHTML(formatDateForLocale(n.date, lang)) + '</div>' +
+              '<h3 class="news-card-title">' + escapeHTML(n.title) + '</h3>' +
+              '<p class="news-card-summary">' + escapeHTML(n.summary) + '</p>' +
+            '</div>' +
+          '</article>';
+      }).join('');
+    }).catch(function() { /* keep static fallback if API fails */ });
+  }
+
   // ===== Init all =====
   document.addEventListener('DOMContentLoaded', function() {
     initMobileNav();
@@ -379,6 +470,7 @@
     initForms();
     initHomeVideo();
     initCountUpAnimation();
+    initDynamicNews();
     scrollToHash();
   });
 })();

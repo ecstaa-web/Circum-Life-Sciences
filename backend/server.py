@@ -1,8 +1,231 @@
-from fastapi import FastAPI
+import os
+import uuid
+import shutil
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Optional, List
 
-app = FastAPI()
+from dotenv import load_dotenv
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel, EmailStr, Field
+
+load_dotenv()
+
+MONGO_URL = os.environ["MONGO_URL"]
+DB_NAME = os.environ["DB_NAME"]
+UPLOAD_DIR = Path(os.environ.get("UPLOAD_DIR", "/app/backend/uploads"))
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+client = AsyncIOMotorClient(MONGO_URL)
+db = client[DB_NAME]
+
+app = FastAPI(title="Circum Life Sciences API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
+# ============ Models ============
+class NewsletterSubscribe(BaseModel):
+    firstname: str = Field(min_length=1, max_length=80)
+    lastname: str = Field(min_length=1, max_length=80)
+    email: EmailStr
+    company: Optional[str] = None
+    role: Optional[str] = None
+    lang: Optional[str] = "fr"
+    consent: bool = True
+
+
+class NewsItem(BaseModel):
+    id: str
+    title: str
+    summary: str
+    tag: str
+    date: str  # ISO date string
+    variant: int = 1  # for visual variant on frontend (1..6)
+
+
+# ============ Seed data ============
+SEED_NEWS: List[dict] = [
+    {
+        "title": "Inauguration officielle du site Force One",
+        "summary": "Notre site tunisien atteint sa pleine capacité opérationnelle avec 4 cleanrooms ISO 7/8 et 120 opérateurs qualifiés.",
+        "tag": "Inauguration",
+        "date": "2025-10-15",
+        "variant": 1,
+    },
+    {
+        "title": "Renouvellement ISO 13485 multi-sites",
+        "summary": "Notre système qualité est reconduit sans réserve par l'organisme certificateur. Audit annuel passé sur les trois sites.",
+        "tag": "Certification",
+        "date": "2025-09-22",
+        "variant": 2,
+    },
+    {
+        "title": "Compamed & Medica Düsseldorf",
+        "summary": "Circum sera présent du 16 au 19 novembre 2026 sur le stand E-23. Réservez votre créneau avec nos équipes commerciales.",
+        "tag": "Salon",
+        "date": "2026-11-17",
+        "variant": 3,
+    },
+    {
+        "title": "Livre blanc : intégration verticale CDMO",
+        "summary": "Notre équipe publie une analyse de 40 pages sur les bénéfices de l'intégration verticale dans le secteur des dispositifs médicaux.",
+        "tag": "Publication",
+        "date": "2026-03-03",
+        "variant": 4,
+    },
+    {
+        "title": "Partenariat académique avec l'INSA Lyon",
+        "summary": "Signature d'un partenariat de recherche avec l'INSA Lyon sur les polymères biocompatibles avancés. Trois thèses CIFRE lancées.",
+        "tag": "Partenariat",
+        "date": "2026-01-08",
+        "variant": 5,
+    },
+    {
+        "title": "Cleanroom C : démarrage de la construction",
+        "summary": "Lancement des travaux d'une nouvelle cleanroom ISO 7 sur le site Force One. Mise en service prévue au troisième trimestre 2026.",
+        "tag": "Investissement",
+        "date": "2025-12-12",
+        "variant": 6,
+    },
+]
+
+
+@app.on_event("startup")
+async def seed_news():
+    coll = db["news"]
+    count = await coll.count_documents({})
+    if count == 0:
+        docs = []
+        for n in SEED_NEWS:
+            docs.append({
+                "_id": str(uuid.uuid4()),
+                **n,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            })
+        await coll.insert_many(docs)
+
+
+# ============ Endpoints ============
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "service": "circum"}
+
+
+@app.get("/api/news", response_model=List[NewsItem])
+async def list_news():
+    cursor = db["news"].find({}, {"_id": 1, "title": 1, "summary": 1, "tag": 1, "date": 1, "variant": 1}).sort("date", -1)
+    items: List[NewsItem] = []
+    async for doc in cursor:
+        items.append(NewsItem(
+            id=doc["_id"],
+            title=doc["title"],
+            summary=doc["summary"],
+            tag=doc["tag"],
+            date=doc["date"],
+            variant=int(doc.get("variant", 1)),
+        ))
+    return items
+
+
+@app.post("/api/newsletter/subscribe")
+async def newsletter_subscribe(payload: NewsletterSubscribe):
+    if not payload.consent:
+        raise HTTPException(status_code=400, detail="Consent required")
+    coll = db["newsletter_subscribers"]
+    existing = await coll.find_one({"email": payload.email.lower()})
+    if existing:
+        return {"ok": True, "already_subscribed": True}
+    doc = {
+        "_id": str(uuid.uuid4()),
+        "firstname": payload.firstname.strip(),
+        "lastname": payload.lastname.strip(),
+        "email": payload.email.lower(),
+        "company": (payload.company or "").strip() or None,
+        "role": (payload.role or "").strip() or None,
+        "lang": payload.lang or "fr",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await coll.insert_one(doc)
+    return {"ok": True, "id": doc["_id"]}
+
+
+@app.post("/api/careers/apply")
+async def careers_apply(
+    firstname: str = Form(...),
+    lastname: str = Form(...),
+    email: str = Form(...),
+    phone: Optional[str] = Form(None),
+    position: str = Form(...),
+    location: Optional[str] = Form(None),
+    experience: Optional[str] = Form(None),
+    availability: Optional[str] = Form(None),
+    message: Optional[str] = Form(None),
+    consent: str = Form("true"),
+    cv: UploadFile = File(...),
+):
+    if consent.lower() not in ("true", "on", "1", "yes"):
+        raise HTTPException(status_code=400, detail="Consent required")
+
+    allowed_ext = {".pdf", ".doc", ".docx"}
+    ext = Path(cv.filename or "").suffix.lower()
+    if ext not in allowed_ext:
+        raise HTTPException(status_code=400, detail="Invalid file type. Allowed: PDF, DOC, DOCX")
+
+    app_id = str(uuid.uuid4())
+    saved_name = f"{app_id}{ext}"
+    saved_path = UPLOAD_DIR / saved_name
+
+    # Save with 10MB cap
+    max_bytes = 10 * 1024 * 1024
+    written = 0
+    with saved_path.open("wb") as out:
+        while True:
+            chunk = await cv.read(1024 * 64)
+            if not chunk:
+                break
+            written += len(chunk)
+            if written > max_bytes:
+                out.close()
+                saved_path.unlink(missing_ok=True)
+                raise HTTPException(status_code=400, detail="CV too large (max 10 MB)")
+            out.write(chunk)
+
+    doc = {
+        "_id": app_id,
+        "firstname": firstname.strip(),
+        "lastname": lastname.strip(),
+        "email": email.lower().strip(),
+        "phone": (phone or "").strip() or None,
+        "position": position.strip(),
+        "location": (location or "").strip() or None,
+        "experience": (experience or "").strip() or None,
+        "availability": (availability or "").strip() or None,
+        "message": (message or "").strip() or None,
+        "cv_filename": cv.filename,
+        "cv_stored": saved_name,
+        "cv_size_bytes": written,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db["careers_applications"].insert_one(doc)
+    return {"ok": True, "id": app_id}
+
+
+@app.get("/api/careers/cv/{application_id}")
+async def download_cv(application_id: str):
+    doc = await db["careers_applications"].find_one({"_id": application_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Not found")
+    path = UPLOAD_DIR / doc["cv_stored"]
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="File missing")
+    return FileResponse(path, filename=doc.get("cv_filename") or path.name)
