@@ -1,45 +1,62 @@
 # Circum Life Sciences - Site Web
 
 ## Problem Statement
-"Affiche moi le siteweb Circum dont je t'ai partagé via GitHub"
-Repo: https://github.com/ecstaa-web/Circumsitev4 (branch: main, public)
-Objectif initial: Cloner + intégrer dans la structure actuelle.
-Itération 2: ajouter capture newsletter, news dynamique, candidature spontanée carrières.
+Repo: https://github.com/ecstaa-web/Circumsitev4 — site statique HTML/JS multi-pages (FR/EN/DE/IT).
+Itérations:
+1. Cloner + intégrer + afficher.
+2. Newsletter fonctionnelle, news dynamique, candidatures spontanées carrières.
+3. Endpoint admin protégé (Emergent Google Auth + allow-list) avec exports CSV+JSON et page admin.
 
 ## Architecture
-- **Frontend** (`/app/frontend`): Site statique HTML/CSS/JS multi-pages (FR/EN/DE/IT) servi par Express sur port 3000 via `node server.js`. Géré par supervisor (`yarn start`).
-- **Backend** (`/app/backend`): FastAPI + Motor (MongoDB) sur port 8001.
-- **Database**: MongoDB local (`circum` db) avec collections: `news`, `newsletter_subscribers`, `careers_applications`.
-- **Pages**: index, apropos, fondateurs, design, fabrication, clients, news, newsletter, carrieres, contact.
+- **Frontend** (`/app/frontend`): Site statique servi par Express (port 3000) via `node server.js`. `admin.html` est une page séparée vanilla JS.
+- **Backend** (`/app/backend`): FastAPI + Motor (port 8001). Auth Emergent (cookie session_token httpOnly+secure+SameSite=None, TTL 7j) ou Bearer token.
+- **Database**: MongoDB `circum` — collections: `news`, `newsletter_subscribers`, `careers_applications`, `users`, `user_sessions`, `admin_allowlist`.
+- **CV uploads**: `/app/backend/uploads/`.
 
 ## API Endpoints
-- `GET /api/health` — healthcheck
-- `GET /api/news` — liste les actualités (6 seedées au startup)
-- `POST /api/newsletter/subscribe` — JSON `{firstname, lastname, email, company?, role?, lang?, consent}` (idempotent par email)
-- `POST /api/careers/apply` — multipart (firstname, lastname, email, phone?, position, location?, experience?, availability?, message?, consent, cv [PDF/DOC/DOCX max 10MB])
-- `GET /api/careers/cv/{application_id}` — téléchargement CV (admin)
+### Public
+- `GET /api/health`
+- `GET /api/news` — 6 items seedés
+- `POST /api/newsletter/subscribe` (idempotent par email)
+- `POST /api/careers/apply` (multipart, CV PDF/DOC/DOCX ≤10MB)
+
+### Auth (Emergent Google)
+- `POST /api/auth/google/exchange` `{session_id}` → cookie httpOnly + user
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+
+### Admin (require_admin: session + email dans allow-list)
+- `GET /api/admin/leads` / `.csv` / `.json`
+- `GET /api/admin/applications` / `.csv` / `.json`
+- `GET /api/careers/cv/{id}` (download CV)
+- `GET /api/admin/allowlist` — liste admins
+- `POST /api/admin/allowlist` — ajouter admin
+- `DELETE /api/admin/allowlist/{email}` — retirer (protections: pas soi-même, pas le dernier)
+
+## Frontend pages
+- 10 pages publiques (index, apropos, fondateurs, design, fabrication, clients, news, newsletter, carrieres, contact)
+- `/admin.html` — login Google + dashboard (stats, tableaux leads/candidatures, boutons CSV/JSON, gestion admins)
 
 ## Implementations
 ### 16 Jan 2026 — MVP
-- Clone repo dans /app, install deps (yarn + pip), services UP.
-- Site visible avec navigation multilingue FR/EN/DE/IT.
+- Clone, install, services UP. Site visible en 4 langues.
 
-### 16 Jan 2026 — Features dynamiques
-- Backend FastAPI étendu: 3 endpoints + seed 6 news au startup.
-- `js/main.js`: `initForms()` remplacé pour faire de vrais POST (newsletter + careers + contact).
-- `js/main.js`: `initDynamicNews()` charge `/api/news` et rend dynamiquement sur `body[data-page="news"]`.
-- Fix critique i18n: `translatePage()` protège les containers contenant des form controls (ne traduit que le `<label>` enfant).
-- Fix strip-form: `name="email"` ajouté sur 9 pages.
-- Tests pytest backend 9/9 PASS, tests UI 100% PASS (iteration_3).
+### 16 Jan 2026 — Features dynamiques (iteration 2-3)
+- 3 endpoints backend + seed news, 100% PASS aux tests.
+- Fix critique i18n + name=email sur strip-form.
 
-## Test data
-- 6 news seedées (Force One, ISO 13485, Compamed, Livre blanc, INSA Lyon, Cleanroom C)
-- CVs uploadés stockés dans `/app/backend/uploads/`
+### 16 Jan 2026 — Admin module (iteration 4)
+- Emergent Google Auth en flow complet (exchange via demobackend.emergentagent.com).
+- Allow-list stockée en DB, gérable via UI (ajout/suppression), seedée avec `stag3@circumlifesciences.com`.
+- Endpoints admin protégés + exports CSV/JSON.
+- Page admin vanilla JS avec design Circum (bleu #205a99, rose #f365b4).
+- 31/31 tests backend + 6/6 phases UI PASS.
 
-## Backlog / Next Items
-- P1: Email notification (SendGrid/Resend) à chaque newsletter signup et candidature reçue
-- P1: Admin endpoint protégé pour lister/exporter les subscribers + applications
-- P2: Pagination/filtre sur `/api/news` (par tag, par année)
-- P2: data-testid sur tous les messages succès pour assertions auto + bouton "désinscription" newsletter
-- P2: Petit consent checkbox sur strip-form (RGPD)
-- P3: Section blog (article complet par news)
+## Backlog
+- P1: Notifications email (SendGrid/Resend) à chaque nouveau lead/candidature
+- P1: Audit log (qui a ajouté/retiré un admin et quand) — déjà présent sur add (champ `added_by`), à étendre sur delete
+- P2: Pagination + recherche sur les tableaux admin (au-delà de 1000 leads)
+- P2: Filtre par date/source dans les exports
+- P2: Suppression de leads/candidatures (RGPD) depuis l'UI
+- P3: Statistiques avancées (graphe inscriptions/mois)
+- P3: API publique d'archive newsletter (issues précédentes)
