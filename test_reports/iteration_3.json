@@ -1,0 +1,42 @@
+{
+  "summary": "RETEST iteration 3 — All previously CRITICAL frontend bugs are fixed. translatePage() guard in /app/frontend/js/main.js now skips containers holding form controls (input/select/textarea/button) and only translates the child <label>. newsletter-strip-form has name='email' on all 9 pages. End-to-end UI flows now pass: newsletter full submit (POST /api/newsletter/subscribe -> 200 ok:true), careers submit with PDF + 'Candidature spontanée' (POST /api/careers/apply -> 200 ok:true), strip newsletter on /news.html and /carrieres.html (POST with non-empty email -> 200 ok:true). Dynamic news renders 6 cards from backend. Backend smoke (health, news, newsletter idempotency) re-verified.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "validated_behaviors": {
+    "i18n guard on /newsletter.html": "PASS — inputs firstname/lastname/email/company/role + #nl-consent all present after translatePage()",
+    "i18n guard on /carrieres.html": "PASS — inputs firstname/lastname/email/phone + input[type=file][name=cv] + #careers-consent all present after translation; select[name=position] contains 'Candidature spontanée'",
+    "Newsletter full submit /newsletter.html": "PASS — POST /api/newsletter/subscribe returned 200 {ok:true,id:...}",
+    "Careers submit with PDF /carrieres.html": "PASS — multipart POST /api/careers/apply returned 200 {ok:true,id:...} with position='Candidature spontanée', UI shows confirmation message",
+    "Strip newsletter /carrieres.html": "PASS — input has name='email'; submit body contained email value; response 200 {ok:true,id:...}",
+    "Strip newsletter /news.html": "PASS — input has name='email'; submit body contained email value; response 200 {ok:true,id:...}",
+    "Dynamic news /news.html": "PASS — 6 cards data-testid news-card-0..5 rendered with titles from backend (Compamed & Medica Düsseldorf, Livre blanc..., Partenariat INSA Lyon, Cleanroom C..., Inauguration Force One, Renouvellement ISO 13485)",
+    "GET /api/health": "PASS ({status:ok,service:circum})",
+    "GET /api/news": "PASS (6 items)",
+    "Newsletter idempotency": "PASS — 1st call returns id, 2nd call returns ok:true, already_subscribed:true"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_circum_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "translatePage() guard is the right fix; consider also handling [data-i18n] (without -html) defensively if any container-level data-i18n is added later — currently only data-i18n-html had the issue.",
+    "Strip newsletter submits with consent=true hardcoded by JS (no checkbox). For strict GDPR compliance, consider adding a small consent checkbox or a clearly visible disclaimer link before sending. Not blocking.",
+    "On successful full newsletter submit the visible success toast text is not exposed via a stable selector (returned null from common .form-msg query). The submit returned 200, but a [data-testid='newsletter-success'] would make automated UI assertions more reliable — minor."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (9/9 pytest from iter 2 still valid + smoke re-verified)",
+    "frontend": "100% — all three previously failing flows now pass end-to-end"
+  },
+  "test_credentials": "none required",
+  "seed_data_creation": "Test inserts created TEST_-prefixed subscribers and one TEST_ careers application via PDF; harmless.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Frontend i18n bug is fully resolved. Newsletter (full + strip) and Careers application are fully functional. Backend pytest suite at /app/backend/tests/test_circum_api.py remains green. No outstanding bugs.",
+  "rca of the issue": "Resolved. translatePage() in /app/frontend/js/main.js now contains a guard (lines ~112-122): if the [data-i18n-html] element contains an input/select/textarea/button, it does NOT overwrite innerHTML; it only sets innerHTML of the inner <label> child. Additionally, the newsletter-strip-form input on apropos/carrieres/clients/contact/design/fabrication/fondateurs/index/news pages now has name='email', so submitNewsletter() reads a non-empty value and the backend accepts the subscription."
+}

@@ -111,7 +111,15 @@
     });
     document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
       var key = el.getAttribute('data-i18n-html');
-      if (dict[key] !== undefined) el.innerHTML = dict[key];
+      if (dict[key] === undefined) return;
+      // Guard: do not overwrite containers that hold form controls (would destroy them)
+      if (el.querySelector('input, select, textarea, button')) {
+        // Translate the first <label> child instead, preserving controls
+        var lbl = el.querySelector('label');
+        if (lbl) lbl.innerHTML = dict[key];
+        return;
+      }
+      el.innerHTML = dict[key];
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
       var key = el.getAttribute('data-i18n-placeholder');
