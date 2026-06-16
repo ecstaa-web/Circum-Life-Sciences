@@ -511,7 +511,7 @@
     initHomeVideo();
     initCountUpAnimation();
     initDynamicNews();
-    initSmoothScroll();
+    // initSmoothScroll(); // disabled: hijacking the wheel felt slow/laggy. Native browser scroll + CSS `scroll-behavior: smooth` handle this.
     scrollToHash();
   });
 })();
