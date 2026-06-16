@@ -24,16 +24,19 @@ def _mongosh(script: str) -> str:
 
 @pytest.fixture(scope="module")
 def admin_token():
+    """Get a Bearer token by inserting a session for the existing seed admin user."""
     out = _mongosh(
         "use('circum'); "
-        "var u='user_test_admin'; var t='test_session_'+Date.now(); "
-        "db.users.replaceOne({user_id:u},{user_id:u,email:'stag3@circumlifesciences.com',name:'Test Admin',picture:null,created_at:new Date()},{upsert:true}); "
-        "db.user_sessions.insertOne({user_id:u,session_token:t,expires_at:new Date(Date.now()+7*24*60*60*1000),created_at:new Date()}); "
+        "var u = db.users.findOne({email:'stag3@circumlifesciences.com'}); "
+        "if(!u){print('NO_ADMIN'); quit();} "
+        "var t='test_session_'+Date.now(); "
+        "db.user_sessions.insertOne({user_id:u.user_id, session_token:t, "
+        "expires_at:new Date(Date.now()+7*24*60*60*1000), created_at:new Date()}); "
         "print(t);"
     )
-    token = out.splitlines()[-1].strip()
-    assert token.startswith("test_session_"), f"unexpected: {out}"
-    return token
+    lines = [l for l in out.splitlines() if l.strip().startswith("test_session_")]
+    assert lines, f"unexpected mongosh output: {out!r}"
+    return lines[-1].strip()
 
 
 @pytest.fixture(scope="module")
@@ -81,7 +84,7 @@ def test_me_with_valid_bearer(s, admin_token):
     assert r.status_code == 200
     data = r.json()
     assert data["email"] == "stag3@circumlifesciences.com"
-    assert data["user_id"] == "user_test_admin"
+    assert isinstance(data["user_id"], str) and len(data["user_id"]) > 0
 
 
 # ============ Allow-list enforcement ============

@@ -1,16 +1,22 @@
 # Test Credentials — Circum Life Sciences
 
-## Admin (Emergent Google Auth)
+## Admin Login (deux méthodes)
 
-### Default seeded admin (allow-list)
-- **Email:** `stag3@circumlifesciences.com`
-- This email must own a Google account to actually log in via https://auth.emergentagent.com
-- The allow-list is stored in MongoDB collection `admin_allowlist` and can be managed via the admin UI (`/admin.html`)
+### 1. Email + Mot de passe (NEW)
+- **URL** : `/admin.html`
+- **Email** : `stag3@circumlifesciences.com`
+- **Mot de passe** : `Stag3Admin2026!`
+- Définit dans `/app/backend/.env` (`ADMIN_PASSWORD`), seedé via bcrypt au startup.
+- Crée la même session_token cookie (httpOnly, secure, SameSite=None, 7j) que l'auth Google.
+- Protection brute-force : 5 tentatives échouées → lockout 15 minutes par couple `ip:email`.
 
-### Test session (for automated testing via Bearer token)
-The test session below is created by the test setup script (regenerated per run, see `/app/auth_testing.md`).
+### 2. Google OAuth (Emergent Auth)
+- Bouton "Se connecter avec Google" sur `/admin.html`.
+- Email Google doit être dans `admin_allowlist` (gérable depuis l'UI).
+- Email allow-listé par défaut : `stag3@circumlifesciences.com` (mais comme ce n'est pas un vrai compte Google, utilisez plutôt le login email/password).
 
-To create a fresh test session manually:
+## Bypass pour tests automatisés
+Création de session via mongosh (sans connaître le mot de passe) :
 ```bash
 mongosh --quiet --eval "
 use('circum');
@@ -24,26 +30,30 @@ print(token);
 "
 ```
 
-Then use the token returned as Bearer:
+Utilisable comme Bearer ou cookie :
 ```bash
 curl -H "Authorization: Bearer <TOKEN>" https://b709274e-5200-48ec-baa8-751e87349ea7.preview.emergentagent.com/api/auth/me
 ```
 
-Or set as cookie for browser-based UI testing:
-```python
-await page.context.add_cookies([{
-  "name": "session_token", "value": "<TOKEN>",
-  "domain": "b709274e-5200-48ec-baa8-751e87349ea7.preview.emergentagent.com",
-  "path": "/", "httpOnly": True, "secure": True, "sameSite": "None"
-}])
-```
-
 ## Allow-list management
-- Add admin: `POST /api/admin/allowlist` `{"email":"new@circumlifesciences.com"}`
-- Remove admin: `DELETE /api/admin/allowlist/<email>` (cannot remove self, cannot remove last admin)
-- List admins: `GET /api/admin/allowlist`
+- `GET /api/admin/allowlist` — liste
+- `POST /api/admin/allowlist` `{"email":"x@y.com"}` — ajouter
+- `DELETE /api/admin/allowlist/<email>` — retirer (garde-fous: pas soi-même, pas le dernier)
+
+## Newsletter issues CRUD (NEW)
+- `GET /api/newsletter/issues` (public)
+- `GET /api/admin/newsletter/issues` (admin, identique au public)
+- `POST /api/admin/newsletter/issues` `{quarter, year, date, title, summary, link?}`
+- `PUT /api/admin/newsletter/issues/{id}` (mêmes champs)
+- `DELETE /api/admin/newsletter/issues/{id}`
 
 ## Cleanup
 ```bash
-mongosh --quiet --eval "use('circum'); db.user_sessions.deleteMany({session_token:/^test_session_/}); db.users.deleteMany({user_id:'user_test_admin'});"
+mongosh --quiet --eval "use('circum'); db.user_sessions.deleteMany({session_token:/^test_session_/}); db.login_attempts.deleteMany({});"
 ```
+
+## Auth endpoints summary
+- `POST /api/auth/login` `{email, password}` → session cookie
+- `POST /api/auth/google/exchange` `{session_id}` → session cookie
+- `GET /api/auth/me`
+- `POST /api/auth/logout`

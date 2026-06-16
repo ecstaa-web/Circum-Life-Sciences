@@ -500,6 +500,46 @@
     }).catch(function() { /* keep static fallback if API fails */ });
   }
 
+  function monthLabel(iso, lang) {
+    try {
+      var d = new Date(iso);
+      var localeMap = { fr: 'fr-FR', en: 'en-GB', de: 'de-DE', it: 'it-IT' };
+      var locale = localeMap[lang] || 'fr-FR';
+      return d.toLocaleDateString(locale, { month: 'long', year: 'numeric' });
+    } catch (e) { return iso; }
+  }
+
+  function initDynamicIssues() {
+    if ((document.body.dataset || {}).page !== 'newsletter') return;
+    var grid = document.getElementById('newsletter-archives');
+    if (!grid) return;
+
+    fetch(API_BASE + '/newsletter/issues').then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (data) {
+      if (!data || !Array.isArray(data.items) || !data.items.length) return;
+      var lang = getCurrentLang();
+      grid.innerHTML = data.items.map(function (i, idx) {
+        var label = monthLabel(i.date, lang);
+        // capitalize first letter
+        label = label.charAt(0).toUpperCase() + label.slice(1);
+        var inner =
+          '<div class="newsletter-issue-num"><strong>' + escapeHTML(i.quarter) + '</strong><span>' + escapeHTML(String(i.year)) + '</span></div>' +
+          '<div>' +
+            '<div class="newsletter-issue-date">' + escapeHTML(label) + '</div>' +
+            '<h3 class="newsletter-issue-title">' + escapeHTML(i.title) + '</h3>' +
+            '<p class="newsletter-issue-summary">' + escapeHTML(i.summary) + '</p>' +
+            (i.link ? '<a class="newsletter-issue-link" href="' + escapeHTML(i.link) + '" target="_blank" rel="noopener">Lire le numéro →</a>' : '<span class="newsletter-issue-link">Lire le numéro →</span>') +
+          '</div>';
+        if (i.link) {
+          return '<a class="newsletter-issue" data-testid="issue-card-' + idx + '" href="' + escapeHTML(i.link) + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">' + inner + '</a>';
+        }
+        return '<div class="newsletter-issue" data-testid="issue-card-' + idx + '">' + inner + '</div>';
+      }).join('');
+    }).catch(function () { /* keep static fallback */ });
+  }
+
   // ===== Init all =====
   document.addEventListener('DOMContentLoaded', function() {
     initMobileNav();
@@ -511,6 +551,7 @@
     initHomeVideo();
     initCountUpAnimation();
     initDynamicNews();
+    initDynamicIssues();
     // initSmoothScroll(); // disabled: hijacking the wheel felt slow/laggy. Native browser scroll + CSS `scroll-behavior: smooth` handle this.
     scrollToHash();
   });

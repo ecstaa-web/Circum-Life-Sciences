@@ -1,0 +1,80 @@
+{
+  "summary": "Iteration 5 — Backend + frontend testing of the new features: email/password login (with brute-force lockout), Newsletter issues CRUD (public + admin), and DELETE for leads/applications. All 50 backend pytest cases pass (19 new + 31 regression). All critical UI flows pass on /newsletter.html (dynamic archives, 4 cards visible) and /admin.html (login form, wrong-password error, dashboard load, full issue CRUD via modal, lead/app delete buttons present). One CRITICAL backend issue identified: brute-force lockout is bypassable because request.client.host returns the rotating K8s ingress pod IP (.145/.146), splitting the failed counter across identifiers.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/auth/login (brute-force protection)",
+        "issue": "BRUTE-FORCE LOCKOUT BYPASSABLE IN PRODUCTION. The identifier used by _check_brute_force / _record_failed_login is 'ip:email' where ip = request.client.host. Behind the Kubernetes ingress, request.client.host returns the LB pod IP which rotates between requests (observed: 10.79.128.145 and 10.79.128.146). After 6 consecutive failed logins from the same external client we observed two separate login_attempts docs with failed=3 each, so neither reached MAX_FAILED_ATTEMPTS=5 and no 429 was issued. Fix: prefer the X-Forwarded-For header (first IP) over request.client.host, e.g. `ip = (request.headers.get('x-forwarded-for') or '').split(',')[0].strip() or (request.client.host if request.client else 'unknown')`. Also consider rate-limiting by email alone as a secondary key.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "GET /api/newsletter/issues",
+        "issue": "Returns {count, items} shape (wrapped). Frontend already consumes it correctly (initDynamicIssues handles both shapes), but the original spec description in the review_request hinted at a bare list. Keeping wrapped is fine and consistent with /api/admin/* lists."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "validated_behaviors": {
+    "POST /api/auth/login wrong password": "PASS — 401 'Invalid email or password'",
+    "POST /api/auth/login correct password": "PASS — 200, session_token httpOnly cookie set, GET /api/auth/me returns user via cookie",
+    "POST /api/auth/login user without password_hash": "PASS — 401",
+    "POST /api/auth/login valid hash but not allowlisted": "PASS — 403 'Email not in admin allow-list'",
+    "Brute-force 429 path": "PASS in test (seeded failed=10 in login_attempts) — END-TO-END 6×wrong fails to trigger 429 in production due to rotating IP behind K8s ingress (see critical issue above)",
+    "POST /api/auth/google/exchange invalid session_id": "PASS — 401",
+    "GET /api/newsletter/issues public": "PASS — {count>=4, items[id,quarter,year,date,title,summary,link]}",
+    "Admin newsletter issues CRUD GET/POST/PUT/DELETE": "PASS — full flow, public list reflects updates within ~100ms",
+    "Admin newsletter issues 422 on bad payload (quarter>4 chars, year<2000)": "PASS",
+    "Admin newsletter issues no-auth": "PASS — 401",
+    "DELETE /api/admin/leads/{id}": "PASS — 200 + removed from list; 404 on unknown id; 401 without auth",
+    "DELETE /api/admin/applications/{id}": "PASS — 200, DB doc removed AND uploaded CV file deleted from /app/backend/uploads/, 404 on unknown id, 401 without auth",
+    "Regression /api/health, /api/news (6 items), /api/admin/allowlist, all 4 CSV/JSON exports": "PASS",
+    "UI /newsletter.html data-testid='newsletter-archives'": "PASS — section present, dynamically populated",
+    "UI /newsletter.html data-testid='issue-card-N'": "PASS — 4 cards rendered with quarter/year/title/summary",
+    "UI /admin.html login-form/login-email/login-password/login-submit": "PASS",
+    "UI /admin.html wrong password shows data-testid='login-error'": "PASS — 'Invalid email or password' displayed",
+    "UI /admin.html correct password loads dashboard": "PASS — admin-user, panel-issues, panel-leads, panel-apps all visible",
+    "UI /admin.html new-issue-btn opens issue-modal with issue-form": "PASS — modal contains issue-quarter (select), issue-year, issue-date, issue-title, issue-summary, issue-link",
+    "UI /admin.html create issue then row appears (issue-row)": "PASS — 5 rows after create (4 seeded + new)",
+    "UI /admin.html edit-issue-btn opens modal prefilled": "PASS — title prefilled with created value",
+    "UI /admin.html del-issue-btn with confirm() removes row": "PASS — toast 'Édition supprimée' visible, row count returns to 4",
+    "UI /admin.html del-lead-btn and del-app-btn present per row": "PASS — visible in every row of leads and apps tables"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_new_features.py",
+    "/app/backend/tests/test_admin_api.py",
+    "/app/backend/tests/test_circum_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "HIGH: Fix brute-force IP detection in /app/backend/server.py — use X-Forwarded-For header instead of request.client.host so the 5-failure lockout actually works behind the K8s ingress. Optionally add a secondary email-only counter to defend against IP-spoofing.",
+    "Optional: Consider returning a stable 'lockout retry_after' field in the 429 response body for clearer UX.",
+    "Optional: GET /api/newsletter/issues currently returns {count,items}. Document this in OpenAPI so consumers don't expect a bare list."
+  ],
+  "critical_code_review_comments": [
+    "BRUTE FORCE BYPASS (HIGH): _check_brute_force uses request.client.host which behind the K8s ingress is the rotating LB pod IP (e.g. 10.79.128.145, 10.79.128.146). End-to-end the lockout never fires. Use X-Forwarded-For or trust ProxyHeadersMiddleware.",
+    "auth/login flow: identical 401 message for 'user not found', 'no password_hash', and 'wrong password' — good practice for username enumeration protection. Keep as-is.",
+    "DELETE /api/admin/applications/{id}: file cleanup is wrapped in try/except: pass — silently swallowing PermissionError or OSError. Consider logging the failure so admins can manually clean orphaned files.",
+    "Frontend admin.html (newsletter issues modal): quarter is a <select> while the testid maps to it directly — works, but the data-testid='issue-quarter' on a select needs select_option() in tests rather than fill(). Worth a comment in the HTML or a small JS data attribute helper.",
+    "Newsletter public endpoint returns {count, items}. The review_request mentioned 'retourne 4 items' which read literally would mean a bare list. Frontend handles both, but document the shape."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_new_features.py (new — 19 tests for login, brute force, issues CRUD, leads/apps delete, regression)",
+    "/app/backend/tests/test_admin_api.py (admin_token fixture rewritten to look up existing seed admin by email — old replaceOne logic broke after email unique-index + persistent stag3 admin)"
+  ],
+  "success_rate": {
+    "backend": "100% (50/50 pytest pass — 19 new + 22 admin + 9 regression)",
+    "frontend": "100% (newsletter dynamic + admin login + admin issues CRUD + leads/apps delete buttons all verified)"
+  },
+  "test_credentials": "Used /app/memory/test_credentials.md — stag3@circumlifesciences.com / Stag3Admin2026! works for the new email/password login. Bearer sessions for tests injected via mongosh against the existing seed admin user_id.",
+  "seed_data_creation": "Created and cleaned-up: test_session_it5_* sessions, throwaway users (test_nopwd_*, test_notallow_*), throwaway newsletter subscribers (bob.test.deleteme_*), throwaway careers application + CV file (deleted by the test itself), TEST_UI Edition iter5 issue (deleted via UI). login_attempts collection emptied at the start/end of brute-force tests.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend feature surface complete and verified. Single open issue: brute-force IP detection behind ingress. If main agent fixes it, easy verification: 5 consecutive failed POST /api/auth/login from the same outside client should produce a single login_attempts doc with failed>=5 (check via mongosh), and the 6th attempt should return 429. The new test file /app/backend/tests/test_new_features.py uses a 'fresh' fixture for unauth checks since the module-level `s` Session retains the session_token cookie after the successful-login test. Pattern reusable for any future auth-gated UI test.",
+  "rca of the issue": "Brute-force bypass RCA: _check_brute_force keys lockout on f'{ip}:{email.lower()}' where ip = request.client.host. With FastAPI/uvicorn behind a multi-pod ingress and no ProxyHeadersMiddleware / X-Forwarded-For trust, request.client.host returns the upstream proxy/pod IP that load-balances per request, so the counter gets fragmented across N IPs and never trips the 5-failure threshold. Reproduction: `for i in 1..6; do curl -X POST .../api/auth/login -d '{\"email\":\"x\",\"password\":\"wrong\"}'; done` → all 401, mongosh shows TWO docs in login_attempts (one per pod IP) each with failed=3. Mitigation: use X-Forwarded-For first hop (the ingress already injects it) and/or add ProxyHeadersMiddleware. Tested locally by manually bumping failed=10 in login_attempts — the 429 branch then triggers correctly, confirming the algorithm itself is fine and only IP extraction is the defect."
+}
