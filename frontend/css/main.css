@@ -1326,17 +1326,16 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 .footer-legal a { color: rgba(255,255,255,0.5); transition: color 0.2s; }
 .footer-legal a:hover { color: var(--pink-light); }
 .footer-admin-link {
-  display: inline-block;
-  width: 14px; height: 14px;
-  line-height: 12px;
-  text-align: center;
-  border-radius: 50%;
-  color: rgba(255,255,255,0.18) !important;
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.45) !important;
+  font-size: 13px;
   margin-left: 6px;
   transition: color 0.25s ease, transform 0.25s ease;
 }
-.footer-admin-link:hover { color: var(--pink-light) !important; transform: scale(1.25); }
+.footer-admin-link svg { width: 13px; height: 13px; }
+.footer-admin-link:hover { color: var(--pink-light) !important; transform: translateY(-1px); }
 
 /* ----- TEXT CONTENT (interior pages) ----- */
 .prose {
