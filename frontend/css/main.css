@@ -42,7 +42,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--text);
-  background: var(--white);
+  background: transparent;
   -webkit-font-smoothing: antialiased;
   -webkit-overflow-scrolling: touch;
 }
@@ -628,6 +628,7 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   padding: clamp(70px, 9vw, 110px) 0 clamp(70px, 9vw, 110px);
   position: relative;
   overflow: hidden;
+  margin-top: -95px;
 }
 .page-hero::before {
   content: '';
@@ -1266,13 +1267,7 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 .footer-brand { display: flex; flex-direction: column; gap: 20px; }
-.footer-logo {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  padding: 8px 12px;
-  border-radius: 999px;
-}
+.footer-logo { display: flex; align-items: center; }
 .footer-logo-img {
   height: 44px;
   width: auto;
@@ -2030,14 +2025,75 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   .benefits-grid { grid-template-columns: 1fr; }
   .job-row { grid-template-columns: 1fr; gap: 12px; padding: 20px; }
 }
+body[data-page="home"] .topbar {
+  display: none;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+body[data-page="home"] .nav {
+  padding-top: 0;
+  top: 8px; /* small gap from top so nav isn't glued to the viewport edge */
+}
+body[data-page="home"] .nav-inner {
+  margin-top: 0;
+  /* keep inner padding to preserve capsule height */
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+/* Make page background transparent so hero video can show through behind nav */
+body[data-page="home"] {
+  background: transparent;
+}
+body[data-page="home"] .page-content {
+  background: transparent;
+}
+
+/* Keep page content background transparent on all other pages too */
+body:not([data-page="home"]) .page-content {
+  background: transparent;
+}
+
+/* Pull the hero video up so it reaches the very top and sits behind the nav
+   Keep the content inside the hero shifted down so it's not hidden by the nav */
+body[data-page="home"] .hero-video-wrap {
+  padding-top: 0;
+  margin-top: -72px; /* lifts the video under the sticky nav */
+}
+body[data-page="home"] .hero-video-content {
+  padding-top: 88px; /* reserve space for the nav so text isn't covered */
+}
+body[data-page="home"] .nav-inner::before,
+body[data-page="home"] .nav-inner::after,
+body[data-page="home"] .nav::before {
+  display: none;
+}
 @media (max-width: 640px) {
   .topbar { display: none; }
   .nav { padding-top: 10px; }
   .nav-inner { padding: 8px 8px 8px 14px; gap: 12px; min-height: 58px; }
   .nav-logo-img { height: 38px; max-width: min(200px, 50vw); }
-  .lang-switch { padding: 3px; }
-  .lang-switch .lang-indicator { width: 30px; }
-  .lang-btn { min-width: 30px; padding: 5px 7px; font-size: 10px; }
+  /* Compact, stable language switcher on small screens */
+  .lang-switch {
+    padding: 3px 6px;
+    gap: 6px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .lang-switch .lang-indicator {
+    width: 30px;
+    left: 4px;
+    top: 4px;
+    bottom: 4px;
+    transition: left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.35s;
+  }
+  .lang-btn {
+    min-width: 0;
+    padding: 6px 8px;
+    font-size: 10px;
+    position: relative;
+    z-index: 1;
+  }
   .form-row { grid-template-columns: 1fr; }
   .figures-grid { grid-template-columns: 1fr; }
   .figure::after { display: none !important; }

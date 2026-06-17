@@ -307,6 +307,20 @@
     }
   }
 
+  // ===== Logo scroll to top animation =====
+  function initLogoScrollToTop() {
+    var logo = document.querySelector('.nav-logo');
+    if (!logo) return;
+
+    logo.addEventListener('click', function(e) {
+      var isOnHome = document.body.dataset.page === 'home';
+      if (isOnHome) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  }
+
   // ===== Count-up animation for numbers (rolling effect) =====
   function initCountUpAnimation() {
     if (!('IntersectionObserver' in window)) return;
@@ -379,6 +393,7 @@
     initForms();
     initHomeVideo();
     initCountUpAnimation();
+    initLogoScrollToTop();
     scrollToHash();
   });
 })();
