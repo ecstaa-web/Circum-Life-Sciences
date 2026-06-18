@@ -649,6 +649,77 @@
     }).catch(function () { renderLogin(); });
   }
 
+  function renderResetForm(token) {
+    userZone.innerHTML = '';
+    mainZone.innerHTML =
+      '<div class="login-card" data-testid="reset-card">' +
+        '<h1>Nouveau mot de passe</h1>' +
+        '<p>Choisissez un nouveau mot de passe (minimum 8 caractères).</p>' +
+        '<form class="login-form" id="reset-form" data-testid="reset-form">' +
+          '<div class="pw-wrap">' +
+            '<input type="password" name="password" required minlength="8" placeholder="Nouveau mot de passe" autocomplete="new-password" data-testid="reset-password"/>' +
+            '<button type="button" class="pw-eye" data-target="password" aria-label="Afficher" data-testid="reset-eye"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>' +
+          '</div>' +
+          '<div class="pw-wrap">' +
+            '<input type="password" name="confirm" required minlength="8" placeholder="Confirmer" autocomplete="new-password" data-testid="reset-confirm"/>' +
+            '<button type="button" class="pw-eye" data-target="confirm" aria-label="Afficher"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>' +
+          '</div>' +
+          '<button type="submit" class="btn-login" data-testid="reset-submit">Valider</button>' +
+          '<div class="form-message" id="reset-msg"></div>' +
+        '</form>' +
+      '</div>';
+    document.querySelectorAll('[data-testid="reset-card"] .pw-eye').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var name = btn.getAttribute('data-target');
+        var inp = document.querySelector('[data-testid="reset-card"] input[name="' + name + '"]');
+        if (!inp) return;
+        var showing = inp.type === 'text';
+        inp.type = showing ? 'password' : 'text';
+        btn.classList.toggle('on', !showing);
+      });
+    });
+    document.getElementById('reset-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = e.target;
+      var msg = document.getElementById('reset-msg');
+      if (f.password.value !== f.confirm.value) {
+        msg.textContent = 'Les deux mots de passe ne correspondent pas';
+        msg.style.color = 'var(--error)';
+        return;
+      }
+      var btn = f.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Mise à jour…';
+      api('/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token, password: f.password.value })
+      }).then(function (r) {
+        if (r.ok) {
+          history.replaceState(null, '', window.location.pathname);
+          toast('Mot de passe mis à jour. Connectez-vous.');
+          setTimeout(function () { renderLogin(); }, 800);
+        } else {
+          return r.json().then(function (j) {
+            msg.textContent = (j && j.detail) ? j.detail : ('Erreur ' + r.status);
+            msg.style.color = 'var(--error)';
+            btn.disabled = false; btn.textContent = 'Valider';
+          });
+        }
+      }).catch(function () {
+        msg.textContent = 'Erreur réseau';
+        msg.style.color = 'var(--error)';
+        btn.disabled = false; btn.textContent = 'Valider';
+      });
+    });
+  }
+
+  // 0) Handle reset token from URL query string
+  var resetMatch = /[?&]reset=([^&]+)/.exec(window.location.search);
+  if (resetMatch) {
+    renderResetForm(decodeURIComponent(resetMatch[1]));
+    return;
+  }
+
   // 1) Handle session_id from URL fragment (returning from Google auth)
   if (window.location.hash && window.location.hash.indexOf('session_id=') !== -1) {
     var sid = window.location.hash.replace(/^#/, '').split('&').reduce(function (acc, kv) {

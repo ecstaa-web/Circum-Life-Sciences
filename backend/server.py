@@ -2,7 +2,11 @@ import os
 import csv
 import io
 import uuid
+import asyncio
+import logging
+import secrets
 import bcrypt
+import resend
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional, List
@@ -16,6 +20,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, EmailStr, Field
 
 load_dotenv()
+logger = logging.getLogger("circum")
 
 MONGO_URL = os.environ["MONGO_URL"]
 DB_NAME = os.environ["DB_NAME"]
@@ -23,11 +28,18 @@ UPLOAD_DIR = Path(os.environ.get("UPLOAD_DIR", "/app/backend/uploads"))
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 DEFAULT_ADMIN_EMAIL = os.environ.get("DEFAULT_ADMIN_EMAIL", "stag3@circumlifesciences.com").lower()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Stag3Admin2026!")
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
+SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "onboarding@resend.dev")
+APP_PUBLIC_URL = os.environ.get("APP_PUBLIC_URL", "")
+
+if RESEND_API_KEY:
+    resend.api_key = RESEND_API_KEY
 
 EMERGENT_SESSION_URL = "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data"
 SESSION_TTL_DAYS = 7
 MAX_FAILED_ATTEMPTS = 5
 LOCKOUT_MINUTES = 15
+RESET_TOKEN_TTL_HOURS = 1
 
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
@@ -89,6 +101,15 @@ class LoginPayload(BaseModel):
 
 
 class SetPasswordPayload(BaseModel):
+    password: str = Field(min_length=8, max_length=200)
+
+
+class ForgotPasswordPayload(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordPayload(BaseModel):
+    token: str = Field(min_length=8)
     password: str = Field(min_length=8, max_length=200)
 
 
@@ -394,6 +415,138 @@ async def auth_login(payload: LoginPayload, request: Request, response: Response
     token = await _create_session(user["user_id"])
     _set_session_cookie(response, token)
     return {"ok": True, "user": {"user_id": user["user_id"], "email": email, "name": user.get("name"), "picture": user.get("picture")}}
+
+
+# ===== Forgot / Reset password =====
+def _build_reset_email_html(reset_url: str, email: str) -> str:
+    return f"""<!DOCTYPE html>
+<html><body style="margin:0;padding:0;background:#f4f6fa;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellspacing="0" cellpadding="0" style="background:#f4f6fa;padding:40px 20px;">
+    <tr><td align="center">
+      <table cellspacing="0" cellpadding="0" style="background:#ffffff;border-radius:8px;max-width:520px;width:100%;border:1px solid #e2e8f0;">
+        <tr><td style="padding:32px 32px 12px;">
+          <h1 style="margin:0 0 4px;color:#0d2847;font-size:22px;letter-spacing:.02em;">Circum Life Sciences</h1>
+          <div style="color:#f365b4;font-size:11px;text-transform:uppercase;letter-spacing:.12em;">Espace administrateur</div>
+        </td></tr>
+        <tr><td style="padding:12px 32px;">
+          <h2 style="margin:18px 0 10px;color:#0d2847;font-size:18px;">Réinitialisation du mot de passe</h2>
+          <p style="margin:0 0 16px;color:#334155;font-size:14px;line-height:1.6;">
+            Bonjour,<br/>
+            Vous (ou quelqu'un avec votre adresse <strong>{email}</strong>) avez demandé la réinitialisation du mot de passe de l'espace administrateur Circum.
+          </p>
+          <p style="margin:24px 0;text-align:center;">
+            <a href="{reset_url}" style="background:#205a99;color:#ffffff;padding:14px 28px;text-decoration:none;border-radius:4px;font-size:14px;letter-spacing:.04em;display:inline-block;">Réinitialiser mon mot de passe</a>
+          </p>
+          <p style="margin:0 0 12px;color:#64748b;font-size:12px;line-height:1.6;">
+            Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br/>
+            <span style="color:#205a99;word-break:break-all;">{reset_url}</span>
+          </p>
+          <p style="margin:24px 0 0;color:#94a3b8;font-size:12px;line-height:1.5;">
+            Ce lien expire dans 1 heure. Si vous n'êtes pas à l'origine de cette demande, ignorez cet email — votre mot de passe restera inchangé.
+          </p>
+        </td></tr>
+        <tr><td style="padding:18px 32px 28px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:11px;">
+          Circum Life Sciences · CDMO Medical Devices · Switzerland · France · Tunisia
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>"""
+
+
+async def _send_reset_email(to_email: str, reset_url: str) -> bool:
+    if not RESEND_API_KEY:
+        logger.warning("RESEND_API_KEY not configured; skipping email send")
+        return False
+    params = {
+        "from": SENDER_EMAIL,
+        "to": [to_email],
+        "subject": "Réinitialisation de votre mot de passe administrateur · Circum",
+        "html": _build_reset_email_html(reset_url, to_email),
+    }
+    try:
+        result = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Reset email sent to {to_email}: {result.get('id') if isinstance(result, dict) else result}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send reset email to {to_email}: {e}")
+        return False
+
+
+@app.post("/api/auth/forgot-password")
+async def auth_forgot_password(payload: ForgotPasswordPayload):
+    """Initiate password reset. Always returns 200 with same body to avoid email enumeration."""
+    email = payload.email.lower()
+    same_response = {"ok": True, "message": "If the email is recognized, a reset link has been sent."}
+
+    # Only send if email is in allow-list (admin only)
+    if not await _is_allowlisted(email):
+        return same_response
+
+    # Invalidate prior tokens for this email
+    await db["password_reset_tokens"].delete_many({"email": email})
+
+    token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=RESET_TOKEN_TTL_HOURS)
+    await db["password_reset_tokens"].insert_one({
+        "_id": token,
+        "email": email,
+        "expires_at": expires_at,
+        "created_at": datetime.now(timezone.utc),
+        "used": False,
+    })
+
+    base = APP_PUBLIC_URL.rstrip("/")
+    reset_url = f"{base}/admin.html?reset={token}"
+    await _send_reset_email(email, reset_url)
+    return same_response
+
+
+@app.post("/api/auth/reset-password")
+async def auth_reset_password(payload: ResetPasswordPayload):
+    doc = await db["password_reset_tokens"].find_one({"_id": payload.token})
+    if not doc or doc.get("used"):
+        raise HTTPException(status_code=400, detail="Lien invalide ou déjà utilisé")
+    expires_at = doc.get("expires_at")
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at and expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at and expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Lien expiré")
+
+    email = doc["email"]
+    # Re-verify the user is still in allow-list
+    if not await _is_allowlisted(email):
+        raise HTTPException(status_code=403, detail="Compte non autorisé")
+
+    pw_hash = hash_password(payload.password)
+    existing = await db["users"].find_one({"email": email})
+    if existing:
+        await db["users"].update_one(
+            {"email": email},
+            {"$set": {
+                "password_hash": pw_hash,
+                "auth_methods": list(set((existing.get("auth_methods") or []) + ["password"])),
+                "password_updated_at": datetime.now(timezone.utc).isoformat(),
+                "password_updated_by": "self-reset",
+            }}
+        )
+    else:
+        await db["users"].insert_one({
+            "user_id": f"user_{uuid.uuid4().hex[:12]}",
+            "email": email,
+            "name": email.split("@")[0],
+            "password_hash": pw_hash,
+            "auth_methods": ["password"],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "password_updated_by": "self-reset",
+        })
+
+    # Mark token used + clear brute-force counters
+    await db["password_reset_tokens"].update_one({"_id": payload.token}, {"$set": {"used": True, "used_at": datetime.now(timezone.utc)}})
+    await db["login_attempts"].delete_many({"identifier": {"$regex": f":{email}$"}})
+    return {"ok": True, "email": email}
 
 
 @app.post("/api/auth/google/exchange")
