@@ -453,12 +453,60 @@
       c.innerHTML = data.items.map(function (a) {
         return '<div class="allow-row" data-testid="allow-row">' +
           '<div class="who"><strong>' + escapeHTML(a.email) + '</strong><small>ajouté par ' + escapeHTML(a.added_by || '—') + ' · ' + escapeHTML(fmtDate(a.created_at)) + '</small></div>' +
+          '<button class="btn-mini" data-email="' + escapeHTML(a.email) + '" data-testid="set-password-btn">Mot de passe</button>' +
           '<button class="btn-mini danger" data-email="' + escapeHTML(a.email) + '" data-testid="allow-remove-btn">Retirer</button>' +
         '</div>';
       }).join('');
-      c.querySelectorAll('button.danger').forEach(function (btn) {
+      c.querySelectorAll('button[data-testid="allow-remove-btn"]').forEach(function (btn) {
         btn.addEventListener('click', function () { removeAdmin(btn.getAttribute('data-email')); });
       });
+      c.querySelectorAll('button[data-testid="set-password-btn"]').forEach(function (btn) {
+        btn.addEventListener('click', function () { openPasswordModal(btn.getAttribute('data-email')); });
+      });
+    });
+  }
+
+  function openPasswordModal(email) {
+    var modal = document.createElement('div');
+    modal.className = 'modal-bg';
+    modal.setAttribute('data-testid', 'password-modal');
+    modal.innerHTML =
+      '<div class="modal" style="max-width:420px">' +
+        '<h3>Mot de passe — ' + escapeHTML(email) + '</h3>' +
+        '<form id="pw-form" data-testid="password-form">' +
+          '<label>Nouveau mot de passe (8 caractères minimum)' +
+            '<input type="password" name="password" required minlength="8" autocomplete="new-password" data-testid="password-input"/>' +
+          '</label>' +
+          '<label>Confirmer le mot de passe' +
+            '<input type="password" name="confirm" required minlength="8" autocomplete="new-password" data-testid="password-confirm"/>' +
+          '</label>' +
+          '<div class="modal-actions">' +
+            '<button type="button" class="btn-mini ghost" id="pw-cancel" data-testid="password-cancel">Annuler</button>' +
+            '<button type="submit" class="btn-mini pink" data-testid="password-save">Enregistrer</button>' +
+          '</div>' +
+        '</form>' +
+      '</div>';
+    document.body.appendChild(modal);
+    modal.querySelector('#pw-cancel').addEventListener('click', function () { modal.remove(); });
+    modal.addEventListener('click', function (e) { if (e.target === modal) modal.remove(); });
+    modal.querySelector('#pw-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = e.target;
+      if (f.password.value !== f.confirm.value) {
+        toast('Les deux mots de passe ne correspondent pas', true);
+        return;
+      }
+      api('/admin/allowlist/' + encodeURIComponent(email) + '/password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: f.password.value })
+      }).then(function (r) {
+        if (!r.ok) return r.json().then(function (j) { throw new Error(j.detail || 'Erreur'); });
+        return r.json();
+      }).then(function () {
+        modal.remove();
+        toast('Mot de passe mis à jour pour ' + email);
+      }).catch(function (err) { toast(err.message || 'Erreur', true); });
     });
   }
 

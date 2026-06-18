@@ -88,6 +88,10 @@ class LoginPayload(BaseModel):
     password: str = Field(min_length=1)
 
 
+class SetPasswordPayload(BaseModel):
+    password: str = Field(min_length=8, max_length=200)
+
+
 class NewsletterIssueIn(BaseModel):
     quarter: str = Field(min_length=2, max_length=4)  # Q1, Q2, Q3, Q4
     year: int = Field(ge=2000, le=2100)
@@ -593,6 +597,44 @@ async def allowlist_remove(email: str, user: dict = Depends(require_admin)):
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Email not in allow-list")
     return {"ok": True, "removed": email}
+
+
+@app.put("/api/admin/allowlist/{email}/password")
+async def allowlist_set_password(email: str, payload: SetPasswordPayload, user: dict = Depends(require_admin)):
+    """Set or change the password for an admin in the allow-list.
+
+    - If the user does not yet exist (admin added to allow-list but never logged in), create them.
+    - Otherwise update the password_hash.
+    """
+    email = email.lower()
+    if not await _is_allowlisted(email):
+        raise HTTPException(status_code=404, detail="Email not in allow-list")
+
+    pw_hash = hash_password(payload.password)
+    existing = await db["users"].find_one({"email": email})
+    if existing:
+        await db["users"].update_one(
+            {"email": email},
+            {"$set": {
+                "password_hash": pw_hash,
+                "auth_methods": list(set((existing.get("auth_methods") or []) + ["password"])),
+                "password_updated_at": datetime.now(timezone.utc).isoformat(),
+                "password_updated_by": user["email"],
+            }}
+        )
+    else:
+        await db["users"].insert_one({
+            "user_id": f"user_{uuid.uuid4().hex[:12]}",
+            "email": email,
+            "name": email.split("@")[0],
+            "password_hash": pw_hash,
+            "auth_methods": ["password"],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "password_updated_by": user["email"],
+        })
+    # Clear any active brute-force counters for this email
+    await db["login_attempts"].delete_many({"identifier": {"$regex": f":{email}$"}})
+    return {"ok": True, "email": email}
 
 
 # ============ Admin newsletter issues CRUD ============
