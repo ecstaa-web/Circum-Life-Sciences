@@ -36,6 +36,16 @@
   .btn-login:disabled { opacity: .5; cursor: not-allowed; }
   .login-error { background: #fdecea; border: 1px solid #f5b7b1; color: #922b21; padding: 10px 14px; border-radius: 4px; font-size: 13px; margin-top: 6px; }
 
+  /* Password eye toggle */
+  .pw-wrap { position: relative; }
+  .pw-wrap input { width: 100%; padding-right: 42px; }
+  .pw-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; padding: 6px; color: var(--text-muted); border-radius: 3px; transition: color .15s ease, background .15s ease; }
+  .pw-eye:hover { color: var(--blue); background: var(--gray-100); }
+  .pw-eye.on { color: var(--blue); }
+  .pw-eye svg { width: 18px; height: 18px; display: block; }
+  .link-forgot { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; padding: 6px 0 0; text-align: right; text-decoration: underline; transition: color .15s ease; }
+  .link-forgot:hover { color: var(--blue); }
+
   .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 36px; }
   .stat { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 22px; }
   .stat .v { font-size: 36px; font-weight: 600; color: var(--blue-dark); line-height: 1; }
@@ -174,8 +184,14 @@
         '<div class="login-divider"><span>ou</span></div>' +
         '<form class="login-form" id="login-form" data-testid="login-form">' +
           '<input type="email" name="email" required placeholder="email@exemple.com" data-testid="login-email"/>' +
-          '<input type="password" name="password" required placeholder="Mot de passe" data-testid="login-password"/>' +
+          '<div class="pw-wrap">' +
+            '<input type="password" name="password" required placeholder="Mot de passe" data-testid="login-password"/>' +
+            '<button type="button" class="pw-eye" data-target="password" aria-label="Afficher" data-testid="login-eye">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+            '</button>' +
+          '</div>' +
           '<button type="submit" class="btn-login" data-testid="login-submit">Se connecter</button>' +
+          '<button type="button" class="link-forgot" id="forgot-btn" data-testid="forgot-btn">Mot de passe oublié ?</button>' +
           (loginError ? '<div class="login-error" data-testid="login-error">' + escapeHTML(loginError) + '</div>' : '') +
         '</form>' +
         (deniedEmail ? '<div class="access-denied" data-testid="access-denied">Accès refusé pour <strong>' + escapeHTML(deniedEmail) + '</strong>. Cet email n\'est pas dans la liste blanche admin.</div>' : '') +
@@ -200,6 +216,57 @@
           renderLogin('', msg);
         });
       }).catch(function () { renderLogin('', 'Erreur réseau'); });
+    });
+    // Eye toggle on login form
+    var loginEye = document.querySelector('[data-testid="login-eye"]');
+    if (loginEye) {
+      loginEye.addEventListener('click', function () {
+        var inp = document.querySelector('[data-testid="login-password"]');
+        if (!inp) return;
+        var showing = inp.type === 'text';
+        inp.type = showing ? 'password' : 'text';
+        loginEye.classList.toggle('on', !showing);
+      });
+    }
+    // Forgot password
+    var forgotBtn = document.getElementById('forgot-btn');
+    if (forgotBtn) forgotBtn.addEventListener('click', openForgotModal);
+  }
+
+  function openForgotModal() {
+    var modal = document.createElement('div');
+    modal.className = 'modal-bg';
+    modal.setAttribute('data-testid', 'forgot-modal');
+    modal.innerHTML =
+      '<div class="modal" style="max-width:460px">' +
+        '<h3>Mot de passe oublié</h3>' +
+        '<p style="font-size:13px;color:var(--text-soft);margin-bottom:10px">Entrez votre email admin. Si l\'adresse est reconnue, vous recevrez un lien de réinitialisation valable 1 heure.</p>' +
+        '<form id="forgot-form" data-testid="forgot-form">' +
+          '<label>Email<input type="email" name="email" required data-testid="forgot-email"/></label>' +
+          '<div class="modal-actions">' +
+            '<button type="button" class="btn-mini ghost" id="forgot-cancel" data-testid="forgot-cancel">Annuler</button>' +
+            '<button type="submit" class="btn-mini pink" data-testid="forgot-submit">Envoyer le lien</button>' +
+          '</div>' +
+        '</form>' +
+      '</div>';
+    document.body.appendChild(modal);
+    modal.querySelector('#forgot-cancel').addEventListener('click', function () { modal.remove(); });
+    modal.addEventListener('click', function (e) { if (e.target === modal) modal.remove(); });
+    modal.querySelector('#forgot-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = e.target;
+      var btn = f.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Envoi…';
+      api('/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: f.email.value })
+      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          modal.remove();
+          // Always show same message regardless to avoid email enumeration
+          toast('Si l\'adresse est reconnue, un email vous a été envoyé.');
+        }).catch(function () { toast('Erreur réseau', true); });
     });
   }
 
@@ -475,10 +542,20 @@
         '<h3>Mot de passe — ' + escapeHTML(email) + '</h3>' +
         '<form id="pw-form" data-testid="password-form">' +
           '<label>Nouveau mot de passe (8 caractères minimum)' +
-            '<input type="password" name="password" required minlength="8" autocomplete="new-password" data-testid="password-input"/>' +
+            '<div class="pw-wrap">' +
+              '<input type="password" name="password" required minlength="8" autocomplete="new-password" data-testid="password-input"/>' +
+              '<button type="button" class="pw-eye" data-target="password" aria-label="Afficher" data-testid="password-eye">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+              '</button>' +
+            '</div>' +
           '</label>' +
           '<label>Confirmer le mot de passe' +
-            '<input type="password" name="confirm" required minlength="8" autocomplete="new-password" data-testid="password-confirm"/>' +
+            '<div class="pw-wrap">' +
+              '<input type="password" name="confirm" required minlength="8" autocomplete="new-password" data-testid="password-confirm"/>' +
+              '<button type="button" class="pw-eye" data-target="confirm" aria-label="Afficher" data-testid="password-confirm-eye">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+              '</button>' +
+            '</div>' +
           '</label>' +
           '<div class="modal-actions">' +
             '<button type="button" class="btn-mini ghost" id="pw-cancel" data-testid="password-cancel">Annuler</button>' +
@@ -489,6 +566,16 @@
     document.body.appendChild(modal);
     modal.querySelector('#pw-cancel').addEventListener('click', function () { modal.remove(); });
     modal.addEventListener('click', function (e) { if (e.target === modal) modal.remove(); });
+    modal.querySelectorAll('.pw-eye').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var name = btn.getAttribute('data-target');
+        var inp = modal.querySelector('input[name="' + name + '"]');
+        if (!inp) return;
+        var showing = inp.type === 'text';
+        inp.type = showing ? 'password' : 'text';
+        btn.classList.toggle('on', !showing);
+      });
+    });
     modal.querySelector('#pw-form').addEventListener('submit', function (e) {
       e.preventDefault();
       var f = e.target;

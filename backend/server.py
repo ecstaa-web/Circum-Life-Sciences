@@ -144,7 +144,8 @@ async def seed_data():
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
 
-    # Seed admin user with password (idempotent — update hash only if env password changed)
+    # Seed admin user with password (idempotent — set initial password ONLY if user
+    # has no password_hash yet. NEVER overwrite a user-set password on restart.)
     existing = await db["users"].find_one({"email": DEFAULT_ADMIN_EMAIL})
     if existing is None:
         user_id = f"user_{uuid.uuid4().hex[:12]}"
@@ -156,17 +157,16 @@ async def seed_data():
             "auth_methods": ["password"],
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
-    else:
-        # Ensure password is set and matches current env (re-hash if changed)
-        if not existing.get("password_hash") or not verify_password(ADMIN_PASSWORD, existing.get("password_hash", "")):
-            await db["users"].update_one(
-                {"email": DEFAULT_ADMIN_EMAIL},
-                {"$set": {
-                    "password_hash": hash_password(ADMIN_PASSWORD),
-                    "auth_methods": list(set((existing.get("auth_methods") or []) + ["password"])),
-                    "updated_at": datetime.now(timezone.utc).isoformat(),
-                }}
-            )
+    elif not existing.get("password_hash"):
+        # User exists (e.g., from Google flow) but never had a password — bootstrap one.
+        await db["users"].update_one(
+            {"email": DEFAULT_ADMIN_EMAIL},
+            {"$set": {
+                "password_hash": hash_password(ADMIN_PASSWORD),
+                "auth_methods": list(set((existing.get("auth_methods") or []) + ["password"])),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            }}
+        )
 
 
 # ============ Auth helpers ============
