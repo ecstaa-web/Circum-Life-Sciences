@@ -21,6 +21,44 @@
     });
   }
 
+  function initLogoHomeTransition() {
+    var logo = document.querySelector('.nav-logo[href$="index.html"]');
+    if (!logo) return;
+
+    logo.addEventListener('click', function(event) {
+      var targetHref = logo.getAttribute('href') || 'index.html';
+      var currentPath = (window.location.pathname || '').replace(/\/+$/, '');
+      var onHomePage = /(^|\/)index\.html$/i.test(currentPath) || currentPath === '' || currentPath === '/';
+
+      if (onHomePage) {
+        event.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      event.preventDefault();
+      var start = window.scrollY || window.pageYOffset || 0;
+      var duration = 180;
+      var startTime = null;
+
+      function animate(now) {
+        if (startTime === null) startTime = now;
+        var progress = Math.min((now - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        window.scrollTo(0, start * (1 - eased));
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+          return;
+        }
+
+        window.location.href = targetHref;
+      }
+
+      requestAnimationFrame(animate);
+    });
+  }
+
   // ===== Reveal on scroll =====
   function initReveal() {
     if (!('IntersectionObserver' in window)) {
@@ -408,17 +446,19 @@
       });
     }, { threshold: 0.5 });
     
-    document.querySelectorAll('.figure-value').forEach(function(el) {
+    document.querySelectorAll('.figure-value, .fabrication-stat-value').forEach(function(el) {
       observer.observe(el);
     });
   }
 
   function animateRollingCountUp(element) {
     var text = element.textContent.trim();
-    var match = text.match(/^([\d,]+)/);
-    if (!match) return;
-    
-    var finalValue = parseInt(match[1].replace(/,/g, ''), 10);
+    var explicitTarget = element.getAttribute('data-count-target');
+    var suffix = element.getAttribute('data-count-suffix') || '';
+    var match = text.match(/^[\d\s,/.+-]+/);
+    if (!match && !explicitTarget) return;
+
+    var finalValue = explicitTarget ? parseInt(explicitTarget, 10) : parseInt(match[0].replace(/[\s,/+.]/g, ''), 10);
     if (isNaN(finalValue)) return;
     
     var startValue = 0;
@@ -438,9 +478,9 @@
       // Format with thousands separator
       var formattedValue = currentValue.toLocaleString('fr-FR');
       
-      // Preserve the sup element (m², +, %)
+      // Preserve any existing sup element or explicit suffix (/5, etc.)
       var supMatch = originalHTML.match(/<sup>[^<]*<\/sup>/);
-      var newHTML = formattedValue + (supMatch ? supMatch[0] : '');
+      var newHTML = formattedValue + (supMatch ? supMatch[0] : suffix);
       element.innerHTML = newHTML;
       
       if (progress < 1) {
@@ -543,6 +583,7 @@
   // ===== Init all =====
   document.addEventListener('DOMContentLoaded', function() {
     initMobileNav();
+    initLogoHomeTransition();
     initReveal();
     initLangSwitcher();
     initNavScroll();
