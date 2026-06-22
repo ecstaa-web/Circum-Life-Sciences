@@ -1,0 +1,35 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "copy-lab-image",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"Copy-Item -Path \"C:\\Users\\STAG3\\OneDrive - Circum Life Sciences\\Images\\Photos Usine 2\\DSC00295.JPG\" -Destination \"frontend/assets/img/design-lab-hover.jpg\" -Force"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "copy-apropos-video",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-Command",
+				"Copy-Item -Path \"C:\\Users\\STAG3\\OneDrive - Circum Life Sciences\\Images\\media website\\vid*\\Projet*1.mp4\" -Destination \"C:\\Users\\STAG3\\OneDrive - Circum Life Sciences\\Documents\\Git\\CircumCLone\\Circum-Life-Sciences\\frontend\\assets\\video\\apropos-hero.mp4\" -Force"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "copy-apropos-video-now",
+			"type": "shell",
+			"command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Copy-Item -LiteralPath 'C:\\Users\\STAG3\\OneDrive - Circum Life Sciences\\Images\\media website\\vidéos\\Projet vidéo 1.mp4' -Destination 'C:\\Users\\STAG3\\OneDrive - Circum Life Sciences\\Documents\\Git\\CircumCLone\\Circum-Life-Sciences\\frontend\\assets\\video\\apropos-hero.mp4' -Force\"",
+			"isBackground": false
+		}
+	]
+}
