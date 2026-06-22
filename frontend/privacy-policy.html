@@ -233,5 +233,20 @@ Adresse: Technopôle Zurich, 8005 Zurich, Suisse</p>
 </footer>
 
 <script src="js/main.js"></script>
+<script type="module">
+  import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.0.45/+esm";
+
+  const lenis = new Lenis({
+    duration: 1.1,
+    smoothWheel: true,
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+
+  requestAnimationFrame(raf);
+</script>
 </body>
 </html>
