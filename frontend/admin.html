@@ -755,7 +755,7 @@
 <script type="module">
   import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.0.45/+esm";
 
-  const lenis = new Lenis({
+  const lenis = window.lenis = new Lenis({
     duration: 1.1,
     smoothWheel: true,
   });

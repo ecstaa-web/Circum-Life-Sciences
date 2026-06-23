@@ -7,6 +7,7 @@
 <title data-i18n-title="meta.home.title">Circum Life Sciences · Laboratoire CDMO intégré</title>
 <meta content="Entreprise CDMO intégrée verticalement, dispositifs médicaux et sciences de la vie. Suisse · France · Tunisie." name="description"/>
 <link href="css/main.css" rel="stylesheet"/>
+<link as="fetch" crossorigin="" href="assets/video/hero.mp4" rel="preload" type="video/mp4"/>
 <link as="image" href="assets/img/circum-logo.png" rel="preload"/>
 </head>
 <body data-page="home">
@@ -28,11 +29,10 @@
 <li class="nav-item">
 <a class="nav-link" href="apropos.html"><span data-i18n="nav.about">À propos</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="nav.sub.board" href="apropos.html#board">Board &amp; Conseil stratégique</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 <a data-i18n="nav.sub.environment" href="apropos.html#environnement">Politique environnementale</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
 </div>
 </li>
 <li class="nav-item">
@@ -40,22 +40,28 @@
 <div class="nav-submenu">
 <a data-i18n="nav.sub.conception" href="design.html#conception">Conception</a>
 <a data-i18n="nav.sub.qara" href="design.html#qara">Qualité &amp; Affaires Réglementaires</a>
-<a data-i18n="nav.sub.lab" href="design.html#laboratoire">Laboratoire</a>
-<a data-i18n="nav.sub.vv" href="design.html#vv">Vérification &amp; Validation</a>
 </div>
 </li>
 <li class="nav-item">
 <a class="nav-link" href="fabrication.html"><span data-i18n="nav.manufacturing">Fabrication</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
 <a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="nav.sub.molding" href="fabrication.html#moulage">Moulage par injection</a>
-<a data-i18n="nav.sub.assembly" href="fabrication.html#assemblage">Assemblage</a>
-<a data-i18n="nav.sub.sterilization" href="fabrication.html#sterilisation">Stérilisation</a>
+<a data-i18n="nav.sub.molding" href="fabrication.html#flux">Flux de production</a>
 </div>
 </li>
 <li class="nav-item"><a class="nav-link" data-i18n="nav.clients" href="clients.html">Clients</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.news" href="news.html">News</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.contact" href="contact.html">Contact</a></li>
+<li class="nav-item">
+<a class="nav-link" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="contact.html"><span data-i18n="nav.contact">Contact</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
+</div>
+</li>
 </ul>
 <div class="nav-cta-group">
 <div class="lang-switch">
@@ -74,9 +80,8 @@
 <div class="nav-mobile">
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.about">À propos</div>
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 </div>
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.services">Services</div>
@@ -85,18 +90,20 @@
 <a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
 </div>
 <div class="nav-mobile-section">
-<a data-i18n="footer.link.news" href="news.html">News &amp; Media</a>
-<a data-i18n="topbar.newsletter" href="newsletter.html">Newsletter</a>
-<a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
+<div class="nav-mobile-title" data-i18n="mobile.news">News &amp; Media</div>
+<a data-i18n="nav.news" href="news.html">News</a>
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+<div class="nav-mobile-section">
+<div class="nav-mobile-title" data-i18n="footer.col.contact">Contact</div>
 <a data-i18n="nav.contact" href="contact.html">Contact</a>
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
 </div>
 </div>
 <!-- ==================== HOME ==================== -->
 <main class="page-content">
 <section class="hero-video-wrap">
-<video autoplay="" class="hero-video-bg" loop="" muted="" playsinline="" poster="assets/img/hero-poster.jpg">
-<source src="assets/video/hero.mp4" type="video/mp4"/>
-</video>
+<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="assets/video/hero.mp4"></video>
 <div class="hero-video-overlay"></div>
 <div class="hero-video-content">
 <div class="hero-eyebrow reveal" data-i18n="home.hero_eyebrow.1">Laboratoire CDMO indépendant · Dispositifs médicaux</div>
@@ -185,9 +192,9 @@
 <a class="btn btn-outline-white" href="contact.html"><span data-i18n="home.btn.3">Nous rencontrer</span><span class="btn-arrow">→</span></a>
 </div>
 <div class="world-sites reveal">
-<div class="world-site"><div class="world-site-num">01</div><div class="world-site-info"><div class="world-site-city" data-i18n="home.world_site_city.39">Zurich · Suisse</div><div class="world-site-role" data-i18n="home.world_site_role.42">Siège · Gouvernance</div></div><div class="world-site-coords">47.37°N</div></div>
-<div class="world-site"><div class="world-site-num">02</div><div class="world-site-info"><div class="world-site-city" data-i18n="home.world_site_city.40">Nice · France</div><div class="world-site-role" data-i18n="home.world_site_role.43">R&amp;D · QARA · Laboratoire</div></div><div class="world-site-coords">43.71°N</div></div>
-<div class="world-site"><div class="world-site-num">03</div><div class="world-site-info"><div class="world-site-city" data-i18n="home.world_site_city.41">Enfidha · Tunisie</div><div class="world-site-role" data-i18n="home.world_site_role.44">Force One · Production</div></div><div class="world-site-coords">36.13°N</div></div>
+<div class="world-site" data-map-lat="47.3769" data-map-lng="8.5417" data-map-zoom="12" data-map-label="Zurich, Suisse"><div class="world-site-num">01</div><div class="world-site-info"><div class="world-site-city" data-i18n="home.world_site_city.39">Zurich · Suisse</div><div class="world-site-role" data-i18n="home.world_site_role.42">Siège · Gouvernance</div></div></div>
+<div class="world-site" data-map-lat="43.7102" data-map-lng="7.2620" data-map-zoom="12" data-map-label="Nice, France"><div class="world-site-num">02</div><div class="world-site-info"><div class="world-site-city" data-i18n="home.world_site_city.40">Nice · France</div><div class="world-site-role" data-i18n="home.world_site_role.43">R&amp;D · QARA · Laboratoire</div></div></div>
+<div class="world-site" data-map-lat="35.8256" data-map-lng="10.6411" data-map-zoom="12" data-map-label="Sousse, Tunisie"><div class="world-site-num">03</div><div class="world-site-info"><div class="world-site-city" data-i18n="home.world_site_city.41">Sousse · Tunisie</div><div class="world-site-role" data-i18n="home.world_site_role.44">Force One · Production</div></div></div>
 </div>
 </div>
 </section>
@@ -218,7 +225,7 @@
 </div>
 </div>
 <div class="reveal" style="text-align: center; margin-top: 56px;">
-<a class="btn btn-outline" href="fondateurs.html"><span data-i18n="home.btn.4">Découvrir les fondateurs</span><span class="btn-arrow">→</span></a>
+<a class="btn btn-outline" href="apropos.html#founders"><span data-i18n="home.btn.4">Découvrir les fondateurs</span><span class="btn-arrow">→</span></a>
 </div>
 </div>
 </section>
@@ -261,7 +268,7 @@
 <div class="footer-col-title" data-i18n="footer.col.company">Société</div>
 <div class="footer-list">
 <a data-i18n="footer.link.about" href="apropos.html">À propos</a>
-<a data-i18n="footer.link.founders" href="fondateurs.html">Fondateurs</a>
+<a data-i18n="footer.link.founders" href="apropos.html#founders">Fondateurs</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="footer.link.environment" href="apropos.html#environnement">Environnement</a>
 <a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
@@ -293,11 +300,12 @@
 <script src="js/i18n/common.js"></script>
 <script src="js/i18n/page-home.js"></script>
 <script src="js/i18n/loader.js"></script>
+<script src="js/hero-video.js"></script>
 <script defer="" src="js/main.js"></script>
 <script type="module">
   import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.0.45/+esm";
 
-  const lenis = new Lenis({
+  const lenis = window.lenis = new Lenis({
     duration: 0.35,
     smoothWheel: true,
     syncTouch: true,
@@ -327,39 +335,5 @@
 
   elements.forEach(el => observer.observe(el));
 </script>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Mon site</title>
-
-  <!-- CSS branché ici -->
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-  <!-- 🔥 TA NAVBAR ICI -->
-  <nav class="navbar">
-    <div class="container">
-
-      <a class="logo" href="#">Brand</a>
-
-      <ul class="nav-links">
-        <li><a href="#">Features</a></li>
-        <li><a href="#">Pricing</a></li>
-        <li><a href="#">About</a></li>
-      </ul>
-
-      <div class="actions">
-        <a href="#" class="login">Login</a>
-        <a href="#" class="cta">Book a demo</a>
-      </div>
-
-    </div>
-  </nav>
-
 </body>
 </html>
-</body>
-</html

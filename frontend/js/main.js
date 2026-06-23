@@ -33,7 +33,11 @@
       if (onHomePage) {
         event.preventDefault();
         if (window.lenis && typeof window.lenis.scrollTo === 'function') {
-          window.lenis.scrollTo(0);
+          // Slower, fluid glide back to the top (easeOutExpo).
+          window.lenis.scrollTo(0, {
+            duration: 1.8,
+            easing: function(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+          });
         } else {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -60,6 +64,204 @@
       }
 
       requestAnimationFrame(animate);
+    });
+  }
+
+  // ===== Logo light/dark theming =====
+  // Injects a white logo overlay so CSS can crossfade between the dark (color)
+  // logo on light backgrounds and the light (white) logo on dark backgrounds.
+  function initLogoTheme() {
+    var DARK = 'assets/img/circum-logo-dark.png';
+    var LIGHT = 'assets/img/circum-logo-light.png';
+    // Preload both so the crossfade never flashes
+    [DARK, LIGHT].forEach(function(s) { var im = new Image(); im.src = s; });
+
+    document.querySelectorAll('.nav-logo').forEach(function(link) {
+      var base = link.querySelector('.nav-logo-img');
+      if (!base) return;
+      base.classList.add('nav-logo-dark');
+      base.setAttribute('src', DARK);
+      if (!link.querySelector('.nav-logo-light')) {
+        var light = document.createElement('img');
+        light.className = 'nav-logo-img nav-logo-light';
+        light.src = LIGHT;
+        light.alt = '';
+        light.setAttribute('aria-hidden', 'true');
+        light.setAttribute('decoding', 'async');
+        base.insertAdjacentElement('afterend', light);
+      }
+    });
+
+    // Footer always sits on a dark navy background -> white logo
+    document.querySelectorAll('.footer-logo-img').forEach(function(img) {
+      img.setAttribute('src', LIGHT);
+    });
+  }
+
+  // ===== Smooth scroll helpers (logo + in-page anchors) =====
+  function navOffset() {
+    var nav = document.querySelector('.nav');
+    return (nav ? nav.getBoundingClientRect().height : 80) + 12;
+  }
+
+  function smoothScrollTo(target) {
+    var off = navOffset();
+    if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+      window.lenis.scrollTo(target, { offset: -off, duration: 1.15 });
+    } else {
+      var y = target.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0) - off;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    }
+  }
+
+  function closeMobileNav() {
+    var mobile = document.querySelector('.nav-mobile.open');
+    if (!mobile) return;
+    mobile.classList.remove('open');
+    document.body.style.overflow = '';
+    var toggle = document.querySelector('.nav-toggle');
+    if (toggle) {
+      var spans = toggle.querySelectorAll('span');
+      if (spans[0]) spans[0].style.transform = '';
+      if (spans[1]) spans[1].style.opacity = '1';
+      if (spans[2]) spans[2].style.transform = '';
+    }
+  }
+
+  // Intercept clicks on links pointing to an anchor on the CURRENT page and
+  // animate the scroll (same feel as the logo). Cross-page anchor links keep
+  // navigating; scrollToHash() animates once the destination page loads.
+  function initAnchorScroll() {
+    var curPath = window.location.pathname.replace(/\/+$/, '');
+    document.addEventListener('click', function(e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var raw = a.getAttribute('href') || '';
+      if (raw.indexOf('#') === -1) return;
+      var url;
+      try { url = new URL(a.href, window.location.href); } catch (_) { return; }
+      if (!url.hash || url.hash === '#') return;
+      var pureHash = raw.charAt(0) === '#';
+      var samePath = url.pathname.replace(/\/+$/, '') === curPath;
+      if (!pureHash && !samePath) return; // different page: let it navigate
+      var id;
+      try { id = decodeURIComponent(url.hash.slice(1)); } catch (_) { id = url.hash.slice(1); }
+      var target = document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      closeMobileNav();
+      smoothScrollTo(target);
+      if (window.history && window.history.pushState) {
+        window.history.pushState(null, '', url.hash);
+      }
+    });
+  }
+
+  // ===== Floating localisation mini-map (hover) =====
+  // Works on any element carrying data-map-lat / data-map-lng (apropos site
+  // cards, home implantation cards, ...). Renders static OpenStreetMap tiles
+  // with a centered pin — no zoom controls, no attribution banner.
+  function initSiteMapBubble() {
+    var cards = document.querySelectorAll('[data-map-lat]');
+    if (!cards.length) return;
+    if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) return;
+
+    var bubble, mapEl, titleEl, coordsEl, loadedCard = null, rafId = null, mx = 0, my = 0;
+
+    function build() {
+      bubble = document.createElement('div');
+      bubble.className = 'site-map-bubble';
+      bubble.innerHTML =
+        '<div class="site-map-bubble-head">' +
+          '<span class="site-map-bubble-title"></span>' +
+          '<span class="site-map-bubble-coords"></span>' +
+        '</div>' +
+        '<div class="site-map-bubble-map" title="\u00a9 OpenStreetMap">' +
+          '<span class="site-map-bubble-pin">' +
+            '<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">' +
+              '<path fill="#f365b4" stroke="#ffffff" stroke-width="1.4" d="M12 1.6c-4 0-7.2 3.1-7.2 7 0 5 7.2 13 7.2 13s7.2-8 7.2-13c0-3.9-3.2-7-7.2-7z"/>' +
+              '<circle cx="12" cy="8.6" r="2.6" fill="#ffffff"/>' +
+            '</svg>' +
+          '</span>' +
+        '</div>';
+      document.body.appendChild(bubble);
+      mapEl = bubble.querySelector('.site-map-bubble-map');
+      titleEl = bubble.querySelector('.site-map-bubble-title');
+      coordsEl = bubble.querySelector('.site-map-bubble-coords');
+    }
+
+    function fmtCoords(lat, lng) {
+      return Math.abs(lat).toFixed(2) + '\u00b0' + (lat >= 0 ? 'N' : 'S') +
+        ' \u00b7 ' + Math.abs(lng).toFixed(2) + '\u00b0' + (lng >= 0 ? 'E' : 'O');
+    }
+
+    function renderTiles(lat, lng, zoom) {
+      var W = mapEl.clientWidth || 300, H = mapEl.clientHeight || 180;
+      var scale = Math.pow(2, zoom);
+      function lon2x(lon) { return (lon + 180) / 360 * scale; }
+      function lat2y(la) { var r = la * Math.PI / 180; return (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * scale; }
+      var originX = lon2x(lng) * 256 - W / 2;
+      var originY = lat2y(lat) * 256 - H / 2;
+      var old = mapEl.querySelectorAll('img.tile');
+      for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]);
+      var pin = mapEl.querySelector('.site-map-bubble-pin');
+      var t0x = Math.floor(originX / 256), t1x = Math.floor((originX + W) / 256);
+      var t0y = Math.floor(originY / 256), t1y = Math.floor((originY + H) / 256);
+      for (var tx = t0x; tx <= t1x; tx++) {
+        for (var ty = t0y; ty <= t1y; ty++) {
+          if (ty < 0 || ty >= scale) continue;
+          var xt = ((tx % scale) + scale) % scale;
+          var img = document.createElement('img');
+          img.className = 'tile';
+          img.alt = '';
+          img.draggable = false;
+          img.src = 'https://tile.openstreetmap.org/' + zoom + '/' + xt + '/' + ty + '.png';
+          img.style.left = (tx * 256 - originX) + 'px';
+          img.style.top = (ty * 256 - originY) + 'px';
+          mapEl.insertBefore(img, pin);
+        }
+      }
+    }
+
+    function position() {
+      rafId = null;
+      if (!bubble) return;
+      var bw = bubble.offsetWidth || 300, bh = bubble.offsetHeight || 220;
+      var pad = 16, off = 20;
+      var x = mx + off, y = my + off;
+      if (x + bw + pad > window.innerWidth) x = mx - bw - off;
+      if (y + bh + pad > window.innerHeight) y = my - bh - off;
+      if (x < pad) x = pad;
+      if (y < pad) y = pad;
+      bubble.style.left = x + 'px';
+      bubble.style.top = y + 'px';
+    }
+
+    function onMove(e) {
+      mx = e.clientX; my = e.clientY;
+      if (!rafId) rafId = requestAnimationFrame(position);
+    }
+
+    Array.prototype.forEach.call(cards, function (card) {
+      card.addEventListener('mouseenter', function (e) {
+        if (!bubble) build();
+        mx = e.clientX; my = e.clientY;
+        if (loadedCard !== card) {
+          loadedCard = card;
+          var lat = parseFloat(card.getAttribute('data-map-lat'));
+          var lng = parseFloat(card.getAttribute('data-map-lng'));
+          var zoom = parseInt(card.getAttribute('data-map-zoom'), 10) || 12;
+          titleEl.textContent = card.getAttribute('data-map-label') || '';
+          coordsEl.textContent = fmtCoords(lat, lng);
+          renderTiles(lat, lng, zoom);
+        }
+        position();
+        bubble.classList.add('is-visible');
+      });
+      card.addEventListener('mousemove', onMove);
+      card.addEventListener('mouseleave', function () {
+        if (bubble) bubble.classList.remove('is-visible');
+      });
     });
   }
 
@@ -373,9 +575,45 @@
     });
   }
 
-  function initHomeVideo() {
-    var video = document.querySelector('.hero-video-bg');
-    if (video) video.play().catch(function() {});
+  var PAGE_VIDEOS = {
+    'index.html': 'assets/video/hero.mp4',
+    'apropos.html': 'assets/video/apropos-hero.mp4',
+    'design.html': 'assets/video/design-hero.mp4',
+    'fabrication.html': 'assets/video/fabrication-hero.mp4',
+    'clients.html': 'assets/video/clients-hero.mp4',
+    'contact.html': 'assets/video/contact-hero.mp4',
+    'newsletter.html': 'assets/video/clients-hero.mp4',
+    'carrieres.html': 'assets/video/fabrication-hero.mp4'
+  };
+
+  function initVideoPrefetch() {
+    function warmFromHref(href) {
+      if (!href) return;
+      var path = href.split('#')[0].split('?')[0];
+      if (!path || path.indexOf('://') !== -1) return;
+      var file = path.split('/').pop() || 'index.html';
+      if (file === '' || path === '/') file = 'index.html';
+      var videoSrc = PAGE_VIDEOS[file];
+      if (!videoSrc) return;
+      if (window.CircumHeroVideo && typeof window.CircumHeroVideo.warm === 'function') {
+        window.CircumHeroVideo.warm(videoSrc, true);
+        return;
+      }
+      var preload = document.createElement('link');
+      preload.rel = 'prefetch';
+      preload.as = 'fetch';
+      preload.href = videoSrc;
+      preload.crossOrigin = 'anonymous';
+      document.head.appendChild(preload);
+    }
+    document.querySelectorAll('a[href]').forEach(function (link) {
+      function warm() {
+        warmFromHref(link.getAttribute('href'));
+      }
+      link.addEventListener('mouseenter', warm, { passive: true });
+      link.addEventListener('focus', warm, { passive: true });
+      link.addEventListener('touchstart', warm, { passive: true, once: true });
+    });
   }
 
   function initSmoothScroll() {
@@ -441,12 +679,26 @@
   function scrollToHash() {
     var hash = window.location.hash.slice(1);
     if (!hash) return;
-    var target = document.getElementById(hash);
-    if (target) {
-      setTimeout(function() {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+    var id;
+    try { id = decodeURIComponent(hash); } catch (_) { id = hash; }
+    var target = document.getElementById(id);
+    if (!target) return;
+    function run() {
+      var off = navOffset();
+      if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+        // Start from the top so the scroll is visibly animated on arrival
+        window.lenis.scrollTo(0, { immediate: true });
+        requestAnimationFrame(function() {
+          window.lenis.scrollTo(target, { offset: -off, duration: 1.3 });
+        });
+      } else {
+        window.scrollTo(0, 0);
+        var y = target.getBoundingClientRect().top + (window.scrollY || 0) - off;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
     }
+    // Wait for Lenis (created in the per-page module after main.js) and layout
+    setTimeout(run, 260);
   }
 
   // ===== Count-up animation for numbers (rolling effect) =====
@@ -600,14 +852,20 @@
 
   // ===== Init all =====
   document.addEventListener('DOMContentLoaded', function() {
+    if ('scrollRestoration' in history) {
+      try { history.scrollRestoration = 'manual'; } catch (e) {}
+    }
     initMobileNav();
+    initLogoTheme();
     initLogoHomeTransition();
+    initAnchorScroll();
+    initSiteMapBubble();
     initReveal();
     initLangSwitcher();
     initNavScroll();
     initFileInputs();
     initForms();
-    initHomeVideo();
+    initVideoPrefetch();
     initCountUpAnimation();
     initDynamicNews();
     initDynamicIssues();

@@ -7,6 +7,7 @@
 <title data-i18n-title="meta.fabrication.title">Fabrication · Circum Life Sciences</title>
 <meta content="Circum Life Sciences — CDMO dispositifs médicaux. Suisse · France · Tunisie." name="description"/>
 <link href="css/main.css" rel="stylesheet"/>
+<link as="fetch" crossorigin="" href="assets/video/fabrication-hero.mp4" rel="preload" type="video/mp4"/>
 <link as="image" href="assets/img/circum-logo.png" rel="preload"/>
 </head>
 <body data-page="fabrication">
@@ -28,11 +29,10 @@
 <li class="nav-item">
 <a class="nav-link" href="apropos.html"><span data-i18n="nav.about">À propos</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="nav.sub.board" href="apropos.html#board">Board &amp; Conseil stratégique</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 <a data-i18n="nav.sub.environment" href="apropos.html#environnement">Politique environnementale</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
 </div>
 </li>
 <li class="nav-item">
@@ -40,22 +40,28 @@
 <div class="nav-submenu">
 <a data-i18n="nav.sub.conception" href="design.html#conception">Conception</a>
 <a data-i18n="nav.sub.qara" href="design.html#qara">Qualité &amp; Affaires Réglementaires</a>
-<a data-i18n="nav.sub.lab" href="design.html#laboratoire">Laboratoire</a>
-<a data-i18n="nav.sub.vv" href="design.html#vv">Vérification &amp; Validation</a>
 </div>
 </li>
 <li class="nav-item">
 <a class="nav-link active" href="fabrication.html"><span data-i18n="nav.manufacturing">Fabrication</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
 <a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="nav.sub.molding" href="fabrication.html#moulage">Moulage par injection</a>
-<a data-i18n="nav.sub.assembly" href="fabrication.html#assemblage">Assemblage</a>
-<a data-i18n="nav.sub.sterilization" href="fabrication.html#sterilisation">Stérilisation</a>
+<a data-i18n="nav.sub.molding" href="fabrication.html#flux">Flux de production</a>
 </div>
 </li>
 <li class="nav-item"><a class="nav-link" data-i18n="nav.clients" href="clients.html">Clients</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.news" href="news.html">News</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.contact" href="contact.html">Contact</a></li>
+<li class="nav-item">
+<a class="nav-link" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="contact.html"><span data-i18n="nav.contact">Contact</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
+</div>
+</li>
 </ul>
 <div class="nav-cta-group">
 <div class="lang-switch">
@@ -74,9 +80,8 @@
 <div class="nav-mobile">
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.about">À propos</div>
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 </div>
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.services">Services</div>
@@ -85,28 +90,30 @@
 <a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
 </div>
 <div class="nav-mobile-section">
-<a data-i18n="footer.link.news" href="news.html">News &amp; Media</a>
-<a href="newsletter.html">Newsletter</a>
-<a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
-<a href="contact.html">Contact</a>
+<div class="nav-mobile-title" data-i18n="mobile.news">News &amp; Media</div>
+<a data-i18n="nav.news" href="news.html">News</a>
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+<div class="nav-mobile-section">
+<div class="nav-mobile-title" data-i18n="footer.col.contact">Contact</div>
+<a data-i18n="nav.contact" href="contact.html">Contact</a>
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
 </div>
 </div>
 <!-- ==================== HOME ==================== -->
 <main class="page-content">
 <section class="hero-video-wrap">
-<video autoplay="" class="hero-video-bg" loop="" muted="" playsinline="" poster="assets/img/hero-poster.jpg">
-<source src="assets/video/fabrication-hero.mp4" type="video/mp4"/>
-</video>
+<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="assets/video/fabrication-hero.mp4"></video>
 <div class="hero-video-overlay"></div>
 <div class="hero-video-content">
 <div class="hero-eyebrow reveal" data-i18n="fabrication.page_hero_eyebrow.1">Fabrication · Production industrielle CDMO</div>
 <h1 class="hero-title reveal" data-i18n-html="fabrication.page_hero_title.2">Fabrication <em>intégrée.</em></h1>
-<p class="hero-subtitle reveal" data-i18n="fabrication.page_hero_subtitle.3">Force One : 8 000 m² de production à Enfidha, Tunisie. Cleanrooms qualifiées, moulage par injection, assemblage automatisé, stérilisation et conditionnement maîtrisés en interne.</p>
+<p class="hero-subtitle reveal" data-i18n="fabrication.page_hero_subtitle.3">Force One : 8 000 m² de production à Sousse, Tunisie. Cleanrooms qualifiées, moulage par injection, assemblage automatisé, stérilisation et conditionnement maîtrisés en interne.</p>
 <div class="hero-actions reveal">
 <a class="btn btn-pink" href="#force-one"><span data-i18n="fabrication.hero_btn.1">Découvrir Force One</span><span class="btn-arrow">→</span></a>
 <a class="btn btn-outline-white" href="contact.html"><span data-i18n="fabrication.hero_btn.2">Nous contacter</span></a>
 </div>
-<div class="hero-meta reveal"><span data-i18n="fabrication.hero_meta.4">Cleanrooms · assemblage · stérilisation</span><span data-i18n="fabrication.hero_meta.5">Enfidha · Tunisie · production série · capacité industrielle</span></div>
+<div class="hero-meta reveal"><span data-i18n="fabrication.hero_meta.4">Cleanrooms · assemblage · stérilisation</span><span data-i18n="fabrication.hero_meta.5">Sousse · Tunisie · production série · capacité industrielle</span></div>
 </div>
 </section>
 <section class="section fabrication-campus" id="force-one">
@@ -145,30 +152,114 @@
 <cite data-i18n="fabrication.quote_cite.52">Mohamed Rekik, Directeur General</cite>
 </blockquote>
 </section>
-<section class="section fabrication-stream">
+<section class="section fabrication-stream" id="flux">
 <div class="container">
 <div class="section-header center reveal">
 <span class="section-label center" data-i18n="fabrication.stream_label.53">Flux de production</span>
 <h2 class="section-title" data-i18n-html="fabrication.stream_title.54">Trois expertises, <em>une chaine maitrisee.</em></h2>
 </div>
 <div class="fabrication-stream-grid reveal">
-<article class="fabrication-stream-card" id="moulage">
+<article class="fabrication-stream-card vv-hover-card" id="moulage" tabindex="0">
 <div class="fabrication-stream-index">01</div>
 <div class="fabrication-stream-kicker" data-i18n="fabrication.card_kicker.55">Moulage</div>
 <h3 data-i18n="fabrication.card_title.56">Injecter avec precision et repetabilite</h3>
 <p data-i18n="fabrication.card_text.57">Micromoulage, multi-matieres et polymers techniques sont pilotes pour tenir les dimensions, la cadence et la stabilite du produit.</p>
+<div class="vv-hover-panel" aria-live="polite" data-lenis-prevent>
+<h4 class="vv-hover-title" data-i18n="fabrication.moulage_hover_title.90">Conception &amp; fabrication de moules</h4>
+<div class="vv-hover-body" data-i18n-html="fabrication.moulage_hover_content.91">
+<p>Nous proposons une <strong>gamme complète de services de conception et de fabrication de moules</strong>, incluant :</p>
+<ul>
+<li><strong>Conception de moules sur mesure</strong>, optimisée pour des composants de qualité médicale</li>
+<li><strong>Développement d'outillages</strong> en interne ou en collaboration avec des partenaires de confiance</li>
+<li><strong>Moules de petit format</strong>, à faible CAPEX, pour des volumes faibles à moyens, idéaux pour les séries pilotes ou les lots cliniques</li>
+<li><strong>Moules de grand format multi-cavité</strong> pour la production à grande échelle, offrant un coût unitaire compétitif</li>
+<li><strong>Support complet pour le design for manufacturability (DFM)</strong> et la sélection des matériaux</li>
+</ul>
+<p>Nos <strong>capacités de moulage plastique</strong> comprennent :</p>
+<ul>
+<li>Production en <strong>salle blanche conforme ISO 7</strong></li>
+<li>Traitement d'une large gamme de <strong>thermoplastiques de qualité médicale</strong></li>
+<li><strong>Moulage haute précision</strong> pour géométries complexes et tolérances strictes</li>
+<li><strong>Délais rapides</strong> et changement agile entre différentes séries</li>
+</ul>
+<p>Que vous ayez besoin d'une solution <strong>flexible et économique</strong> pour de petites séries ou d'un <strong>moule haute performance</strong> pour un coût unitaire compétitif, nous sommes votre partenaire fiable. Notre équipe technique vous accompagne <strong>à chaque étape</strong>, garantissant <strong>qualité, conformité et performance</strong> pour chaque composant produit.</p>
+<h4 class="vv-hover-title">Outils et expertise en moulage par injection</h4>
+<ul>
+<li><strong>Machines d'injection de 10 T à 320 T</strong> pour flexibilité et expertise</li>
+<li>Conception de pièces pour le moulage par injection</li>
+<li>Conception et gestion de moules</li>
+<li><strong>FAT / SAT / IQ / OQ / PQ</strong></li>
+<li>Production de lots de <strong>100 pièces à 1 million de pièces</strong></li>
+<li>Capacité de <strong>surmoulage</strong></li>
+<li>Pièces en <strong>thermoplastique et silicone</strong></li>
+<li><strong>Assemblage des pièces</strong></li>
+</ul>
+</div>
+</div>
 </article>
-<article class="fabrication-stream-card" id="assemblage">
+<article class="fabrication-stream-card vv-hover-card" id="assemblage" tabindex="0">
 <div class="fabrication-stream-index">02</div>
 <div class="fabrication-stream-kicker" data-i18n="fabrication.card_kicker.58">Assemblage</div>
 <h3 data-i18n="fabrication.card_title.59">Combiner automatisation et geste expert</h3>
 <p data-i18n="fabrication.card_text.60">Lignes automatisees et postes manuels qualifies se combinent selon le volume, la complexite et le niveau de controle requis.</p>
+<div class="vv-hover-panel" aria-live="polite" data-lenis-prevent>
+<h4 class="vv-hover-title" data-i18n="fabrication.assemblage_hover_title.92">Assemblage &amp; collage</h4>
+<div class="vv-hover-body" data-i18n-html="fabrication.assemblage_hover_content.93">
+<p>Nous proposons des <strong>solutions avancées d'assemblage</strong> pour une large gamme de dispositifs médicaux à usage unique, en mettant l'accent sur la <strong>fiabilité des procédés, la conformité réglementaire et la performance produit</strong>.</p>
+<p>Notre expertise couvre un large éventail de <strong>technologies d'assemblage et de collage</strong>, nous permettant d'adapter le processus de fabrication aux besoins spécifiques de votre dispositif. Nous garantissons <strong>haute précision et reproductibilité</strong> à chaque étape, du prototypage à la production industrielle.</p>
+<p><strong>Techniques clés d'assemblage et de collage que nous maîtrisons :</strong></p>
+<ul>
+<li><strong>Collage par solvant</strong> pour des connexions robustes et chimiquement résistantes</li>
+<li><strong>Soudage ultrason (US welding)</strong> pour des joints précis, propres et reproductibles</li>
+<li><strong>Soudage haute fréquence (HF welding)</strong> pour les matériaux transparents et les zones de collage contrôlées</li>
+<li><strong>Collage par adhésif UV</strong>, idéal pour les matériaux transparents et les zones de collage contrôlées</li>
+<li><strong>Sérigraphie par tampographie</strong> pour des marquages durables et de haute qualité sur des géométries complexes</li>
+<li><strong>Surmoulage</strong> pour intégrer des composants souples ou rigides dans des sous-ensembles</li>
+<li><strong>Formage de cathéters</strong>, pour la mise en forme précise et la finition des extrémités des tubes médicaux</li>
+<li><strong>Fabrication de poches</strong> en PVC et EVA</li>
+<li><strong>Impression 3D</strong></li>
+</ul>
+<p>Nos lignes de production sont entièrement <strong>adaptables</strong>, permettant l'assemblage de petites séries personnalisées comme de productions à grande échelle dans des environnements de salles propres contrôlées.</p>
+<p><strong>Dispositifs médicaux pris en charge :</strong></p>
+<ul>
+<li>Systèmes d'infusion et d'administration de médicaments</li>
+<li>Cathéters et sets de tubulure</li>
+<li>Dispositifs de diagnostic à usage unique</li>
+<li>Systèmes de collecte et de drainage</li>
+<li>Etc.</li>
+</ul>
+<p>Avec un engagement fort en matière de <strong>qualité, flexibilité et innovation</strong>, nous sommes votre <strong>partenaire CDMO de confiance</strong> pour l'assemblage de dispositifs médicaux complexes, du concept à la production commerciale.</p>
+</div>
+</div>
 </article>
-<article class="fabrication-stream-card" id="sterilisation">
+<article class="fabrication-stream-card vv-hover-card" id="sterilisation" tabindex="0">
 <div class="fabrication-stream-index">03</div>
 <div class="fabrication-stream-kicker" data-i18n="fabrication.card_kicker.61">Sterilisation</div>
 <h3 data-i18n="fabrication.card_title.62">Securiser la sterility jusqu'au conditionnement</h3>
 <p data-i18n="fabrication.card_text.63">EtO, gamma, vapeur et packaging sterile sont selectionnes et valides selon la nature du dispositif et son cycle de vie.</p>
+<div class="vv-hover-panel" aria-live="polite" data-lenis-prevent>
+<h4 class="vv-hover-title" data-i18n="fabrication.sterilisation_hover_title.94">Stérilisation</h4>
+<div class="vv-hover-body" data-i18n-html="fabrication.sterilisation_hover_content.95">
+<p>Nous offrons un <strong>accompagnement complet en stérilisation</strong> dans le cadre de notre service CDMO intégré pour les dispositifs médicaux à usage unique. Garantir la <strong>stérilité et la conformité réglementaire</strong> de votre produit est essentiel — c'est pourquoi nous travaillons en étroite collaboration avec nos clients pour gérer à la fois la <strong>validation de stérilisation</strong> et les <strong>cycles de production de routine</strong>.</p>
+<p><strong>Nous prenons en charge une large gamme de méthodes de stérilisation :</strong></p>
+<ul>
+<li><strong>Stérilisation à l'oxyde d'éthylène (EtO)</strong></li>
+<li><strong>Irradiation gamma</strong></li>
+<li><strong>Irradiation bêta</strong> (faisceau d'électrons)</li>
+<li><strong>Irradiation par rayons X</strong></li>
+</ul>
+<p><strong>Nos services de stérilisation comprennent :</strong></p>
+<ul>
+<li><strong>Développement de stratégies de stérilisation</strong> adaptées aux matériaux, emballages et usages prévus de votre produit</li>
+<li><strong>Coordination et exécution des protocoles de validation</strong> de stérilisation (ISO 11135, ISO 11137)</li>
+<li><strong>Gestion des tests de charge microbienne (bioburden)</strong> et de stérilité en collaboration avec des laboratoires certifiés</li>
+<li><strong>Support pour les processus de stérilisation en routine</strong>, y compris la libération des lots et la documentation associée</li>
+<li><strong>Intégration des contraintes de stérilisation</strong> dès les phases de conception et de développement pour garantir compatibilité et efficacité</li>
+</ul>
+<p>Notre équipe veille à ce que la stérilisation ne soit pas une simple étape finale, mais une <strong>composante intégrée du cycle de vie du produit</strong>, depuis les premières études de faisabilité jusqu'à l'industrialisation complète.</p>
+<p>Grâce à notre expérience éprouvée en <strong>conformité réglementaire</strong> et en <strong>assurance de stérilité</strong>, nous sommes votre partenaire de confiance pour les procédés de stérilisation <strong>sûrs, validés et conformes aux standards internationaux</strong>.</p>
+</div>
+</div>
 </article>
 </div>
 <div class="fabrication-assurance-band reveal">
@@ -224,7 +315,7 @@
 <div class="footer-col-title" data-i18n="footer.col.company">Société</div>
 <div class="footer-list">
 <a data-i18n="footer.link.about" href="apropos.html">À propos</a>
-<a data-i18n="footer.link.founders" href="fondateurs.html">Fondateurs</a>
+<a data-i18n="footer.link.founders" href="apropos.html#founders">Fondateurs</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="footer.link.environment" href="apropos.html#environnement">Environnement</a>
 <a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
@@ -255,12 +346,14 @@
 </footer>
 <script src="js/i18n/common.js"></script>
 <script src="js/i18n/page-fabrication.js"></script>
+<script src="js/i18n/page-fabrication-hover.js"></script>
 <script src="js/i18n/loader.js"></script>
+<script src="js/hero-video.js"></script>
 <script defer="" src="js/main.js"></script>
 <script type="module">
   import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.0.45/+esm";
 
-  const lenis = new Lenis({
+  const lenis = window.lenis = new Lenis({
     duration: 1.1,
     smoothWheel: true,
   });

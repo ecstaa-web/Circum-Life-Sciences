@@ -7,6 +7,7 @@
 <title data-i18n-title="meta.newsletter.title">Newsletter · Circum Life Sciences</title>
 <meta content="Circum Life Sciences — CDMO dispositifs médicaux. Suisse · France · Tunisie." name="description"/>
 <link href="css/main.css" rel="stylesheet"/>
+<link as="fetch" crossorigin="" href="assets/video/clients-hero.mp4" rel="preload" type="video/mp4"/>
 <link as="image" href="assets/img/circum-logo.png" rel="preload"/>
 </head>
 <body data-page="newsletter">
@@ -28,11 +29,10 @@
 <li class="nav-item">
 <a class="nav-link" href="apropos.html"><span data-i18n="nav.about">À propos</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="nav.sub.board" href="apropos.html#board">Board &amp; Conseil stratégique</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 <a data-i18n="nav.sub.environment" href="apropos.html#environnement">Politique environnementale</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
 </div>
 </li>
 <li class="nav-item">
@@ -40,22 +40,28 @@
 <div class="nav-submenu">
 <a data-i18n="nav.sub.conception" href="design.html#conception">Conception</a>
 <a data-i18n="nav.sub.qara" href="design.html#qara">Qualité &amp; Affaires Réglementaires</a>
-<a data-i18n="nav.sub.lab" href="design.html#laboratoire">Laboratoire</a>
-<a data-i18n="nav.sub.vv" href="design.html#vv">Vérification &amp; Validation</a>
 </div>
 </li>
 <li class="nav-item">
 <a class="nav-link" href="fabrication.html"><span data-i18n="nav.manufacturing">Fabrication</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
 <a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="nav.sub.molding" href="fabrication.html#moulage">Moulage par injection</a>
-<a data-i18n="nav.sub.assembly" href="fabrication.html#assemblage">Assemblage</a>
-<a data-i18n="nav.sub.sterilization" href="fabrication.html#sterilisation">Stérilisation</a>
+<a data-i18n="nav.sub.molding" href="fabrication.html#flux">Flux de production</a>
 </div>
 </li>
 <li class="nav-item"><a class="nav-link" data-i18n="nav.clients" href="clients.html">Clients</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.news" href="news.html">News</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.contact" href="contact.html">Contact</a></li>
+<li class="nav-item">
+<a class="nav-link active" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="contact.html"><span data-i18n="nav.contact">Contact</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
+</div>
+</li>
 </ul>
 <div class="nav-cta-group">
 <div class="lang-switch">
@@ -74,9 +80,8 @@
 <div class="nav-mobile">
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.about">À propos</div>
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 </div>
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.services">Services</div>
@@ -85,34 +90,37 @@
 <a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
 </div>
 <div class="nav-mobile-section">
-<a data-i18n="footer.link.news" href="news.html">News &amp; Media</a>
-<a href="newsletter.html">Newsletter</a>
-<a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
-<a href="contact.html">Contact</a>
+<div class="nav-mobile-title" data-i18n="mobile.news">News &amp; Media</div>
+<a data-i18n="nav.news" href="news.html">News</a>
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+<div class="nav-mobile-section">
+<div class="nav-mobile-title" data-i18n="footer.col.contact">Contact</div>
+<a data-i18n="nav.contact" href="contact.html">Contact</a>
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
 </div>
 </div>
 <!-- ==================== HOME ==================== -->
 <main class="page-content">
-<section class="page-hero">
-<div class="container">
-<div class="page-hero-content">
-<nav class="page-hero-breadcrumb" data-i18n-html="newsletter.page_hero_breadcrumb.4"><a href="index.html">Accueil</a><span class="page-hero-breadcrumb-sep">/</span><span data-i18n="topbar.newsletter">Newsletter</span></nav>
-<div data-i18n="newsletter.page_hero_eyebrow.1">Quatre éditions par an</div>
-<h1 class="page-hero-title" data-i18n-html="newsletter.page_hero_title.2">Newsletter <em>trimestrielle.</em></h1>
-<p class="page-hero-subtitle" data-i18n="newsletter.page_hero_subtitle.3">Quatre fois par an, nous partageons nos actualités industrielles, nos publications scientifiques, nos avancées techniques et les principales évolutions du secteur. Format court, signal fort.</p>
-<div class="newsletter-hero-stat">
+<section class="hero-video-wrap">
+<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="assets/video/clients-hero.mp4"></video>
+<div class="hero-video-overlay"></div>
+<div class="hero-video-content">
+<div class="hero-eyebrow reveal" data-i18n="newsletter.page_hero_eyebrow.1">Quatre éditions par an</div>
+<h1 class="hero-title reveal" data-i18n-html="newsletter.page_hero_title.2">Newsletter <em>trimestrielle.</em></h1>
+<p class="hero-subtitle reveal" data-i18n="newsletter.page_hero_subtitle.3">Quatre fois par an, nous partageons nos actualités industrielles, nos publications scientifiques, nos avancées techniques et les principales évolutions du secteur. Format court, signal fort.</p>
+<div class="newsletter-hero-stat reveal">
 <div class="newsletter-hero-stat-item">
 <div class="value">4×/an</div>
-<div class="label">Édition trimestrielle</div>
+<div class="label" data-i18n="newsletter.stat_label.50">Édition trimestrielle</div>
 </div>
 <div class="newsletter-hero-stat-item">
-<div class="value">4 langues</div>
+<div class="value" data-i18n="newsletter.stat_value.51">4 langues</div>
 <div class="label">FR · EN · DE · IT</div>
 </div>
 <div class="newsletter-hero-stat-item">
 <div class="value">5 min</div>
-<div class="label">Temps de lecture</div>
-</div>
+<div class="label" data-i18n="newsletter.stat_label.52">Temps de lecture</div>
 </div>
 </div>
 </div>
@@ -136,7 +144,7 @@
 </div>
 <div class="form-group" data-i18n-html="newsletter.form_label.14">
 <label class="form-label">Email professionnel <span class="req">*</span></label>
-<input class="form-input" name="email" placeholder="vous@entreprise.com" required="" type="email"/>
+<input class="form-input" name="email" placeholder="vous@entreprise.com" data-i18n-placeholder="newsletter.placeholder.73" required="" type="email"/>
 </div>
 <div class="form-row">
 <div class="form-group" data-i18n-html="newsletter.form_label.15">
@@ -145,10 +153,10 @@
 </div>
 <div class="form-group" data-i18n-html="newsletter.form_label.16">
 <label class="form-label">Fonction</label>
-<input class="form-input" name="role" placeholder="R&amp;D, achats, qualité…" type="text"/>
+<input class="form-input" name="role" placeholder="R&amp;D, achats, qualité…" data-i18n-placeholder="newsletter.placeholder.74" type="text"/>
 </div>
 </div>
-<div class="form-group">
+<div class="form-group" data-i18n-html="newsletter.form_label.53">
 <label class="form-label">Langue préférée pour la newsletter</label>
 <select class="form-select" name="lang">
 <option value="fr">Français</option>
@@ -157,13 +165,13 @@
 <option value="it">Italiano</option>
 </select>
 </div>
-<div class="form-group">
+<div class="form-group" data-i18n-html="newsletter.form_label.54">
 <label class="form-label">Centres d'intérêt (optionnel)</label>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 8px;">
-<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox"/> Conception &amp; R&amp;D</label>
-<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox"/> Qualité &amp; Réglementaire</label>
-<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox"/> Fabrication &amp; Industrie</label>
-<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox"/> Innovation &amp; Publications</label>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox"/> <span data-i18n="newsletter.interest.55">Conception &amp; R&amp;D</span></label>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox"/> <span data-i18n="newsletter.interest.56">Qualité &amp; Réglementaire</span></label>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox"/> <span data-i18n="newsletter.interest.57">Fabrication &amp; Industrie</span></label>
+<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox"/> <span data-i18n="newsletter.interest.58">Innovation &amp; Publications</span></label>
 </div>
 </div>
 <div class="form-checkbox" data-i18n-html="newsletter.form_checkbox.19">
@@ -171,56 +179,21 @@
 <label for="nl-consent"><strong>J'accepte de recevoir la newsletter trimestrielle Circum Life Sciences</strong> et confirme avoir pris connaissance de la politique de confidentialité. Désinscription possible à tout moment via un lien dans chaque envoi.</label>
 </div>
 <button class="btn btn-primary form-submit" type="submit">
-<span>S'inscrire à la newsletter</span>
+<span data-i18n="newsletter.form_submit.59">S'inscrire à la newsletter</span>
 <span class="btn-arrow">→</span>
 </button>
 <div class="form-message"></div>
 </form>
 </div>
 </section>
-<section class="section">
+<section class="section newsletter-archives-section">
 <div class="container">
 <div class="section-header center reveal">
 <span class="section-label center" data-i18n="newsletter.section_label.9">Archives</span>
 <h2 class="section-title" data-i18n-html="newsletter.section_title.11">Les <em>éditions précédentes.</em></h2>
 </div>
-<div class="newsletter-archives reveal" id="newsletter-archives" data-testid="newsletter-archives" style="margin-top: 48px;">
-<div class="newsletter-issue">
-<div class="newsletter-issue-num"><strong>Q1</strong><span>2026</span></div>
-<div>
-<div class="newsletter-issue-date">Mars 2026</div>
-<h3 class="newsletter-issue-title">Inauguration Force One &amp; perspectives 2026</h3>
-<p class="newsletter-issue-summary">Retour sur l'inauguration officielle du site Force One, certifications obtenues, partenariat avec l'Université de Nice, perspectives commerciales.</p>
-<span class="newsletter-issue-link">Lire le numéro →</span>
-</div>
-</div>
-<div class="newsletter-issue">
-<div class="newsletter-issue-num"><strong>Q4</strong><span>2025</span></div>
-<div>
-<div class="newsletter-issue-date">Décembre 2025</div>
-<h3 class="newsletter-issue-title">Bilan annuel &amp; engagements 2026</h3>
-<p class="newsletter-issue-summary">Bilan opérationnel et qualité de l'année écoulée, premiers résultats du programme énergie solaire à Force One, roadmap 2026.</p>
-<span class="newsletter-issue-link">Lire le numéro →</span>
-</div>
-</div>
-<div class="newsletter-issue">
-<div class="newsletter-issue-num"><strong>Q3</strong><span>2025</span></div>
-<div>
-<div class="newsletter-issue-date">Septembre 2025</div>
-<h3 class="newsletter-issue-title">Renouvellement ISO 13485 multi-sites</h3>
-<p class="newsletter-issue-summary">Compte-rendu de l'audit annuel sans réserve, focus sur la cleanroom C en construction, interview de Mohamed Rekik.</p>
-<span class="newsletter-issue-link">Lire le numéro →</span>
-</div>
-</div>
-<div class="newsletter-issue">
-<div class="newsletter-issue-num"><strong>Q2</strong><span>2025</span></div>
-<div>
-<div class="newsletter-issue-date">Juin 2025</div>
-<h3 class="newsletter-issue-title">Polymères médicaux : focus PEEK &amp; PEBAX</h3>
-<p class="newsletter-issue-summary">Dossier technique sur les polymères techniques utilisés à Force One, applications cliniques et propriétés mécaniques.</p>
-<span class="newsletter-issue-link">Lire le numéro →</span>
-</div>
-</div>
+<div class="newsletter-archives-empty reveal" id="newsletter-archives" data-testid="newsletter-archives">
+<p class="newsletter-archives-empty-text" data-i18n="newsletter.empty_archives.75">Aucune édition n'a encore été publiée. Inscrivez-vous ci-dessus pour recevoir notre première newsletter trimestrielle.</p>
 </div>
 </div>
 </section>
@@ -249,7 +222,7 @@
 <div class="footer-col-title" data-i18n="footer.col.company">Société</div>
 <div class="footer-list">
 <a data-i18n="footer.link.about" href="apropos.html">À propos</a>
-<a data-i18n="footer.link.founders" href="fondateurs.html">Fondateurs</a>
+<a data-i18n="footer.link.founders" href="apropos.html#founders">Fondateurs</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="footer.link.environment" href="apropos.html#environnement">Environnement</a>
 <a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
@@ -280,12 +253,14 @@
 </footer>
 <script src="js/i18n/common.js"></script>
 <script src="js/i18n/page-newsletter.js"></script>
+<script src="js/i18n/page-newsletter-extra.js"></script>
 <script src="js/i18n/loader.js"></script>
+<script src="js/hero-video.js"></script>
 <script defer="" src="js/main.js"></script>
 <script type="module">
   import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.0.45/+esm";
 
-  const lenis = new Lenis({
+  const lenis = window.lenis = new Lenis({
     duration: 1.1,
     smoothWheel: true,
   });

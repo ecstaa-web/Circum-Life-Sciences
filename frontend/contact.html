@@ -7,6 +7,7 @@
 <title data-i18n-title="meta.contact.title">Contact · Circum Life Sciences</title>
 <meta content="Circum Life Sciences — CDMO dispositifs médicaux. Suisse · France · Tunisie." name="description"/>
 <link href="css/main.css" rel="stylesheet"/>
+<link as="fetch" crossorigin="" href="assets/video/contact-hero.mp4" rel="preload" type="video/mp4"/>
 <link as="image" href="assets/img/circum-logo.png" rel="preload"/>
 </head>
 <body data-page="contact">
@@ -28,11 +29,10 @@
 <li class="nav-item">
 <a class="nav-link" href="apropos.html"><span data-i18n="nav.about">À propos</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="nav.sub.board" href="apropos.html#board">Board &amp; Conseil stratégique</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 <a data-i18n="nav.sub.environment" href="apropos.html#environnement">Politique environnementale</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
 </div>
 </li>
 <li class="nav-item">
@@ -40,22 +40,28 @@
 <div class="nav-submenu">
 <a data-i18n="nav.sub.conception" href="design.html#conception">Conception</a>
 <a data-i18n="nav.sub.qara" href="design.html#qara">Qualité &amp; Affaires Réglementaires</a>
-<a data-i18n="nav.sub.lab" href="design.html#laboratoire">Laboratoire</a>
-<a data-i18n="nav.sub.vv" href="design.html#vv">Vérification &amp; Validation</a>
 </div>
 </li>
 <li class="nav-item">
 <a class="nav-link" href="fabrication.html"><span data-i18n="nav.manufacturing">Fabrication</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
 <a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="nav.sub.molding" href="fabrication.html#moulage">Moulage par injection</a>
-<a data-i18n="nav.sub.assembly" href="fabrication.html#assemblage">Assemblage</a>
-<a data-i18n="nav.sub.sterilization" href="fabrication.html#sterilisation">Stérilisation</a>
+<a data-i18n="nav.sub.molding" href="fabrication.html#flux">Flux de production</a>
 </div>
 </li>
 <li class="nav-item"><a class="nav-link" data-i18n="nav.clients" href="clients.html">Clients</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.news" href="news.html">News</a></li>
-<li class="nav-item"><a class="nav-link active" data-i18n="nav.contact" href="contact.html">Contact</a></li>
+<li class="nav-item">
+<a class="nav-link" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+</li>
+<li class="nav-item">
+<a class="nav-link active" href="contact.html"><span data-i18n="nav.contact">Contact</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
+</div>
+</li>
 </ul>
 <div class="nav-cta-group">
 <div class="lang-switch">
@@ -74,9 +80,8 @@
 <div class="nav-mobile">
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.about">À propos</div>
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 </div>
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.services">Services</div>
@@ -85,22 +90,25 @@
 <a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
 </div>
 <div class="nav-mobile-section">
-<a data-i18n="footer.link.news" href="news.html">News &amp; Media</a>
-<a href="newsletter.html">Newsletter</a>
-<a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
-<a href="contact.html">Contact</a>
+<div class="nav-mobile-title" data-i18n="mobile.news">News &amp; Media</div>
+<a data-i18n="nav.news" href="news.html">News</a>
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+<div class="nav-mobile-section">
+<div class="nav-mobile-title" data-i18n="footer.col.contact">Contact</div>
+<a data-i18n="nav.contact" href="contact.html">Contact</a>
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
 </div>
 </div>
 <!-- ==================== HOME ==================== -->
 <main class="page-content">
-<section class="page-hero">
-<div class="container">
-<div class="page-hero-content">
-<nav class="page-hero-breadcrumb" data-i18n-html="contact.page_hero_breadcrumb.4"><a href="index.html">Accueil</a><span class="page-hero-breadcrumb-sep">/</span><span data-i18n="contact.footer_col_title.56">Contact</span></nav>
-<div data-i18n="contact.page_hero_eyebrow.1">Démarrer une collaboration</div>
-<h1 class="page-hero-title" data-i18n-html="contact.page_hero_title.2">Parlons de votre <em>projet.</em></h1>
-<p class="page-hero-subtitle" data-i18n="contact.page_hero_subtitle.3">Premier contact avec un membre de l'équipe sous 24 heures ouvrées. NDA signé sous 48 heures avant tout échange technique. Devis chiffré sous 7 jours.</p>
-</div>
+<section class="hero-video-wrap">
+<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="assets/video/contact-hero.mp4"></video>
+<div class="hero-video-overlay"></div>
+<div class="hero-video-content">
+<div class="hero-eyebrow reveal" data-i18n="contact.page_hero_eyebrow.1">Démarrer une collaboration</div>
+<h1 class="hero-title reveal" data-i18n-html="contact.page_hero_title.2">Parlons de votre <em>projet.</em></h1>
+<p class="hero-subtitle reveal" data-i18n="contact.page_hero_subtitle.3">Premier contact avec un membre de l'équipe sous 24 heures ouvrées. NDA signé sous 48 heures avant tout échange technique. Devis chiffré sous 7 jours.</p>
 </div>
 </section>
 <section class="section">
@@ -115,26 +123,23 @@
 <h3 class="contact-card-city" data-i18n="contact.contact_card_city.13">Zurich</h3>
 <div class="contact-card-country" data-i18n="contact.contact_card_country.16">Siège · Suisse</div>
 <p class="contact-card-detail" data-i18n="contact.contact_card_detail.19">Direction générale, gouvernance, partenariats institutionnels. Premier point de contact pour les discussions stratégiques et les grands comptes.</p>
-<div class="contact-card-info"><strong data-i18n="footer.email">Email</strong> zurich@circumlifesciences.com</div>
-<div class="contact-card-info" data-i18n-html="contact.contact_card_info.23"><strong>Tél.</strong> +41 44 000 00 00</div>
+<div class="contact-card-info"><strong data-i18n="footer.email">Email</strong> <a href="mailto:contact@circumlifesciences.com" data-i18n="topbar.email">contact@circumlifesciences.com</a></div>
 <div class="contact-card-info" data-i18n-html="contact.contact_card_info.24"><strong>Horaires</strong> Lun–Ven · 8h30–18h00 CET</div>
 </div>
 <div class="contact-card">
 <div class="contact-card-flag">FR</div>
 <h3 class="contact-card-city" data-i18n="contact.contact_card_city.14">Nice</h3>
-<div class="contact-card-country">R&amp;D · QARA · France</div>
+<div class="contact-card-country" data-i18n="contact.contact_card_country.50">R&amp;D · QARA · France</div>
 <p class="contact-card-detail" data-i18n="contact.contact_card_detail.20">Centre opérationnel historique : conception, développement, laboratoire de tests, qualité et affaires réglementaires. Supply Chain & Administration. Point d'entrée pour les projets techniques et le support clients.</p>
-<div class="contact-card-info"><strong data-i18n="footer.email">Email</strong> nice@circumlifesciences.com</div>
-<div class="contact-card-info" data-i18n-html="contact.contact_card_info.26"><strong>Tél.</strong> +33 4 00 00 00 00</div>
+<div class="contact-card-info"><strong data-i18n="footer.email">Email</strong> <a href="mailto:contact@circumlifesciences.com" data-i18n="topbar.email">contact@circumlifesciences.com</a></div>
 <div class="contact-card-info" data-i18n-html="contact.contact_card_info.27"><strong>Horaires</strong> Lun–Ven · 9h00–18h00 CET</div>
 </div>
 <div class="contact-card">
 <div class="contact-card-flag">TN</div>
-<h3 class="contact-card-city" data-i18n="contact.contact_card_city.15">Enfidha</h3>
+<h3 class="contact-card-city" data-i18n="contact.contact_card_city.15">Sousse</h3>
 <div class="contact-card-country" data-i18n="contact.contact_card_country.18">Force One · Tunisie</div>
 <p class="contact-card-detail" data-i18n="contact.contact_card_detail.21">Site de fabrication principal. Visites d'audit, qualifications fournisseurs, supervision opérationnelle des programmes en production.</p>
-<div class="contact-card-info"><strong data-i18n="footer.email">Email</strong> forceone@circumlifesciences.com</div>
-<div class="contact-card-info" data-i18n-html="contact.contact_card_info.29"><strong>Tél.</strong> +216 71 000 000</div>
+<div class="contact-card-info"><strong data-i18n="footer.email">Email</strong> <a href="mailto:contact@circumlifesciences.com" data-i18n="topbar.email">contact@circumlifesciences.com</a></div>
 <div class="contact-card-info" data-i18n-html="contact.contact_card_info.30"><strong>Horaires</strong> Lun–Ven · 8h00–17h00 CET</div>
 </div>
 </div>
@@ -161,7 +166,7 @@
 <div class="form-row">
 <div class="form-group" data-i18n-html="contact.form_label.33">
 <label class="form-label">Email professionnel <span class="req">*</span></label>
-<input class="form-input" name="email" placeholder="vous@entreprise.com" required="" type="email"/>
+<input class="form-input" name="email" data-i18n-placeholder="contact.placeholder.1" placeholder="vous@entreprise.com" required="" type="email"/>
 </div>
 <div class="form-group" data-i18n-html="contact.form_label.34">
 <label class="form-label">Téléphone</label>
@@ -175,7 +180,7 @@
 </div>
 <div class="form-group" data-i18n-html="contact.form_label.36">
 <label class="form-label">Fonction</label>
-<input class="form-input" name="role" placeholder="CTO, R&amp;D, Achats…" type="text"/>
+<input class="form-input" name="role" data-i18n-placeholder="contact.placeholder.50" placeholder="CTO, R&amp;D, Achats…" type="text"/>
 </div>
 </div>
 <div class="form-row">
@@ -183,85 +188,85 @@
 <label class="form-label">Pays <span class="req">*</span></label>
 <input class="form-input" name="country" required="" type="text"/>
 </div>
-<div class="form-group">
+<div class="form-group" data-i18n-html="contact.form_label.38">
 <label class="form-label">Taille de la société</label>
 <select class="form-select" name="size">
-<option>Startup · &lt; 10 personnes</option>
-<option>PME · 10 à 250 personnes</option>
-<option>ETI · 250 à 5000 personnes</option>
-<option>Grand groupe · &gt; 5000 personnes</option>
+<option data-i18n="contact.opt_size.50">Startup · &lt; 10 personnes</option>
+<option data-i18n="contact.opt_size.51">PME · 10 à 250 personnes</option>
+<option data-i18n="contact.opt_size.52">ETI · 250 à 5000 personnes</option>
+<option data-i18n="contact.opt_size.53">Grand groupe · &gt; 5000 personnes</option>
 </select>
 </div>
 </div>
-<div class="form-group">
+<div class="form-group" data-i18n-html="contact.form_label.39">
 <label class="form-label">Nature de votre demande <span class="req">*</span></label>
 <select class="form-select" name="type" required="">
-<option value="">— Sélectionnez —</option>
-<option>Demande de devis · projet nouveau</option>
-<option>Transfert industriel · projet existant</option>
-<option>Étude de faisabilité · concept en amont</option>
-<option>Sourcing matières / composants</option>
-<option>Audit fournisseur / qualification</option>
-<option>Partenariat R&amp;D</option>
-<option>Autre · à préciser ci-dessous</option>
+<option value="" data-i18n="contact.opt_type.50">— Sélectionnez —</option>
+<option data-i18n="contact.opt_type.51">Demande de devis · projet nouveau</option>
+<option data-i18n="contact.opt_type.52">Transfert industriel · projet existant</option>
+<option data-i18n="contact.opt_type.53">Étude de faisabilité · concept en amont</option>
+<option data-i18n="contact.opt_type.54">Sourcing matières / composants</option>
+<option data-i18n="contact.opt_type.55">Audit fournisseur / qualification</option>
+<option data-i18n="contact.opt_type.56">Partenariat R&amp;D</option>
+<option data-i18n="contact.opt_type.57">Autre · à préciser ci-dessous</option>
 </select>
 </div>
 <div class="form-row">
-<div class="form-group">
+<div class="form-group" data-i18n-html="contact.form_label.40">
 <label class="form-label">Classe du dispositif</label>
 <select class="form-select" name="class">
-<option>À déterminer</option>
-<option>Classe I</option>
-<option>Classe IIa</option>
-<option>Classe IIb</option>
-<option>Classe III</option>
-<option>IVD · Diagnostic in vitro</option>
+<option data-i18n="contact.opt_class.50">À déterminer</option>
+<option data-i18n="contact.opt_class.51">Classe I</option>
+<option data-i18n="contact.opt_class.52">Classe IIa</option>
+<option data-i18n="contact.opt_class.53">Classe IIb</option>
+<option data-i18n="contact.opt_class.54">Classe III</option>
+<option data-i18n="contact.opt_class.55">IVD · Diagnostic in vitro</option>
 </select>
 </div>
-<div class="form-group">
+<div class="form-group" data-i18n-html="contact.form_label.41">
 <label class="form-label">Stade du projet</label>
 <select class="form-select" name="stage">
-<option>Idée / concept</option>
-<option>Étude de faisabilité</option>
-<option>Prototype fonctionnel</option>
-<option>Pré-industrialisation</option>
-<option>Production / transfert</option>
+<option data-i18n="contact.opt_stage.50">Idée / concept</option>
+<option data-i18n="contact.opt_stage.51">Étude de faisabilité</option>
+<option data-i18n="contact.opt_stage.52">Prototype fonctionnel</option>
+<option data-i18n="contact.opt_stage.53">Pré-industrialisation</option>
+<option data-i18n="contact.opt_stage.54">Production / transfert</option>
 </select>
 </div>
 </div>
 <div class="form-row">
-<div class="form-group">
+<div class="form-group" data-i18n-html="contact.form_label.42">
 <label class="form-label">Volume annuel estimé</label>
 <select class="form-select" name="volume">
-<option>Inconnu à ce stade</option>
-<option>Moins de 1 000 unités/an</option>
-<option>1 000 à 10 000 unités/an</option>
-<option>10 000 à 100 000 unités/an</option>
-<option>Plus de 100 000 unités/an</option>
+<option data-i18n="contact.opt_volume.50">Inconnu à ce stade</option>
+<option data-i18n="contact.opt_volume.51">Moins de 1 000 unités/an</option>
+<option data-i18n="contact.opt_volume.52">1 000 à 10 000 unités/an</option>
+<option data-i18n="contact.opt_volume.53">10 000 à 100 000 unités/an</option>
+<option data-i18n="contact.opt_volume.54">Plus de 100 000 unités/an</option>
 </select>
 </div>
-<div class="form-group">
+<div class="form-group" data-i18n-html="contact.form_label.43">
 <label class="form-label">Horizon de mise sur le marché</label>
 <select class="form-select" name="timeline">
-<option>Moins de 12 mois</option>
-<option>12 à 24 mois</option>
-<option>2 à 4 ans</option>
-<option>Plus de 4 ans</option>
-<option>Non défini</option>
+<option data-i18n="contact.opt_timeline.50">Moins de 12 mois</option>
+<option data-i18n="contact.opt_timeline.51">12 à 24 mois</option>
+<option data-i18n="contact.opt_timeline.52">2 à 4 ans</option>
+<option data-i18n="contact.opt_timeline.53">Plus de 4 ans</option>
+<option data-i18n="contact.opt_timeline.54">Non défini</option>
 </select>
 </div>
 </div>
-<div class="form-group">
+<div class="form-group" data-i18n-html="contact.form_label.44">
 <label class="form-label">Décrivez votre projet <span class="req">*</span></label>
-<textarea class="form-textarea" name="message" placeholder="Quelques lignes pour nous présenter votre projet, vos enjeux et ce que vous attendez de Circum…" required=""></textarea>
-<span class="form-help">Confidentiel · Information traitée uniquement par l'équipe commerciale.</span>
+<textarea class="form-textarea" name="message" data-i18n-placeholder="contact.placeholder.3" placeholder="Quelques lignes pour nous présenter votre projet, vos enjeux et ce que vous attendez de Circum…" required=""></textarea>
+<span class="form-help" data-i18n="contact.form_help.50">Confidentiel · Information traitée uniquement par l'équipe commerciale.</span>
 </div>
-<div class="form-group">
+<div class="form-group" data-i18n-html="contact.form_label.45">
 <label class="form-label">Pièce jointe (cahier des charges, plans…)</label>
 <div class="form-file">
 <svg class="form-file-icon" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-<div class="form-file-text"><strong>Cliquez pour téléverser</strong> ou glissez vos documents ici</div>
-<div class="form-file-hint">PDF, DOC, ZIP · Max 20 Mo · NDA recommandé en amont</div>
+<div class="form-file-text" data-i18n="contact.form_file_text.50"><strong>Cliquez pour téléverser</strong> ou glissez vos documents ici</div>
+<div class="form-file-hint" data-i18n="contact.form_file_hint.50">PDF, DOC, ZIP · Max 20 Mo · NDA recommandé en amont</div>
 <input accept=".pdf,.doc,.docx,.zip" name="attachment" type="file"/>
 </div>
 </div>
@@ -274,7 +279,7 @@
 <label for="contact-consent"><strong>J'accepte que mes données soient utilisées</strong> pour traiter ma demande commerciale, conformément à notre politique RGPD. Pas d'usage marketing automatisé sans mon accord explicite.</label>
 </div>
 <button class="btn btn-primary form-submit" type="submit">
-<span>Envoyer ma demande</span>
+<span data-i18n="contact.submit.50">Envoyer ma demande</span>
 <span class="btn-arrow">→</span>
 </button>
 <div class="form-message"></div>
@@ -318,7 +323,7 @@
 <div class="footer-col-title" data-i18n="footer.col.company">Société</div>
 <div class="footer-list">
 <a data-i18n="footer.link.about" href="apropos.html">À propos</a>
-<a data-i18n="footer.link.founders" href="fondateurs.html">Fondateurs</a>
+<a data-i18n="footer.link.founders" href="apropos.html#founders">Fondateurs</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="footer.link.environment" href="apropos.html#environnement">Environnement</a>
 <a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
@@ -349,12 +354,14 @@
 </footer>
 <script src="js/i18n/common.js"></script>
 <script src="js/i18n/page-contact.js"></script>
+<script src="js/i18n/page-contact-extra.js"></script>
 <script src="js/i18n/loader.js"></script>
+<script src="js/hero-video.js"></script>
 <script defer="" src="js/main.js"></script>
 <script type="module">
   import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.0.45/+esm";
 
-  const lenis = new Lenis({
+  const lenis = window.lenis = new Lenis({
     duration: 1.1,
     smoothWheel: true,
   });

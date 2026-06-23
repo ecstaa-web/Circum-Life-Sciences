@@ -7,6 +7,7 @@
 <title data-i18n-title="meta.clients.title">Nos clients · Circum Life Sciences</title>
 <meta content="Circum Life Sciences — CDMO dispositifs médicaux. Suisse · France · Tunisie." name="description"/>
 <link href="css/main.css" rel="stylesheet"/>
+<link as="fetch" crossorigin="" href="assets/video/clients-hero.mp4" rel="preload" type="video/mp4"/>
 <link as="image" href="assets/img/circum-logo.png" rel="preload"/>
 </head>
 <body data-page="clients">
@@ -28,11 +29,10 @@
 <li class="nav-item">
 <a class="nav-link" href="apropos.html"><span data-i18n="nav.about">À propos</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="nav.sub.board" href="apropos.html#board">Board &amp; Conseil stratégique</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 <a data-i18n="nav.sub.environment" href="apropos.html#environnement">Politique environnementale</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
 </div>
 </li>
 <li class="nav-item">
@@ -40,22 +40,28 @@
 <div class="nav-submenu">
 <a data-i18n="nav.sub.conception" href="design.html#conception">Conception</a>
 <a data-i18n="nav.sub.qara" href="design.html#qara">Qualité &amp; Affaires Réglementaires</a>
-<a data-i18n="nav.sub.lab" href="design.html#laboratoire">Laboratoire</a>
-<a data-i18n="nav.sub.vv" href="design.html#vv">Vérification &amp; Validation</a>
 </div>
 </li>
 <li class="nav-item">
 <a class="nav-link" href="fabrication.html"><span data-i18n="nav.manufacturing">Fabrication</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
 <a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="nav.sub.molding" href="fabrication.html#moulage">Moulage par injection</a>
-<a data-i18n="nav.sub.assembly" href="fabrication.html#assemblage">Assemblage</a>
-<a data-i18n="nav.sub.sterilization" href="fabrication.html#sterilisation">Stérilisation</a>
+<a data-i18n="nav.sub.molding" href="fabrication.html#flux">Flux de production</a>
 </div>
 </li>
 <li class="nav-item"><a class="nav-link active" data-i18n="nav.clients" href="clients.html">Clients</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.news" href="news.html">News</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.contact" href="contact.html">Contact</a></li>
+<li class="nav-item">
+<a class="nav-link" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="contact.html"><span data-i18n="nav.contact">Contact</span> <span class="nav-link-chev">▾</span></a>
+<div class="nav-submenu">
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
+</div>
+</li>
 </ul>
 <div class="nav-cta-group">
 <div class="lang-switch">
@@ -74,9 +80,8 @@
 <div class="nav-mobile">
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.about">À propos</div>
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="fondateurs.html">Les trois fondateurs</a>
+<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
 </div>
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="mobile.title.services">Services</div>
@@ -85,26 +90,32 @@
 <a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
 </div>
 <div class="nav-mobile-section">
-<a data-i18n="footer.link.news" href="news.html">News &amp; Media</a>
-<a href="newsletter.html">Newsletter</a>
-<a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
-<a href="contact.html">Contact</a>
+<div class="nav-mobile-title" data-i18n="mobile.news">News &amp; Media</div>
+<a data-i18n="nav.news" href="news.html">News</a>
+<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
+</div>
+<div class="nav-mobile-section">
+<div class="nav-mobile-title" data-i18n="footer.col.contact">Contact</div>
+<a data-i18n="nav.contact" href="contact.html">Contact</a>
+<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
 </div>
 </div>
 <!-- ==================== HOME ==================== -->
 <main class="page-content">
 <section class="hero-video-wrap">
-<video autoplay="" class="hero-video-bg" loop="" muted="" playsinline="" poster="assets/img/hero-poster.jpg">
-<source src="assets/video/clients-hero.mp4" type="video/mp4"/>
-</video>
+<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="assets/video/clients-hero.mp4"></video>
 <div class="hero-video-overlay"></div>
 <div class="hero-video-content">
 <div class="hero-eyebrow" data-i18n="clients.page_hero_eyebrow.1">Confiance &amp; Partenariats</div>
 <h1 class="hero-title" data-i18n-html="clients.page_hero_title.2">Aux côtés de ceux qui <em>innovent.</em></h1>
 <p class="hero-subtitle" data-i18n="clients.page_hero_subtitle.3">De la startup deeptech aux grandes multinationales des dispositifs médicaux, Circum accompagne ses partenaires dans la durée. Confidentialité, exigence, partenariat.</p>
+<div class="hero-actions reveal">
+<a class="btn btn-pink" href="#clients-signature"><span data-i18n="clients.hero_btn.1">Découvrir nos partenariats</span><span class="btn-arrow">→</span></a>
+<a class="btn btn-outline-white" href="contact.html"><span data-i18n="clients.hero_btn.2">Nous contacter</span></a>
+</div>
 </div>
 </section>
-<section class="section clients-signature">
+<section class="section clients-signature" id="clients-signature">
 <div class="container clients-signature-grid">
 <div class="clients-signature-copy reveal">
 <span class="section-label" data-i18n="clients.signature_label.32">Partenariats à haute intensité</span>
@@ -201,7 +212,7 @@
 <div class="footer-col-title" data-i18n="footer.col.company">Société</div>
 <div class="footer-list">
 <a data-i18n="footer.link.about" href="apropos.html">À propos</a>
-<a data-i18n="footer.link.founders" href="fondateurs.html">Fondateurs</a>
+<a data-i18n="footer.link.founders" href="apropos.html#founders">Fondateurs</a>
 <a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
 <a data-i18n="footer.link.environment" href="apropos.html#environnement">Environnement</a>
 <a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
@@ -233,11 +244,12 @@
 <script src="js/i18n/common.js"></script>
 <script src="js/i18n/page-clients.js"></script>
 <script src="js/i18n/loader.js"></script>
+<script src="js/hero-video.js"></script>
 <script defer="" src="js/main.js"></script>
 <script type="module">
   import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.0.45/+esm";
 
-  const lenis = new Lenis({
+  const lenis = window.lenis = new Lenis({
     duration: 1.1,
     smoothWheel: true,
   });

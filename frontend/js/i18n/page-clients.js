@@ -3,6 +3,8 @@ window.CIRCUM_I18N_PAGE = {
     "clients.page_hero_eyebrow.1": "Confiance &amp; Partenariats",
     "clients.page_hero_title.2": "Aux cotes de ceux qui <em>innovent.</em>",
     "clients.page_hero_subtitle.3": "De la startup deeptech aux grandes multinationales des dispositifs medicaux, Circum accompagne ses partenaires dans la duree. Confidentialite, exigence, partenariat.",
+    "clients.hero_btn.1": "Découvrir nos partenariats",
+    "clients.hero_btn.2": "Nous contacter",
 
     "clients.signature_label.32": "Partenariats a haute intensite",
     "clients.signature_title.33": "Un format <em>simple, lisible</em> et oriente resultats.",
@@ -34,6 +36,8 @@ window.CIRCUM_I18N_PAGE = {
     "clients.page_hero_eyebrow.1": "Trust &amp; Partnerships",
     "clients.page_hero_title.2": "Alongside those who <em>innovate.</em>",
     "clients.page_hero_subtitle.3": "From deeptech startups to major multinational medical device companies, Circum supports its partners over the long term. Confidentiality, rigor, partnership.",
+    "clients.hero_btn.1": "Discover our partnerships",
+    "clients.hero_btn.2": "Contact us",
 
     "clients.signature_label.32": "High-intensity partnerships",
     "clients.signature_title.33": "A <em>clear, simple</em> format focused on outcomes.",
@@ -65,6 +69,8 @@ window.CIRCUM_I18N_PAGE = {
     "clients.page_hero_eyebrow.1": "Vertrauen &amp; Partnerschaften",
     "clients.page_hero_title.2": "An der Seite derjenigen, die <em>innovieren.</em>",
     "clients.page_hero_subtitle.3": "Von Deeptech-Start-ups bis zu grossen multinationalen Medizintechnikunternehmen begleitet Circum seine Partner langfristig. Vertraulichkeit, Anspruch, Partnerschaft.",
+    "clients.hero_btn.1": "Unsere Partnerschaften entdecken",
+    "clients.hero_btn.2": "Kontaktieren Sie uns",
 
     "clients.signature_label.32": "Partnerschaften mit hoher Intensitat",
     "clients.signature_title.33": "Ein <em>klares, einfaches</em> Format mit Fokus auf Ergebnisse.",
@@ -96,6 +102,8 @@ window.CIRCUM_I18N_PAGE = {
     "clients.page_hero_eyebrow.1": "Fiducia &amp; Partnership",
     "clients.page_hero_title.2": "Accanto a chi <em>innova.</em>",
     "clients.page_hero_subtitle.3": "Dalle startup deeptech alle grandi multinazionali dei dispositivi medici, Circum accompagna i suoi partner nel lungo periodo. Riservatezza, rigore, partnership.",
+    "clients.hero_btn.1": "Scopri le nostre partnership",
+    "clients.hero_btn.2": "Contattaci",
 
     "clients.signature_label.32": "Partnership ad alta intensita",
     "clients.signature_title.33": "Un formato <em>chiaro e semplice</em>, orientato ai risultati.",
