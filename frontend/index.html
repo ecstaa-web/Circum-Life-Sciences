@@ -302,6 +302,8 @@
     smoothWheel: true,
   });
 
+  window.lenis = lenis;
+
   function raf(time) {
     lenis.raf(time);
     requestAnimationFrame(raf);
@@ -324,5 +326,39 @@
 
   elements.forEach(el => observer.observe(el));
 </script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mon site</title>
+
+  <!-- CSS branché ici -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- 🔥 TA NAVBAR ICI -->
+  <nav class="navbar">
+    <div class="container">
+
+      <a class="logo" href="#">Brand</a>
+
+      <ul class="nav-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+
+      <div class="actions">
+        <a href="#" class="login">Login</a>
+        <a href="#" class="cta">Book a demo</a>
+      </div>
+
+    </div>
+  </nav>
+
+</body>
+</html>
 </body>
 </html

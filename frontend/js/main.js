@@ -32,7 +32,11 @@
 
       if (onHomePage) {
         event.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+          window.lenis.scrollTo(0);
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
         return;
       }
 
@@ -214,9 +218,14 @@
     var nav = document.querySelector('.nav');
     if (!nav) return;
     var ticking = false;
+    function getScrollY() {
+      if (window.lenis && typeof window.lenis.scroll === 'number') {
+        return window.lenis.scroll;
+      }
+      return window.scrollY || window.pageYOffset || 0;
+    }
     function update() {
-      var y = window.scrollY || window.pageYOffset || 0;
-      nav.classList.toggle('scrolled', y > 12);
+      nav.classList.toggle('scrolled', getScrollY() > 6);
       ticking = false;
     }
     window.addEventListener('scroll', function() {
@@ -225,6 +234,15 @@
         ticking = true;
       }
     }, { passive: true });
+    if (window.lenis && typeof window.lenis.on === 'function') {
+      window.lenis.on('scroll', update);
+    } else {
+      setTimeout(function() {
+        if (window.lenis && typeof window.lenis.on === 'function') {
+          window.lenis.on('scroll', update);
+        }
+      }, 300);
+    }
     update();
   }
 
