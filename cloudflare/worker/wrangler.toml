@@ -1,0 +1,21 @@
+name = "circum-api-proxy"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Route: attach this worker to your zone (adjust domain).
+# Example — proxy only /api/* on the public site:
+# routes = [
+#   { pattern = "www.circumlifesciences.com/api/*", zone_name = "circumlifesciences.com" },
+#   { pattern = "circumlifesciences.com/api/*", zone_name = "circumlifesciences.com" },
+# ]
+
+[vars]
+# Public URL of the FastAPI backend (no trailing slash).
+# Production example: https://api-internal.circumlifesciences.com
+BACKEND_ORIGIN = "http://127.0.0.1:8000"
+
+# Secrets (set via `wrangler secret put BACKEND_ORIGIN` in production):
+# wrangler secret put BACKEND_ORIGIN
+
+[observability]
+enabled = true

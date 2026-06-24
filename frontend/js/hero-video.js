@@ -134,7 +134,20 @@
       video.addEventListener('canplay', onReady, { once: true });
     }
 
-    video.play().catch(function () {});
+    video.addEventListener('error', onReady, { once: true });
+
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            video.play().catch(function () { markReady(video); });
+          }
+        });
+      }, { threshold: 0.08 });
+      obs.observe(video);
+    }
+
+    video.play().catch(function () { markReady(video); });
   }
 
   function boot() {

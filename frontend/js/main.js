@@ -345,6 +345,20 @@
 
   var I18N = (typeof window.CIRCUM_I18N !== 'undefined') ? window.CIRCUM_I18N : {};
 
+  // Charge les surcharges admin depuis l'API (MongoDB) et les fusionne dans I18N.
+  function loadContentOverrides() {
+    var base = (window.CIRCUM_API_BASE != null ? window.CIRCUM_API_BASE : '');
+    return fetch(base + '/api/content/overrides', { credentials: 'same-origin' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(overrides) {
+        if (!overrides) return;
+        LANGS.forEach(function(lang) {
+          if (overrides[lang]) Object.assign(I18N[lang], overrides[lang]);
+        });
+      })
+      .catch(function() { /* hors ligne ou API indisponible : textes statiques */ });
+  }
+
   function translatePage(lang) {
     if (!I18N[lang]) return;
     var dict = I18N[lang];
@@ -391,20 +405,29 @@
     document.documentElement.setAttribute('lang', lang);
   }
 
+  function applyLang(lang) {
+    if (!I18N[lang]) return;
+    try { localStorage.setItem(STORAGE, lang); } catch(e) {}
+    setLangActive(lang);
+    translatePage(lang);
+    requestAnimationFrame(function(){ moveLangIndicator(lang); });
+  }
+
+  window.CIRCUM_I18N_API = {
+    getLang: getCurrentLang,
+    setLang: applyLang,
+    translate: translatePage
+  };
+
   function initLangSwitcher() {
     var current = getCurrentLang();
     ensureLangIndicator();
-    setLangActive(current);
-    translatePage(current);
-    // Defer position to next frame so layout is settled
-    requestAnimationFrame(function(){ moveLangIndicator(current); });
+    applyLang(current);
     document.querySelectorAll('.lang-btn').forEach(function(btn) {
       btn.addEventListener('click', function(e) {
         e.preventDefault();
         var lang = btn.dataset.lang;
-        try { localStorage.setItem(STORAGE, lang); } catch(e) {}
-        setLangActive(lang);
-        translatePage(lang);
+        applyLang(lang);
       });
     });
     window.addEventListener('resize', function() {
@@ -478,8 +501,24 @@
     try { window.scrollTo({ top: messageEl.offsetTop - 100, behavior: 'smooth' }); } catch (e) {}
   }
 
+  function ensureHoneypot(form) {
+    if (form.querySelector('[name="website"]')) return;
+    var hp = document.createElement('div');
+    hp.className = 'form-honeypot';
+    hp.setAttribute('aria-hidden', 'true');
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'website';
+    input.tabIndex = -1;
+    input.autocomplete = 'off';
+    hp.appendChild(input);
+    form.insertBefore(hp, form.firstChild);
+  }
+
   function submitNewsletter(form) {
-    var consentCb = form.querySelector('input[type="checkbox"][id*="consent"], input[type="checkbox"][required]');
+    var consentCb = form.querySelector('input[type="checkbox"][name="consent"], input[type="checkbox"][id*="consent"], input[type="checkbox"][required]');
+    var implicitConsent = form.getAttribute('data-implicit-consent') === 'true';
+    var websiteEl = form.querySelector('[name="website"]');
     var data = {
       firstname: (form.querySelector('[name="firstname"]') || {}).value || '',
       lastname: (form.querySelector('[name="lastname"]') || {}).value || '',
@@ -487,7 +526,8 @@
       company: (form.querySelector('[name="company"]') || {}).value || '',
       role: (form.querySelector('[name="role"]') || {}).value || '',
       lang: (form.querySelector('[name="lang"]') || {}).value || getCurrentLang(),
-      consent: consentCb ? !!consentCb.checked : true
+      consent: consentCb ? !!consentCb.checked : implicitConsent,
+      website: websiteEl ? websiteEl.value : ''
     };
     // strip-form (email only): synthesize names
     if (!data.firstname && data.email) data.firstname = data.email.split('@')[0];
@@ -505,25 +545,14 @@
   }
 
   function submitContact(form) {
-    // No dedicated endpoint -> reuse newsletter store as a generic lead (best-effort), or fail gracefully.
-    var data = {
-      firstname: (form.querySelector('[name="firstname"]') || {}).value || 'Contact',
-      lastname: (form.querySelector('[name="lastname"]') || {}).value || '-',
-      email: (form.querySelector('[name="email"]') || {}).value || '',
-      company: (form.querySelector('[name="company"]') || {}).value || '',
-      role: (form.querySelector('[name="subject"]') || form.querySelector('[name="role"]') || {}).value || '',
-      lang: getCurrentLang(),
-      consent: true
-    };
-    return fetch(API_BASE + '/newsletter/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
+    var fd = new FormData(form);
+    fd.set('lang', getCurrentLang());
+    return fetch(API_BASE + '/contact/submit', { method: 'POST', body: fd });
   }
 
   function initForms() {
     document.querySelectorAll('form[data-form]').forEach(function(form) {
+      ensureHoneypot(form);
       form.addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -782,6 +811,11 @@
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  function newsMediaUrl(filename) {
+    if (!filename) return '';
+    return API_BASE + '/news/media/' + encodeURIComponent(filename);
+  }
+
   function initDynamicNews() {
     if ((document.body.dataset || {}).page !== 'news') return;
     var grid = document.querySelector('.news-grid');
@@ -791,23 +825,68 @@
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     }).then(function(items) {
-      if (!Array.isArray(items) || !items.length) return;
+      if (!Array.isArray(items) || !items.length) {
+        grid.innerHTML = '<p class="news-grid-empty">Aucune actualité publiée pour le moment.</p>';
+        return;
+      }
       var lang = getCurrentLang();
       grid.innerHTML = items.map(function(n, idx) {
-        var variant = n.variant && n.variant !== 1 ? ' v' + n.variant : '';
+        var variant = !n.cover_image && n.variant && n.variant !== 1 ? ' v' + n.variant : '';
+        var visualStyle = n.cover_image
+          ? ' style="background-image:url(\'' + newsMediaUrl(n.cover_image).replace(/'/g, '%27') + '\');"'
+          : '';
         return '' +
-          '<article class="news-card reveal visible" data-testid="news-card-' + idx + '">' +
-            '<div class="news-card-visual' + variant + '">' +
-              '<span class="news-card-tag">' + escapeHTML(n.tag) + '</span>' +
-            '</div>' +
-            '<div class="news-card-body">' +
-              '<div class="news-card-date">' + escapeHTML(formatDateForLocale(n.date, lang)) + '</div>' +
-              '<h3 class="news-card-title">' + escapeHTML(n.title) + '</h3>' +
-              '<p class="news-card-summary">' + escapeHTML(n.summary) + '</p>' +
-            '</div>' +
-          '</article>';
+          '<a class="news-card-link" href="news-article.html?id=' + encodeURIComponent(n.id) + '" data-testid="news-card-' + idx + '">' +
+            '<article class="news-card reveal visible">' +
+              '<div class="news-card-visual' + variant + '"' + visualStyle + '>' +
+                '<span class="news-card-tag">' + escapeHTML(n.tag) + '</span>' +
+              '</div>' +
+              '<div class="news-card-body">' +
+                '<div class="news-card-date">' + escapeHTML(formatDateForLocale(n.date, lang)) + '</div>' +
+                '<h3 class="news-card-title">' + escapeHTML(n.title) + '</h3>' +
+                '<p class="news-card-summary">' + escapeHTML(n.summary) + '</p>' +
+              '</div>' +
+            '</article>' +
+          '</a>';
       }).join('');
-    }).catch(function() { /* keep static fallback if API fails */ });
+    }).catch(function() {
+      grid.innerHTML = '<p class="news-grid-empty">Impossible de charger les actualités.</p>';
+    });
+  }
+
+  function initNewsArticle() {
+    if ((document.body.dataset || {}).page !== 'news-article') return;
+    var params = new URLSearchParams(window.location.search);
+    var id = params.get('id');
+    var root = document.getElementById('news-article-root');
+    if (!id || !root) {
+      if (root) root.innerHTML = '<p class="news-article-error">Article introuvable.</p>';
+      return;
+    }
+    fetch(API_BASE + '/news/' + encodeURIComponent(id)).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function(article) {
+      var lang = getCurrentLang();
+      var coverHtml = article.cover_image
+        ? '<div class="news-article-cover"><img src="' + escapeHTML(newsMediaUrl(article.cover_image)) + '" alt=""/></div>'
+        : '<div class="news-article-cover news-article-cover-fallback v' + (article.variant || 1) + '"></div>';
+      var gallery = (article.gallery || []).map(function(name) {
+        return '<figure class="news-article-gallery-item"><img src="' + escapeHTML(newsMediaUrl(name)) + '" alt=""/></figure>';
+      }).join('');
+      root.innerHTML =
+        coverHtml +
+        '<div class="news-article-meta">' +
+          '<span class="news-article-tag">' + escapeHTML(article.tag) + '</span>' +
+          '<time class="news-article-date">' + escapeHTML(formatDateForLocale(article.date, lang)) + '</time>' +
+        '</div>' +
+        '<h1 class="news-article-title">' + escapeHTML(article.title) + '</h1>' +
+        '<div class="news-article-body prose">' + (article.body_html || '') + '</div>' +
+        (gallery ? '<div class="news-article-gallery">' + gallery + '</div>' : '');
+      document.title = article.title + ' · Circum Life Sciences';
+    }).catch(function() {
+      root.innerHTML = '<p class="news-article-error">Article introuvable ou indisponible.</p>';
+    });
   }
 
   function monthLabel(iso, lang) {
@@ -850,6 +929,15 @@
     }).catch(function () { /* keep static fallback */ });
   }
 
+  function maybeLoadVisualEditor() {
+    if (window.parent === window) return;
+    if (new URLSearchParams(location.search).get('circum_edit') !== '1') return;
+    var s = document.createElement('script');
+    s.src = '/js/visual-editor.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }
+
   // ===== Init all =====
   document.addEventListener('DOMContentLoaded', function() {
     if ('scrollRestoration' in history) {
@@ -861,15 +949,18 @@
     initAnchorScroll();
     initSiteMapBubble();
     initReveal();
-    initLangSwitcher();
-    initNavScroll();
-    initFileInputs();
-    initForms();
-    initVideoPrefetch();
-    initCountUpAnimation();
-    initDynamicNews();
-    initDynamicIssues();
-    // initSmoothScroll(); // disabled: hijacking the wheel felt slow/laggy. Native browser scroll + CSS `scroll-behavior: smooth` handle this.
-    scrollToHash();
+    loadContentOverrides().then(function() {
+      initLangSwitcher();
+      initNavScroll();
+      initFileInputs();
+      initForms();
+      initVideoPrefetch();
+      initCountUpAnimation();
+      initDynamicNews();
+      initNewsArticle();
+      initDynamicIssues();
+      scrollToHash();
+      maybeLoadVisualEditor();
+    });
   });
 })();

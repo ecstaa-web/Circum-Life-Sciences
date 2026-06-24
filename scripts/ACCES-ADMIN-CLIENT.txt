@@ -1,0 +1,18 @@
+Circum Life Sciences — acces admin pour votre client
+====================================================
+
+Votre client n'a PAS besoin de DEMARRER.bat ni de Python installe.
+
+En production, il suffit d'ouvrir dans un navigateur :
+
+  https://votre-domaine.com/admin.html
+
+(se connecter avec son email admin + mot de passe, ou Google)
+
+DEMARRER.bat sert uniquement aux developpeurs pour tester en local
+sur http://127.0.0.1:3000/admin.html
+
+Deploiement production (sans Node.js sur le poste client) :
+  - Site statique : Cloudflare Pages, Netlify, ou hebergement web classique
+  - API backend  : serveur Python/FastAPI (voir cloudflare/worker/DEPLOI-SANS-NODE.txt)
+  - Guide worker : cloudflare/worker/DEPLOI-SANS-NODE.txt

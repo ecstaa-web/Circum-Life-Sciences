@@ -234,22 +234,22 @@
     "it": "<span class=\"section-label\">Presenza</span>\n      <h2 class=\"world-title\"><strong>Circum</strong>dans<em>le monde.</em></h2>\n      <p class=\"world-text\">La nostra architecture tripartite combine la rigueur réglementaire suisse, la créativité française e l'efficacité industrielle méditerranéenne. Trois sites, une seule équipe, une seule chaîne de valeur intégrée.</p>\n      <a href=\"contact.html\"  class=\"btn btn-outline-white\"><span>Incontrateci</span><span class=\"btn-arrow\">→</span></a>"
   },
   "home.world_site_city.39": {
-    "fr": "Genève · Suisse",
-    "en": "Geneva · Switzerland",
-    "de": "Genf · Schweiz",
-    "it": "Ginevra · Svizzera"
+    "fr": "Zurich · Suisse",
+    "en": "Zurich · Switzerland",
+    "de": "Zürich · Schweiz",
+    "it": "Zurigo · Svizzera"
   },
   "home.world_site_city.40": {
-    "fr": "Lyon · France",
-    "en": "Lyon · France",
-    "de": "Lyon · Frankreich",
-    "it": "Lione · Francia"
+    "fr": "Nice · France",
+    "en": "Nice · France",
+    "de": "Nizza · Frankreich",
+    "it": "Nizza · Francia"
   },
   "home.world_site_city.41": {
-    "fr": "Tunis · Tunisie",
-    "en": "Tunis · Tunisia",
-    "de": "Tunis · Tunesien",
-    "it": "Tunisi · Tunisia"
+    "fr": "Sousse · Tunisie",
+    "en": "Sousse · Tunisia",
+    "de": "Sousse · Tunesien",
+    "it": "Sousse · Tunisia"
   },
   "home.world_site_role.42": {
     "fr": "Siège · Gouvernance",

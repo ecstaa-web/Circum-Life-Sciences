@@ -1,0 +1,83 @@
+================================================================================
+  CLOUDFLARE WORKER — DÉPLOIEMENT SANS NODE.JS
+  Circum Life Sciences — proxy /api/*
+================================================================================
+
+Aucune installation locale requise. Tout se fait dans le navigateur (dashboard
+Cloudflare) en copiant-collant le fichier src/index.js.
+
+--------------------------------------------------------------------------------
+ÉTAPE 1 — Compte Cloudflare
+--------------------------------------------------------------------------------
+1. Connectez-vous sur https://dash.cloudflare.com
+2. Ajoutez votre domaine (ex. circumlifesciences.com) si ce n'est pas déjà fait
+
+--------------------------------------------------------------------------------
+ÉTAPE 2 — Créer le Worker
+--------------------------------------------------------------------------------
+1. Menu : Workers & Pages → Create → Create Worker
+2. Nom suggéré : circum-api-proxy
+3. Cliquez Deploy (modèle par défaut)
+4. Edit code → supprimez tout le contenu
+5. Copiez-collez le contenu COMPLET de :
+      cloudflare/worker/src/index.js
+6. Save and deploy
+
+--------------------------------------------------------------------------------
+ÉTAPE 3 — Variable d'environnement
+--------------------------------------------------------------------------------
+1. Workers & Pages → circum-api-proxy → Settings → Variables
+2. Add variable :
+      Name  : BACKEND_ORIGIN
+      Value : https://VOTRE-BACKEND-FASTAPI.example.com
+   (URL publique ou privée du serveur FastAPI, SANS slash final)
+3. Save
+
+Pour la production, ne mettez PAS http://127.0.0.1:8000 — utilisez l'URL réelle
+de votre API (VPS, Railway, Render, etc.).
+
+--------------------------------------------------------------------------------
+ÉTAPE 4 — Route /api/*
+--------------------------------------------------------------------------------
+1. Menu : Workers & Pages → circum-api-proxy → Settings → Triggers → Routes
+2. Add route :
+      Route : www.circumlifesciences.com/api/*
+      Zone  : circumlifesciences.com
+3. Répétez pour :
+      circumlifesciences.com/api/*
+
+Le worker intercepte uniquement /api/* ; le reste du site reste sur Pages ou
+votre hébergeur statique.
+
+--------------------------------------------------------------------------------
+ÉTAPE 5 — Backend FastAPI
+--------------------------------------------------------------------------------
+Dans le .env du backend :
+
+  TRUST_PROXY=true
+  ENVIRONMENT=production
+  ALLOWED_ORIGINS=https://www.circumlifesciences.com,https://circumlifesciences.com
+  COOKIE_SECURE=true
+
+--------------------------------------------------------------------------------
+ÉTAPE 6 — Site statique (sans Node.js)
+--------------------------------------------------------------------------------
+Option A — Cloudflare Pages (recommandé)
+  Workers & Pages → Create → Pages → Upload assets
+  Uploadez le dossier frontend/ (zip)
+  Domaine : www.circumlifesciences.com
+
+Option B — Python en local / sur VPS
+  python scripts/serve_frontend.py
+  (serve le site + proxy /api vers le backend)
+
+Option C — Ouvrir les fichiers HTML directement
+  Possible pour prévisualiser, mais les formulaires nécessitent le backend.
+
+--------------------------------------------------------------------------------
+VÉRIFICATION
+--------------------------------------------------------------------------------
+  curl https://www.circumlifesciences.com/api/health
+  → {"status":"ok","service":"circum"}
+
+================================================================================

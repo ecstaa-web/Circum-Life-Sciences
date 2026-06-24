@@ -45,4 +45,19 @@
   ['fr', 'en', 'de', 'it'].forEach(function (lang) {
     window.CIRCUM_I18N_PAGE[lang] = Object.assign(window.CIRCUM_I18N_PAGE[lang] || {}, extra[lang] || {});
   });
+
+  if (window.CIRCUM_VMODEL_HTML) {
+    ['fr', 'en', 'de', 'it'].forEach(function (lang) {
+      var key = 'design.conception_hover_content.73';
+      var content = window.CIRCUM_I18N_PAGE[lang] && window.CIRCUM_I18N_PAGE[lang][key];
+      if (!content || content.indexOf('vv-model') === -1) return;
+      var listMatch = content.match(/<ol class='vv-model-list'>([\s\S]*?)<\/ol>/);
+      var listInner = listMatch ? listMatch[1] : '';
+      var intro = content.split("<div class='vv-model'>")[0];
+      window.CIRCUM_I18N_PAGE[lang][key] =
+        intro +
+        window.CIRCUM_VMODEL_HTML +
+        (listInner ? '<ol class="circum-vdiagram-list">' + listInner + '</ol>' : '');
+    });
+  }
 })();

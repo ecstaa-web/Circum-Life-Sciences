@@ -18,7 +18,7 @@ BASE_URL = "https://b709274e-5200-48ec-baa8-751e87349ea7.preview.emergentagent.c
 UPLOAD_DIR = Path("/app/backend/uploads")
 
 ADMIN_EMAIL = "stag3@circumlifesciences.com"
-ADMIN_PASSWORD = "Stag3Admin2026!"
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 
 def _mongosh(script: str) -> str:

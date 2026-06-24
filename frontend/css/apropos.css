@@ -1,0 +1,271 @@
+/* À propos — aligné sur la charte globale (main.css) */
+
+body[data-page="apropos"] .about-intro {
+  padding: clamp(72px, 10vw, 120px) 0 clamp(48px, 8vw, 72px);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(32, 90, 153, 0.06) 0%, transparent 55%),
+    var(--white);
+}
+
+body[data-page="apropos"] .about-intro .section-header {
+  margin-bottom: clamp(40px, 5vw, 56px);
+}
+
+body[data-page="apropos"] .about-body-copy {
+  max-width: 820px;
+  margin: 0 auto clamp(48px, 7vw, 72px);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-soft);
+  text-align: center;
+}
+
+body[data-page="apropos"] .about-body-copy p {
+  margin: 0 0 18px;
+}
+
+body[data-page="apropos"] .about-body-copy p:last-child {
+  margin-bottom: 0;
+}
+
+body[data-page="apropos"] .about-body-copy strong {
+  color: var(--blue-dark);
+  font-weight: 600;
+}
+
+/* 4 piliers — cartes glass */
+body[data-page="apropos"] .about-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: clamp(40px, 6vw, 56px);
+}
+
+body[data-page="apropos"] .about-pillar {
+  position: relative;
+  padding: 28px 22px 26px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+body[data-page="apropos"] .about-pillar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(32, 90, 153, 0.04) 0%, rgba(243, 101, 180, 0.04) 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+body[data-page="apropos"] .about-pillar:hover {
+  transform: translateY(-4px);
+  border-color: rgba(32, 90, 153, 0.14);
+  box-shadow: 0 20px 40px -24px rgba(32, 90, 153, 0.18);
+}
+
+body[data-page="apropos"] .about-pillar:hover::before {
+  opacity: 1;
+}
+
+body[data-page="apropos"] .about-pillar-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--pink);
+  margin-bottom: 14px;
+}
+
+body[data-page="apropos"] .about-pillar-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--blue);
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+
+body[data-page="apropos"] .about-pillar-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+body[data-page="apropos"] .about-intro .about-principles {
+  text-align: center;
+  margin-bottom: clamp(40px, 6vw, 56px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body[data-page="apropos"] .about-principle-line {
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 300;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+body[data-page="apropos"] .about-principle-line em {
+  font-style: italic;
+  color: var(--pink);
+  font-weight: 500;
+}
+
+/* Mission */
+body[data-page="apropos"] .about-mission {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: clamp(8px, 2vw, 16px);
+}
+
+body[data-page="apropos"] .about-mission-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--pink);
+  margin-bottom: 14px;
+}
+
+body[data-page="apropos"] .about-mission-text {
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.65;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+body[data-page="apropos"] .about-mission-text em {
+  font-style: italic;
+  color: var(--pink);
+  font-weight: 500;
+}
+
+/* Chiffres clés — réutilise .figures de main.css */
+body[data-page="apropos"] .about-figures {
+  background: var(--gray-50);
+}
+
+/* Sites — 3 cartes */
+body[data-page="apropos"] .about-sites {
+  padding: clamp(72px, 10vw, 110px) 0;
+  background: var(--white);
+}
+
+body[data-page="apropos"] .about-sites .section-header {
+  margin-bottom: clamp(40px, 5vw, 56px);
+}
+
+@media (max-width: 640px) {
+  body[data-page="apropos"] .about-sites [data-i18n="apropos.sites_lead.80"] {
+    display: none;
+  }
+}
+
+body[data-page="apropos"] .about-sites-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+body[data-page="apropos"] .about-site {
+  position: relative;
+  padding: 32px 28px 28px;
+  border-radius: 24px;
+  background: var(--gray-50);
+  border: 1px solid var(--border);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+}
+
+body[data-page="apropos"] .about-site:hover {
+  transform: translateY(-6px);
+  background: var(--white);
+  border-color: rgba(32, 90, 153, 0.14);
+  box-shadow: 0 24px 48px -20px rgba(32, 90, 153, 0.12);
+}
+
+body[data-page="apropos"] .about-site-index {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--pink);
+  margin-bottom: 16px;
+}
+
+body[data-page="apropos"] .about-site-region {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+body[data-page="apropos"] .about-site-name {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--blue-dark);
+  margin: 0 0 12px;
+  line-height: 1.2;
+}
+
+body[data-page="apropos"] .about-site-desc {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-soft);
+  margin: 0 0 14px;
+}
+
+body[data-page="apropos"] .about-site-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+body[data-page="apropos"] .about-site-list li {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-soft);
+  padding-left: 14px;
+  position: relative;
+}
+
+body[data-page="apropos"] .about-site-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--pink) 100%);
+}
+
+@media (max-width: 1024px) {
+  body[data-page="apropos"] .about-pillars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  body[data-page="apropos"] .about-sites-grid {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-page="apropos"] .about-pillars {
+    grid-template-columns: 1fr;
+  }
+}

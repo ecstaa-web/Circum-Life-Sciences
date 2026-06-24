@@ -2,6 +2,22 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Serve frontend (Python)",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"${workspaceFolder}/scripts/serve_frontend.py"
+			],
+			"options": {
+				"env": {
+					"BACKEND_URL": "http://127.0.0.1:8000",
+					"PORT": "3000"
+				}
+			},
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
 			"label": "copy-lab-image",
 			"type": "shell",
 			"command": "powershell",

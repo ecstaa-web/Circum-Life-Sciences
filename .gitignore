@@ -5,3 +5,14 @@ credentials.json
 *.pem
 *.key
 .credentials
+.venv/
+backend/uploads/
+backend/data/content_overrides.json
+backend/data/local_db/
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+memory/test_credentials.md
+frontend/assets/video/_original/
+cloudflare/worker/node_modules/
+cloudflare/worker/.wrangler/

@@ -7,6 +7,7 @@ import logging
 import secrets
 import bcrypt
 import resend
+import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional, List
@@ -16,21 +17,60 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request, Response, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ValidationError
+
+from security import (
+    SecurityHeadersMiddleware,
+    cookie_settings,
+    get_client_ip,
+    is_production,
+    parse_allowed_origins,
+    rate_limit,
+    safe_error_detail,
+    validate_email_path,
+    validate_upload_magic,
+    validate_image_magic,
+    validate_uuid,
+)
+from content_store import get_admin_page_content, list_pages, load_overrides_from_db, save_content_updates
+from validators import (
+    AllowlistAdd,
+    CareersApplyForm,
+    ContactSubmitForm,
+    ContentSavePayload,
+    ForgotPasswordPayload,
+    LoginPayload,
+    NewsletterIssueIn,
+    NewsletterSubscribe,
+    ResetPasswordPayload,
+    SessionExchange,
+    SetPasswordPayload,
+)
 
 load_dotenv()
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("circum")
 
-MONGO_URL = os.environ["MONGO_URL"]
-DB_NAME = os.environ["DB_NAME"]
-UPLOAD_DIR = Path(os.environ.get("UPLOAD_DIR", "/app/backend/uploads"))
+BACKEND_ROOT = Path(__file__).resolve().parent
+MONGO_URL = os.environ.get("MONGO_URL", "json://./data/local_db")
+DB_NAME = os.environ.get("DB_NAME", "circum")
+UPLOAD_DIR = Path(os.environ.get("UPLOAD_DIR", str(BACKEND_ROOT / "uploads")))
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+NEWS_MEDIA_DIR = UPLOAD_DIR / "news"
+NEWS_MEDIA_DIR.mkdir(parents=True, exist_ok=True)
+NEWS_IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp"}
+NEWS_IMAGE_MAX_BYTES = 8 * 1024 * 1024
 DEFAULT_ADMIN_EMAIL = os.environ.get("DEFAULT_ADMIN_EMAIL", "stag3@circumlifesciences.com").lower()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Stag3Admin2026!")
+if is_production() and not os.environ.get("ADMIN_PASSWORD"):
+    raise RuntimeError("ADMIN_PASSWORD must be set in production")
+if not os.environ.get("ADMIN_PASSWORD"):
+    logger.warning("ADMIN_PASSWORD not set — using dev default (local JSON mode only)")
 RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
 SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "onboarding@resend.dev")
-APP_PUBLIC_URL = os.environ.get("APP_PUBLIC_URL", "")
+APP_PUBLIC_URL = os.environ.get("APP_PUBLIC_URL", "http://127.0.0.1:3000")
 
 if RESEND_API_KEY:
     resend.api_key = RESEND_API_KEY
@@ -41,18 +81,49 @@ MAX_FAILED_ATTEMPTS = 5
 LOCKOUT_MINUTES = 15
 RESET_TOKEN_TTL_HOURS = 1
 
-client = AsyncIOMotorClient(MONGO_URL)
-db = client[DB_NAME]
+# Base de données : MongoDB (prod) ou fichiers JSON locaux (dev sans admin)
+USE_JSON_DB = MONGO_URL.startswith("json://")
+client = None
+if USE_JSON_DB:
+    from json_store import JsonDatabase
 
-app = FastAPI(title="Circum Life Sciences API")
+    json_path = MONGO_URL.replace("json://", "", 1)
+    if not Path(json_path).is_absolute():
+        json_path = BACKEND_ROOT / json_path
+    db = JsonDatabase(Path(json_path))
+    logger.info("Using local JSON database at %s", json_path)
+else:
+    client = AsyncIOMotorClient(MONGO_URL)
+    db = client[DB_NAME]
 
+app = FastAPI(title="Circum Life Sciences API", docs_url=None if is_production() else "/docs", redoc_url=None if is_production() else "/redoc")
+
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=parse_allowed_origins(),
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Circum-CSRF"],
 )
+
+
+@app.middleware("http")
+async def global_api_rate_limit(request: Request, call_next):
+    if request.url.path.startswith("/api/"):
+        rate_limit(f"api:{get_client_ip(request)}", 600, 3600)
+    return await call_next(request)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_request: Request, exc: RequestValidationError):
+    return JSONResponse(status_code=422, content={"detail": "Invalid request data"})
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(_request: Request, exc: Exception):
+    logger.exception("Unhandled error: %s", exc)
+    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 
 
 # ============ Helpers ============
@@ -68,16 +139,6 @@ def verify_password(password: str, hashed: str) -> bool:
 
 
 # ============ Models ============
-class NewsletterSubscribe(BaseModel):
-    firstname: str = Field(min_length=1, max_length=80)
-    lastname: str = Field(min_length=1, max_length=80)
-    email: EmailStr
-    company: Optional[str] = None
-    role: Optional[str] = None
-    lang: Optional[str] = "fr"
-    consent: bool = True
-
-
 class NewsItem(BaseModel):
     id: str
     title: str
@@ -85,41 +146,90 @@ class NewsItem(BaseModel):
     tag: str
     date: str
     variant: int = 1
+    cover_image: Optional[str] = None
 
 
-class SessionExchange(BaseModel):
-    session_id: str
+class NewsDetail(NewsItem):
+    body_html: str = ""
+    gallery: List[str] = []
 
 
-class AllowlistAdd(BaseModel):
-    email: EmailStr
+def _sanitize_news_html(html: str) -> str:
+    if not html:
+        return ""
+    cleaned = re.sub(r"<\s*script\b[^>]*>.*?<\s*/\s*script\s*>", "", html, flags=re.I | re.S)
+    cleaned = re.sub(r"<\s*iframe\b[^>]*>.*?<\s*/\s*iframe\s*>", "", cleaned, flags=re.I | re.S)
+    cleaned = re.sub(r"\s+on\w+\s*=\s*\"[^\"]*\"", "", cleaned, flags=re.I)
+    cleaned = re.sub(r"\s+on\w+\s*=\s*'[^']*'", "", cleaned, flags=re.I)
+    return cleaned[:50000]
 
 
-class LoginPayload(BaseModel):
-    email: EmailStr
-    password: str = Field(min_length=1)
+def _news_doc_to_list_item(doc: dict) -> NewsItem:
+    return NewsItem(
+        id=doc["_id"],
+        title=doc["title"],
+        summary=doc["summary"],
+        tag=doc["tag"],
+        date=doc["date"],
+        variant=int(doc.get("variant") or 1),
+        cover_image=doc.get("cover_image"),
+    )
 
 
-class SetPasswordPayload(BaseModel):
-    password: str = Field(min_length=8, max_length=200)
+def _news_doc_to_detail(doc: dict) -> NewsDetail:
+    base = _news_doc_to_list_item(doc)
+    return NewsDetail(
+        **base.model_dump(),
+        body_html=doc.get("body_html") or doc.get("summary") or "",
+        gallery=list(doc.get("gallery") or []),
+    )
 
 
-class ForgotPasswordPayload(BaseModel):
-    email: EmailStr
+def _safe_news_media_name(name: str) -> str:
+    base = Path(name).name
+    if not base or not re.match(r"^news_[a-zA-Z0-9._-]+$", base):
+        raise HTTPException(status_code=400, detail="Invalid media filename")
+    return base
 
 
-class ResetPasswordPayload(BaseModel):
-    token: str = Field(min_length=8)
-    password: str = Field(min_length=8, max_length=200)
+async def _save_news_image(upload: UploadFile, article_id: str, label: str) -> str:
+    if not upload or not upload.filename:
+        raise HTTPException(status_code=400, detail="Image file required")
+    ext = Path(upload.filename).suffix.lower()
+    if ext not in NEWS_IMAGE_EXT:
+        raise HTTPException(status_code=400, detail="Invalid image type. Allowed: JPG, PNG, WebP")
+    saved_name = f"news_{article_id}_{label}_{uuid.uuid4().hex[:8]}{ext}"
+    saved_path = NEWS_MEDIA_DIR / saved_name
+    written = 0
+    header_checked = False
+    with saved_path.open("wb") as out:
+        while True:
+            chunk = await upload.read(1024 * 64)
+            if not chunk:
+                break
+            if not header_checked:
+                validate_image_magic(chunk[:16], ext)
+                header_checked = True
+            written += len(chunk)
+            if written > NEWS_IMAGE_MAX_BYTES:
+                out.close()
+                saved_path.unlink(missing_ok=True)
+                raise HTTPException(status_code=400, detail="Image too large (max 8 MB)")
+            out.write(chunk)
+    return saved_name
 
 
-class NewsletterIssueIn(BaseModel):
-    quarter: str = Field(min_length=2, max_length=4)  # Q1, Q2, Q3, Q4
-    year: int = Field(ge=2000, le=2100)
-    date: str  # ISO date (e.g. "2026-03-01")
-    title: str = Field(min_length=1, max_length=240)
-    summary: str = Field(min_length=1, max_length=1500)
-    link: Optional[str] = None
+def _delete_news_files(doc: dict) -> None:
+    names = []
+    if doc.get("cover_image"):
+        names.append(doc["cover_image"])
+    names.extend(doc.get("gallery") or [])
+    for name in names:
+        try:
+            path = NEWS_MEDIA_DIR / _safe_news_media_name(name)
+            path.unlink(missing_ok=True)
+        except HTTPException:
+            continue
 
 
 # ============ Seed ============
@@ -149,13 +259,11 @@ async def seed_data():
 
     # News
     if await db["news"].count_documents({}) == 0:
-        docs = [{"_id": str(uuid.uuid4()), **n, "created_at": datetime.now(timezone.utc).isoformat()} for n in SEED_NEWS]
+        docs = []
+        for n in SEED_NEWS:
+            doc = {"_id": str(uuid.uuid4()), **n, "body_html": f"<p>{n['summary']}</p>", "gallery": [], "cover_image": None, "created_at": datetime.now(timezone.utc).isoformat()}
+            docs.append(doc)
         await db["news"].insert_many(docs)
-
-    # Newsletter issues
-    if await db["newsletter_issues"].count_documents({}) == 0:
-        docs = [{"_id": str(uuid.uuid4()), **n, "created_at": datetime.now(timezone.utc).isoformat()} for n in SEED_NEWSLETTER_ISSUES]
-        await db["newsletter_issues"].insert_many(docs)
 
     # Admin allow-list
     if await db["admin_allowlist"].count_documents({}) == 0:
@@ -168,7 +276,7 @@ async def seed_data():
     # Seed admin user with password (idempotent — set initial password ONLY if user
     # has no password_hash yet. NEVER overwrite a user-set password on restart.)
     existing = await db["users"].find_one({"email": DEFAULT_ADMIN_EMAIL})
-    if existing is None:
+    if existing is None and ADMIN_PASSWORD:
         user_id = f"user_{uuid.uuid4().hex[:12]}"
         await db["users"].insert_one({
             "user_id": user_id,
@@ -178,7 +286,7 @@ async def seed_data():
             "auth_methods": ["password"],
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
-    elif not existing.get("password_hash"):
+    elif existing and not existing.get("password_hash") and ADMIN_PASSWORD:
         # User exists (e.g., from Google flow) but never had a password — bootstrap one.
         await db["users"].update_one(
             {"email": DEFAULT_ADMIN_EMAIL},
@@ -203,7 +311,7 @@ async def _get_session(request: Request, authorization: Optional[str] = None) ->
         raise HTTPException(status_code=401, detail="Not authenticated")
     sess = await db["user_sessions"].find_one({"session_token": token}, {"_id": 0})
     if not sess:
-        raise HTTPException(status_code=401, detail="Invalid session")
+        raise HTTPException(status_code=401, detail="Not authenticated")
     expires_at = sess.get("expires_at")
     if isinstance(expires_at, str):
         expires_at = datetime.fromisoformat(expires_at)
@@ -213,39 +321,50 @@ async def _get_session(request: Request, authorization: Optional[str] = None) ->
         raise HTTPException(status_code=401, detail="Session expired")
     user = await db["users"].find_one({"user_id": sess["user_id"]}, {"_id": 0, "password_hash": 0})
     if not user:
-        raise HTTPException(status_code=401, detail="User not found")
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    user["_session"] = sess
     return user
 
 
 async def require_admin(request: Request, authorization: Optional[str] = Header(None)) -> dict:
     user = await _get_session(request, authorization)
+    using_bearer = bool(authorization and authorization.lower().startswith("bearer "))
+    # CSRF protects cookie-based browser sessions; Bearer tokens are not auto-sent cross-site.
+    if request.method not in ("GET", "HEAD", "OPTIONS") and not using_bearer:
+        csrf = request.headers.get("x-circum-csrf")
+        expected = (user.get("_session") or {}).get("csrf_token")
+        if not csrf or not expected or csrf != expected:
+            raise HTTPException(status_code=403, detail="Forbidden")
     if not await _is_allowlisted(user["email"]):
-        raise HTTPException(status_code=403, detail="Not an admin")
+        raise HTTPException(status_code=403, detail="Forbidden")
     return user
 
 
 def _set_session_cookie(response: Response, session_token: str):
+    opts = cookie_settings()
     response.set_cookie(
         key="session_token",
         value=session_token,
         httponly=True,
-        secure=True,
-        samesite="none",
+        secure=opts["secure"],
+        samesite=opts["samesite"],
         path="/",
         max_age=SESSION_TTL_DAYS * 24 * 3600,
     )
 
 
-async def _create_session(user_id: str) -> str:
+async def _create_session(user_id: str) -> tuple[str, str]:
     token = uuid.uuid4().hex + uuid.uuid4().hex
+    csrf = secrets.token_urlsafe(32)
     expires_at = datetime.now(timezone.utc) + timedelta(days=SESSION_TTL_DAYS)
     await db["user_sessions"].insert_one({
         "user_id": user_id,
         "session_token": token,
+        "csrf_token": csrf,
         "expires_at": expires_at,
         "created_at": datetime.now(timezone.utc),
     })
-    return token
+    return token, csrf
 
 
 async def _check_brute_force(email: str, ip: str) -> None:
@@ -289,11 +408,39 @@ async def health():
 
 @app.get("/api/news", response_model=List[NewsItem])
 async def list_news():
-    cursor = db["news"].find({}, {"_id": 1, "title": 1, "summary": 1, "tag": 1, "date": 1, "variant": 1}).sort("date", -1)
+    cursor = db["news"].find({}).sort("date", -1)
     items: List[NewsItem] = []
     async for doc in cursor:
-        items.append(NewsItem(id=doc["_id"], title=doc["title"], summary=doc["summary"], tag=doc["tag"], date=doc["date"], variant=int(doc.get("variant", 1))))
+        items.append(_news_doc_to_list_item(doc))
     return items
+
+
+@app.get("/api/news/{article_id}", response_model=NewsDetail)
+async def get_news_article(article_id: str):
+    article_id = validate_uuid(article_id, "article_id")
+    doc = await db["news"].find_one({"_id": article_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return _news_doc_to_detail(doc)
+
+
+@app.get("/api/news/media/{filename}")
+async def get_news_media(filename: str):
+    safe = _safe_news_media_name(filename)
+    path = NEWS_MEDIA_DIR / safe
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Not found")
+    return FileResponse(path)
+
+
+@app.get("/api/content/overrides")
+async def content_overrides_public():
+    """
+    Surcharges de texte éditées via l'admin.
+    Fusionnées côté client avec les dictionnaires i18n statiques (main.js).
+    """
+    overrides = await load_overrides_from_db(db)
+    return overrides
 
 
 @app.get("/api/newsletter/issues")
@@ -310,7 +457,8 @@ async def list_newsletter_issues():
 
 
 @app.post("/api/newsletter/subscribe")
-async def newsletter_subscribe(payload: NewsletterSubscribe):
+async def newsletter_subscribe(payload: NewsletterSubscribe, request: Request):
+    rate_limit(f"newsletter:{get_client_ip(request)}", 10, 3600)
     if not payload.consent:
         raise HTTPException(status_code=400, detail="Consent required")
     coll = db["newsletter_subscribers"]
@@ -333,6 +481,7 @@ async def newsletter_subscribe(payload: NewsletterSubscribe):
 
 @app.post("/api/careers/apply")
 async def careers_apply(
+    request: Request,
     firstname: str = Form(...),
     lastname: str = Form(...),
     email: str = Form(...),
@@ -342,10 +491,28 @@ async def careers_apply(
     experience: Optional[str] = Form(None),
     availability: Optional[str] = Form(None),
     message: Optional[str] = Form(None),
-    consent: str = Form("true"),
+    consent: str = Form(...),
+    website: Optional[str] = Form(None),
     cv: UploadFile = File(...),
 ):
-    if consent.lower() not in ("true", "on", "1", "yes"):
+    rate_limit(f"careers:{get_client_ip(request)}", 5, 3600)
+    try:
+        form_data = CareersApplyForm.from_form(
+            firstname=firstname,
+            lastname=lastname,
+            email=email,
+            phone=phone,
+            position=position,
+            location=location,
+            experience=experience,
+            availability=availability,
+            message=message,
+            consent=consent,
+            website=website,
+        )
+    except (ValidationError, ValueError):
+        raise HTTPException(status_code=400, detail="Invalid form data")
+    if not form_data.consent:
         raise HTTPException(status_code=400, detail="Consent required")
 
     allowed_ext = {".pdf", ".doc", ".docx"}
@@ -359,11 +526,15 @@ async def careers_apply(
 
     max_bytes = 10 * 1024 * 1024
     written = 0
+    header_checked = False
     with saved_path.open("wb") as out:
         while True:
             chunk = await cv.read(1024 * 64)
             if not chunk:
                 break
+            if not header_checked:
+                validate_upload_magic(chunk[:16], ext)
+                header_checked = True
             written += len(chunk)
             if written > max_bytes:
                 out.close()
@@ -373,16 +544,16 @@ async def careers_apply(
 
     doc = {
         "_id": app_id,
-        "firstname": firstname.strip(),
-        "lastname": lastname.strip(),
-        "email": email.lower().strip(),
-        "phone": (phone or "").strip() or None,
-        "position": position.strip(),
-        "location": (location or "").strip() or None,
-        "experience": (experience or "").strip() or None,
-        "availability": (availability or "").strip() or None,
-        "message": (message or "").strip() or None,
-        "cv_filename": cv.filename,
+        "firstname": form_data.firstname,
+        "lastname": form_data.lastname,
+        "email": str(form_data.email),
+        "phone": form_data.phone,
+        "position": form_data.position,
+        "location": form_data.location,
+        "experience": form_data.experience,
+        "availability": form_data.availability,
+        "message": form_data.message,
+        "cv_filename": Path(cv.filename or "cv").name[:255],
         "cv_stored": saved_name,
         "cv_size_bytes": written,
         "created_at": datetime.now(timezone.utc).isoformat(),
@@ -391,13 +562,118 @@ async def careers_apply(
     return {"ok": True, "id": app_id}
 
 
+@app.post("/api/contact/submit")
+async def contact_submit(
+    request: Request,
+    firstname: str = Form(...),
+    lastname: str = Form(...),
+    email: str = Form(...),
+    phone: Optional[str] = Form(None),
+    company: str = Form(...),
+    role: Optional[str] = Form(None),
+    country: str = Form(...),
+    size: Optional[str] = Form(None),
+    type: str = Form(...),
+    class_: Optional[str] = Form(None, alias="class"),
+    stage: Optional[str] = Form(None),
+    volume: Optional[str] = Form(None),
+    timeline: Optional[str] = Form(None),
+    message: str = Form(...),
+    lang: Optional[str] = Form("fr"),
+    consent: str = Form(...),
+    website: Optional[str] = Form(None),
+    attachment: Optional[UploadFile] = File(None),
+):
+    rate_limit(f"contact:{get_client_ip(request)}", 8, 3600)
+    try:
+        form_data = ContactSubmitForm.from_form(
+            firstname=firstname,
+            lastname=lastname,
+            email=email,
+            phone=phone,
+            company=company,
+            role=role,
+            country=country,
+            size=size,
+            contact_type=type,
+            device_class=class_,
+            stage=stage,
+            volume=volume,
+            timeline=timeline,
+            message=message,
+            lang=lang,
+            consent=consent,
+            website=website,
+        )
+    except (ValidationError, ValueError):
+        raise HTTPException(status_code=400, detail="Invalid form data")
+    if not form_data.consent:
+        raise HTTPException(status_code=400, detail="Consent required")
+
+    msg_id = str(uuid.uuid4())
+    attachment_meta = None
+    if attachment and attachment.filename:
+        allowed_ext = {".pdf", ".doc", ".docx", ".zip"}
+        ext = Path(attachment.filename).suffix.lower()
+        if ext not in allowed_ext:
+            raise HTTPException(status_code=400, detail="Invalid file type. Allowed: PDF, DOC, DOCX, ZIP")
+        saved_name = f"contact_{msg_id}{ext}"
+        saved_path = UPLOAD_DIR / saved_name
+        max_bytes = 12 * 1024 * 1024
+        written = 0
+        header_checked = False
+        with saved_path.open("wb") as out:
+            while True:
+                chunk = await attachment.read(1024 * 64)
+                if not chunk:
+                    break
+                if not header_checked and ext != ".zip":
+                    validate_upload_magic(chunk[:16], ext)
+                    header_checked = True
+                written += len(chunk)
+                if written > max_bytes:
+                    out.close()
+                    saved_path.unlink(missing_ok=True)
+                    raise HTTPException(status_code=400, detail="Attachment too large (max 12 MB)")
+                out.write(chunk)
+        attachment_meta = {
+            "stored": saved_name,
+            "filename": Path(attachment.filename).name[:255],
+            "size_bytes": written,
+        }
+
+    doc = {
+        "_id": msg_id,
+        "firstname": form_data.firstname,
+        "lastname": form_data.lastname,
+        "email": str(form_data.email),
+        "phone": form_data.phone,
+        "company": form_data.company,
+        "role": form_data.role,
+        "country": form_data.country,
+        "size": form_data.size,
+        "contact_type": form_data.contact_type,
+        "device_class": form_data.device_class,
+        "stage": form_data.stage,
+        "volume": form_data.volume,
+        "timeline": form_data.timeline,
+        "message": form_data.message,
+        "lang": form_data.lang,
+        "attachment": attachment_meta,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db["contact_messages"].insert_one(doc)
+    return {"ok": True, "id": msg_id}
+
+
 # ============ Auth endpoints ============
 @app.post("/api/auth/login")
 async def auth_login(payload: LoginPayload, request: Request, response: Response):
     email = payload.email.lower()
-    ip = (request.client.host if request.client else "unknown")
+    ip = get_client_ip(request)
 
     await _check_brute_force(email, ip)
+    rate_limit(f"login:{ip}", 30, 3600)
 
     user = await db["users"].find_one({"email": email})
     if not user or not user.get("password_hash"):
@@ -409,12 +685,12 @@ async def auth_login(payload: LoginPayload, request: Request, response: Response
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     if not await _is_allowlisted(email):
-        raise HTTPException(status_code=403, detail=f"Email not in admin allow-list: {email}")
+        raise HTTPException(status_code=403, detail="Forbidden")
 
     await _clear_failed_login(email, ip)
-    token = await _create_session(user["user_id"])
+    token, csrf = await _create_session(user["user_id"])
     _set_session_cookie(response, token)
-    return {"ok": True, "user": {"user_id": user["user_id"], "email": email, "name": user.get("name"), "picture": user.get("picture")}}
+    return {"ok": True, "csrf_token": csrf, "user": {"user_id": user["user_id"], "email": email, "name": user.get("name"), "picture": user.get("picture")}}
 
 
 # ===== Forgot / Reset password =====
@@ -474,7 +750,8 @@ async def _send_reset_email(to_email: str, reset_url: str) -> bool:
 
 
 @app.post("/api/auth/forgot-password")
-async def auth_forgot_password(payload: ForgotPasswordPayload):
+async def auth_forgot_password(payload: ForgotPasswordPayload, request: Request):
+    rate_limit(f"forgot:{get_client_ip(request)}", 5, 3600)
     """Initiate password reset. Always returns 200 with same body to avoid email enumeration."""
     email = payload.email.lower()
     same_response = {"ok": True, "message": "If the email is recognized, a reset link has been sent."}
@@ -503,7 +780,8 @@ async def auth_forgot_password(payload: ForgotPasswordPayload):
 
 
 @app.post("/api/auth/reset-password")
-async def auth_reset_password(payload: ResetPasswordPayload):
+async def auth_reset_password(payload: ResetPasswordPayload, request: Request):
+    rate_limit(f"reset:{get_client_ip(request)}", 10, 3600)
     doc = await db["password_reset_tokens"].find_one({"_id": payload.token})
     if not doc or doc.get("used"):
         raise HTTPException(status_code=400, detail="Lien invalide ou déjà utilisé")
@@ -550,21 +828,23 @@ async def auth_reset_password(payload: ResetPasswordPayload):
 
 
 @app.post("/api/auth/google/exchange")
-async def auth_exchange(payload: SessionExchange, response: Response):
+async def auth_exchange(payload: SessionExchange, request: Request, response: Response):
+    rate_limit(f"oauth:{get_client_ip(request)}", 20, 3600)
     async with httpx.AsyncClient(timeout=10) as http:
         try:
             r = await http.get(EMERGENT_SESSION_URL, headers={"X-Session-ID": payload.session_id})
-        except httpx.HTTPError as e:
-            raise HTTPException(status_code=502, detail=f"Auth provider error: {e}")
+        except httpx.HTTPError:
+            raise HTTPException(status_code=502, detail="Auth provider unavailable")
     if r.status_code != 200:
-        raise HTTPException(status_code=401, detail="Invalid session_id")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
     data = r.json()
     email = (data.get("email") or "").lower()
     if not email:
-        raise HTTPException(status_code=401, detail="No email returned")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
     if not await _is_allowlisted(email):
-        raise HTTPException(status_code=403, detail=f"Email not in admin allow-list: {email}")
+        raise HTTPException(status_code=403, detail="Forbidden")
 
     existing = await db["users"].find_one({"email": email}, {"_id": 0})
     if existing:
@@ -583,21 +863,22 @@ async def auth_exchange(payload: SessionExchange, response: Response):
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
 
-    session_token = data.get("session_token") or (uuid.uuid4().hex + uuid.uuid4().hex)
-    await db["user_sessions"].insert_one({
-        "user_id": user_id,
-        "session_token": session_token,
-        "expires_at": datetime.now(timezone.utc) + timedelta(days=SESSION_TTL_DAYS),
-        "created_at": datetime.now(timezone.utc),
-    })
+    session_token, csrf = await _create_session(user_id)
     _set_session_cookie(response, session_token)
-    return {"ok": True, "user": {"user_id": user_id, "email": email, "name": data.get("name"), "picture": data.get("picture")}}
+    return {"ok": True, "csrf_token": csrf, "user": {"user_id": user_id, "email": email, "name": data.get("name"), "picture": data.get("picture")}}
 
 
 @app.get("/api/auth/me")
 async def auth_me(request: Request, authorization: Optional[str] = Header(None)):
     user = await _get_session(request, authorization)
-    return {"user_id": user["user_id"], "email": user["email"], "name": user.get("name"), "picture": user.get("picture")}
+    csrf = (user.get("_session") or {}).get("csrf_token")
+    return {
+        "user_id": user["user_id"],
+        "email": user["email"],
+        "name": user.get("name"),
+        "picture": user.get("picture"),
+        "csrf_token": csrf,
+    }
 
 
 @app.post("/api/auth/logout")
@@ -625,6 +906,7 @@ async def admin_list_leads(_: dict = Depends(require_admin)):
 
 @app.delete("/api/admin/leads/{lead_id}")
 async def admin_delete_lead(lead_id: str, _: dict = Depends(require_admin)):
+    lead_id = validate_uuid(lead_id, "lead_id")
     res = await db["newsletter_subscribers"].delete_one({"_id": lead_id})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Lead not found")
@@ -649,6 +931,7 @@ async def admin_list_applications(_: dict = Depends(require_admin)):
 
 @app.delete("/api/admin/applications/{app_id}")
 async def admin_delete_application(app_id: str, _: dict = Depends(require_admin)):
+    app_id = validate_uuid(app_id, "application_id")
     doc = await db["careers_applications"].find_one({"_id": app_id})
     if not doc:
         raise HTTPException(status_code=404, detail="Application not found")
@@ -663,6 +946,55 @@ async def admin_delete_application(app_id: str, _: dict = Depends(require_admin)
                 pass
     await db["careers_applications"].delete_one({"_id": app_id})
     return {"ok": True, "removed": app_id}
+
+
+@app.get("/api/admin/contact")
+async def admin_list_contact(_: dict = Depends(require_admin)):
+    cursor = db["contact_messages"].find({}).sort("created_at", -1)
+    items = []
+    async for d in cursor:
+        att = d.get("attachment") or {}
+        items.append({
+            "id": d["_id"],
+            "firstname": d.get("firstname"),
+            "lastname": d.get("lastname"),
+            "email": d.get("email"),
+            "phone": d.get("phone"),
+            "company": d.get("company"),
+            "role": d.get("role"),
+            "country": d.get("country"),
+            "size": d.get("size"),
+            "contact_type": d.get("contact_type"),
+            "device_class": d.get("device_class"),
+            "stage": d.get("stage"),
+            "volume": d.get("volume"),
+            "timeline": d.get("timeline"),
+            "message": d.get("message"),
+            "lang": d.get("lang"),
+            "attachment_filename": att.get("filename"),
+            "attachment_size_bytes": att.get("size_bytes"),
+            "created_at": d.get("created_at"),
+        })
+    return {"count": len(items), "items": items}
+
+
+@app.delete("/api/admin/contact/{msg_id}")
+async def admin_delete_contact(msg_id: str, _: dict = Depends(require_admin)):
+    msg_id = validate_uuid(msg_id, "message_id")
+    doc = await db["contact_messages"].find_one({"_id": msg_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Message not found")
+    att = doc.get("attachment") or {}
+    stored = att.get("stored")
+    if stored:
+        p = UPLOAD_DIR / stored
+        if p.exists():
+            try:
+                p.unlink()
+            except Exception:
+                pass
+    await db["contact_messages"].delete_one({"_id": msg_id})
+    return {"ok": True, "removed": msg_id}
 
 
 def _csv_stream(rows: List[dict], headers: List[str]) -> StreamingResponse:
@@ -705,15 +1037,64 @@ async def admin_apps_json(_: dict = Depends(require_admin)):
     return JSONResponse(data, headers={"Content-Disposition": 'attachment; filename="circum_applications.json"'})
 
 
+@app.get("/api/admin/contact.csv")
+async def admin_contact_csv(_: dict = Depends(require_admin)):
+    data = await admin_list_contact(_=_)
+    headers = [
+        "id", "firstname", "lastname", "email", "phone", "company", "role", "country",
+        "size", "contact_type", "device_class", "stage", "volume", "timeline",
+        "message", "lang", "attachment_filename", "created_at",
+    ]
+    resp = _csv_stream(data["items"], headers)
+    resp.headers["Content-Disposition"] = 'attachment; filename="circum_contact.csv"'
+    return resp
+
+
+@app.get("/api/admin/contact.json")
+async def admin_contact_json(_: dict = Depends(require_admin)):
+    data = await admin_list_contact(_=_)
+    return JSONResponse(data, headers={"Content-Disposition": 'attachment; filename="circum_contact.json"'})
+
+
 @app.get("/api/careers/cv/{application_id}")
 async def download_cv(application_id: str, _: dict = Depends(require_admin)):
+    application_id = validate_uuid(application_id, "application_id")
     doc = await db["careers_applications"].find_one({"_id": application_id})
     if not doc:
         raise HTTPException(status_code=404, detail="Not found")
-    path = UPLOAD_DIR / doc["cv_stored"]
-    if not path.exists():
+    stored = doc.get("cv_stored") or ""
+    if not stored or ".." in stored or stored.startswith(("/", "\\")):
+        raise HTTPException(status_code=404, detail="Not found")
+    path = (UPLOAD_DIR / stored).resolve()
+    try:
+        path.relative_to(UPLOAD_DIR.resolve())
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Not found")
+    if not path.is_file():
         raise HTTPException(status_code=404, detail="File missing")
-    return FileResponse(path, filename=doc.get("cv_filename") or path.name)
+    safe_name = Path(doc.get("cv_filename") or path.name).name
+    return FileResponse(path, filename=safe_name)
+
+
+@app.get("/api/contact/attachment/{msg_id}")
+async def download_contact_attachment(msg_id: str, _: dict = Depends(require_admin)):
+    msg_id = validate_uuid(msg_id, "message_id")
+    doc = await db["contact_messages"].find_one({"_id": msg_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Not found")
+    att = doc.get("attachment") or {}
+    stored = att.get("stored") or ""
+    if not stored or ".." in stored or stored.startswith(("/", "\\")):
+        raise HTTPException(status_code=404, detail="Not found")
+    path = (UPLOAD_DIR / stored).resolve()
+    try:
+        path.relative_to(UPLOAD_DIR.resolve())
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Not found")
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="File missing")
+    safe_name = Path(att.get("filename") or path.name).name
+    return FileResponse(path, filename=safe_name)
 
 
 # ============ Admin allow-list ============
@@ -740,7 +1121,7 @@ async def allowlist_add(payload: AllowlistAdd, user: dict = Depends(require_admi
 
 @app.delete("/api/admin/allowlist/{email}")
 async def allowlist_remove(email: str, user: dict = Depends(require_admin)):
-    email = email.lower()
+    email = validate_email_path(email)
     total = await db["admin_allowlist"].count_documents({})
     if total <= 1:
         raise HTTPException(status_code=400, detail="At least one admin must remain")
@@ -754,12 +1135,7 @@ async def allowlist_remove(email: str, user: dict = Depends(require_admin)):
 
 @app.put("/api/admin/allowlist/{email}/password")
 async def allowlist_set_password(email: str, payload: SetPasswordPayload, user: dict = Depends(require_admin)):
-    """Set or change the password for an admin in the allow-list.
-
-    - If the user does not yet exist (admin added to allow-list but never logged in), create them.
-    - Otherwise update the password_hash.
-    """
-    email = email.lower()
+    email = validate_email_path(email)
     if not await _is_allowlisted(email):
         raise HTTPException(status_code=404, detail="Email not in allow-list")
 
@@ -814,6 +1190,7 @@ async def admin_create_issue(payload: NewsletterIssueIn, _: dict = Depends(requi
 
 @app.put("/api/admin/newsletter/issues/{issue_id}")
 async def admin_update_issue(issue_id: str, payload: NewsletterIssueIn, _: dict = Depends(require_admin)):
+    issue_id = validate_uuid(issue_id, "issue_id")
     res = await db["newsletter_issues"].update_one(
         {"_id": issue_id},
         {"$set": {
@@ -833,7 +1210,151 @@ async def admin_update_issue(issue_id: str, payload: NewsletterIssueIn, _: dict 
 
 @app.delete("/api/admin/newsletter/issues/{issue_id}")
 async def admin_delete_issue(issue_id: str, _: dict = Depends(require_admin)):
+    issue_id = validate_uuid(issue_id, "issue_id")
     res = await db["newsletter_issues"].delete_one({"_id": issue_id})
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Issue not found")
     return {"ok": True, "removed": issue_id}
+
+
+# ============ Admin news CRUD ============
+@app.get("/api/admin/news")
+async def admin_list_news(_: dict = Depends(require_admin)):
+    cursor = db["news"].find({}).sort("date", -1)
+    items = []
+    async for doc in cursor:
+        items.append(_news_doc_to_detail(doc).model_dump())
+    return {"count": len(items), "items": items}
+
+
+@app.post("/api/admin/news")
+async def admin_create_news(
+    title: str = Form(...),
+    summary: str = Form(...),
+    tag: str = Form(...),
+    date: str = Form(...),
+    body_html: str = Form(""),
+    cover: UploadFile = File(...),
+    gallery: List[UploadFile] = File(default=[]),
+    user: dict = Depends(require_admin),
+):
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", date.strip()):
+        raise HTTPException(status_code=400, detail="Date must be YYYY-MM-DD")
+    article_id = str(uuid.uuid4())
+    cover_image = await _save_news_image(cover, article_id, "cover")
+    gallery_names: List[str] = []
+    for idx, img in enumerate(gallery or []):
+        if img and img.filename:
+            gallery_names.append(await _save_news_image(img, article_id, f"g{idx}"))
+    doc = {
+        "_id": article_id,
+        "title": title.strip()[:240],
+        "summary": summary.strip()[:800],
+        "tag": tag.strip()[:80],
+        "date": date.strip(),
+        "variant": 1,
+        "cover_image": cover_image,
+        "body_html": _sanitize_news_html(body_html),
+        "gallery": gallery_names,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_by": user.get("email"),
+    }
+    await db["news"].insert_one(doc)
+    return {"ok": True, "id": article_id, "item": _news_doc_to_detail(doc).model_dump()}
+
+
+@app.put("/api/admin/news/{article_id}")
+async def admin_update_news(
+    article_id: str,
+    title: str = Form(...),
+    summary: str = Form(...),
+    tag: str = Form(...),
+    date: str = Form(...),
+    body_html: str = Form(""),
+    cover: Optional[UploadFile] = File(None),
+    gallery: List[UploadFile] = File(default=[]),
+    remove_gallery: Optional[str] = Form(None),
+    user: dict = Depends(require_admin),
+):
+    article_id = validate_uuid(article_id, "article_id")
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", date.strip()):
+        raise HTTPException(status_code=400, detail="Date must be YYYY-MM-DD")
+    existing = await db["news"].find_one({"_id": article_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Article not found")
+
+    cover_image = existing.get("cover_image")
+    if cover and cover.filename:
+        if cover_image:
+            try:
+                (NEWS_MEDIA_DIR / _safe_news_media_name(cover_image)).unlink(missing_ok=True)
+            except HTTPException:
+                pass
+        cover_image = await _save_news_image(cover, article_id, "cover")
+
+    gallery_names = list(existing.get("gallery") or [])
+    if remove_gallery:
+        to_remove = [n.strip() for n in remove_gallery.split(",") if n.strip()]
+        kept = []
+        for name in gallery_names:
+            if name in to_remove:
+                try:
+                    (NEWS_MEDIA_DIR / _safe_news_media_name(name)).unlink(missing_ok=True)
+                except HTTPException:
+                    pass
+            else:
+                kept.append(name)
+        gallery_names = kept
+
+    for idx, img in enumerate(gallery or []):
+        if img and img.filename:
+            gallery_names.append(await _save_news_image(img, article_id, f"g{len(gallery_names)}"))
+
+    update = {
+        "title": title.strip()[:240],
+        "summary": summary.strip()[:800],
+        "tag": tag.strip()[:80],
+        "date": date.strip(),
+        "cover_image": cover_image,
+        "body_html": _sanitize_news_html(body_html),
+        "gallery": gallery_names,
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "updated_by": user.get("email"),
+    }
+    await db["news"].update_one({"_id": article_id}, {"$set": update})
+    doc = await db["news"].find_one({"_id": article_id})
+    return {"ok": True, "id": article_id, "item": _news_doc_to_detail(doc).model_dump()}
+
+
+@app.delete("/api/admin/news/{article_id}")
+async def admin_delete_news(article_id: str, _: dict = Depends(require_admin)):
+    article_id = validate_uuid(article_id, "article_id")
+    doc = await db["news"].find_one({"_id": article_id})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Article not found")
+    _delete_news_files(doc)
+    await db["news"].delete_one({"_id": article_id})
+    return {"ok": True, "removed": article_id}
+
+
+# ============ Admin — édition de contenu site ============
+@app.get("/api/admin/content/pages")
+async def admin_content_pages(_: dict = Depends(require_admin)):
+    """Liste des pages éditables (correspond aux fichiers frontend/i18n/locales/*.json)."""
+    return {"items": list_pages()}
+
+
+@app.get("/api/admin/content")
+async def admin_content_list(page: str, lang: str = "fr", _: dict = Depends(require_admin)):
+    """Textes d'une page pour une langue (valeur effective = défaut + surcharge éventuelle)."""
+    return await get_admin_page_content(db, page, lang)
+
+
+@app.put("/api/admin/content")
+async def admin_content_save(payload: ContentSavePayload, user: dict = Depends(require_admin)):
+    """
+    Enregistre les modifications de texte.
+    Stockage : MongoDB (site_content_overrides) + copie JSON dans backend/data/.
+    """
+    updates = [u.model_dump() for u in payload.updates]
+    return await save_content_updates(db, updates, user["email"])
