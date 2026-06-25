@@ -106,7 +106,7 @@ window.CIRCUM_I18N_PAGE = {
 
     "cookies.s11_title": "11. Contact",
     "cookies.s11_p1": "Pour toute question concernant notre utilisation des cookies, veuillez nous contacter :",
-    "cookies.s11_contact": "Email: privacy@circumlifesciences.com<br/>Adresse: Technopôle Zurich, 8005 Zurich, Suisse<br/>Téléphone: +41 (0) 22 123 45 67"
+    "cookies.s11_contact": "Email: privacy@circumlifesciences.com<br/>Adresse: Technopôle Zug, 6300 Zug, Suisse<br/>Téléphone: +41 (0) 22 123 45 67"
   },
   "en": {
     "cookies.meta_title": "Cookie Policy · Circum Life Sciences",
@@ -215,7 +215,7 @@ window.CIRCUM_I18N_PAGE = {
 
     "cookies.s11_title": "11. Contact",
     "cookies.s11_p1": "For any questions regarding our use of cookies, please contact us:",
-    "cookies.s11_contact": "Email: privacy@circumlifesciences.com<br/>Address: Technopôle Zurich, 8005 Zurich, Switzerland<br/>Phone: +41 (0) 22 123 45 67"
+    "cookies.s11_contact": "Email: privacy@circumlifesciences.com<br/>Address: Technopôle Zug, 6300 Zug, Switzerland<br/>Phone: +41 (0) 22 123 45 67"
   },
   "de": {
     "cookies.meta_title": "Cookie-Richtlinie · Circum Life Sciences",
@@ -324,7 +324,7 @@ window.CIRCUM_I18N_PAGE = {
 
     "cookies.s11_title": "11. Kontakt",
     "cookies.s11_p1": "Bei Fragen zu unserer Verwendung von Cookies kontaktieren Sie uns bitte:",
-    "cookies.s11_contact": "E-Mail: privacy@circumlifesciences.com<br/>Adresse: Technopôle Zurich, 8005 Zürich, Schweiz<br/>Telefon: +41 (0) 22 123 45 67"
+    "cookies.s11_contact": "E-Mail: privacy@circumlifesciences.com<br/>Adresse: Technopôle Zug, 6300 Zug, Schweiz<br/>Telefon: +41 (0) 22 123 45 67"
   },
   "it": {
     "cookies.meta_title": "Politica sui cookie · Circum Life Sciences",
@@ -433,6 +433,6 @@ window.CIRCUM_I18N_PAGE = {
 
     "cookies.s11_title": "11. Contatto",
     "cookies.s11_p1": "Per qualsiasi domanda relativa al nostro utilizzo dei cookie, vi preghiamo di contattarci:",
-    "cookies.s11_contact": "Email: privacy@circumlifesciences.com<br/>Indirizzo: Technopôle Zurich, 8005 Zurigo, Svizzera<br/>Telefono: +41 (0) 22 123 45 67"
+    "cookies.s11_contact": "Email: privacy@circumlifesciences.com<br/>Indirizzo: Technopôle Zug, 6300 Zugo, Svizzera<br/>Telefono: +41 (0) 22 123 45 67"
   }
 };

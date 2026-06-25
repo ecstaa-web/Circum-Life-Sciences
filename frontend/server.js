@@ -16,7 +16,7 @@ const DEFAULT_CSP = [
   "img-src 'self' data: https:",
   "media-src 'self'",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' http://127.0.0.1:8000 http://localhost:8000",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

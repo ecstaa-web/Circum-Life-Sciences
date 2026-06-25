@@ -60,7 +60,7 @@ window.CIRCUM_I18N_PAGE={
 "privacy.s8_li7": "Retirer votre consentement à tout moment",
 "privacy.s9_title": "9. Exercice de vos droits",
 "privacy.s9_p": "Pour exercer vos droits ou pour toute question concernant vos données personnelles, veuillez nous contacter à :",
-"privacy.s9_contact": "Email : privacy@circumlifesciences.com<br/>Adresse : Technopôle Zurich, 8005 Zurich, Suisse",
+"privacy.s9_contact": "Email : privacy@circumlifesciences.com<br/>Adresse : Technopôle Zug, 6300 Zug, Suisse",
 "privacy.s10_title": "10. Modifications de cette politique",
 "privacy.s10_p": "Nous nous réservons le droit de modifier cette politique de confidentialité à tout moment. Les modifications prendront effet dès la publication sur le site. Votre utilisation continue du site suivant les modifications constitue votre acceptation des modifications."
 },
@@ -125,7 +125,7 @@ window.CIRCUM_I18N_PAGE={
 "privacy.s8_li7": "Withdraw your consent at any time",
 "privacy.s9_title": "9. Exercising Your Rights",
 "privacy.s9_p": "To exercise your rights or for any question regarding your personal data, please contact us at:",
-"privacy.s9_contact": "Email: privacy@circumlifesciences.com<br/>Address: Technopôle Zurich, 8005 Zurich, Switzerland",
+"privacy.s9_contact": "Email: privacy@circumlifesciences.com<br/>Address: Technopôle Zug, 6300 Zug, Switzerland",
 "privacy.s10_title": "10. Changes to This Policy",
 "privacy.s10_p": "We reserve the right to modify this privacy policy at any time. Changes will take effect as soon as they are published on the website. Your continued use of the website following the changes constitutes your acceptance of the changes."
 },
@@ -190,7 +190,7 @@ window.CIRCUM_I18N_PAGE={
 "privacy.s8_li7": "Ihre Einwilligung jederzeit zu widerrufen",
 "privacy.s9_title": "9. Ausübung Ihrer Rechte",
 "privacy.s9_p": "Um Ihre Rechte auszuüben oder bei Fragen zu Ihren personenbezogenen Daten kontaktieren Sie uns bitte unter:",
-"privacy.s9_contact": "E-Mail: privacy@circumlifesciences.com<br/>Adresse: Technopôle Zurich, 8005 Zürich, Schweiz",
+"privacy.s9_contact": "E-Mail: privacy@circumlifesciences.com<br/>Adresse: Technopôle Zug, 6300 Zug, Schweiz",
 "privacy.s10_title": "10. Änderungen dieser Erklärung",
 "privacy.s10_p": "Wir behalten uns das Recht vor, diese Datenschutzerklärung jederzeit zu ändern. Änderungen treten mit ihrer Veröffentlichung auf der Website in Kraft. Ihre fortgesetzte Nutzung der Website nach den Änderungen gilt als Ihre Zustimmung zu den Änderungen."
 },
@@ -255,7 +255,7 @@ window.CIRCUM_I18N_PAGE={
 "privacy.s8_li7": "Revocare il suo consenso in qualsiasi momento",
 "privacy.s9_title": "9. Esercizio dei suoi diritti",
 "privacy.s9_p": "Per esercitare i suoi diritti o per qualsiasi domanda relativa ai suoi dati personali, la preghiamo di contattarci a:",
-"privacy.s9_contact": "Email: privacy@circumlifesciences.com<br/>Indirizzo: Technopôle Zurich, 8005 Zurigo, Svizzera",
+"privacy.s9_contact": "Email: privacy@circumlifesciences.com<br/>Indirizzo: Technopôle Zug, 6300 Zugo, Svizzera",
 "privacy.s10_title": "10. Modifiche alla presente informativa",
 "privacy.s10_p": "Ci riserviamo il diritto di modificare la presente informativa sulla privacy in qualsiasi momento. Le modifiche avranno effetto non appena pubblicate sul sito. L'uso continuato del sito dopo le modifiche costituisce accettazione delle modifiche."
 }

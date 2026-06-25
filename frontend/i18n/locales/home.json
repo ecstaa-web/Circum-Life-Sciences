@@ -234,10 +234,10 @@
     "it": "<span class=\"section-label\">Presenza</span>\n      <h2 class=\"world-title\"><strong>Circum</strong>dans<em>le monde.</em></h2>\n      <p class=\"world-text\">La nostra architecture tripartite combine la rigueur réglementaire suisse, la créativité française e l'efficacité industrielle méditerranéenne. Trois sites, une seule équipe, une seule chaîne de valeur intégrée.</p>\n      <a href=\"contact.html\"  class=\"btn btn-outline-white\"><span>Incontrateci</span><span class=\"btn-arrow\">→</span></a>"
   },
   "home.world_site_city.39": {
-    "fr": "Zurich · Suisse",
-    "en": "Zurich · Switzerland",
-    "de": "Zürich · Schweiz",
-    "it": "Zurigo · Svizzera"
+    "fr": "Zug · Suisse",
+    "en": "Zug · Switzerland",
+    "de": "Zug · Schweiz",
+    "it": "Zugo · Svizzera"
   },
   "home.world_site_city.40": {
     "fr": "Nice · France",

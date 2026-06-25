@@ -99,13 +99,20 @@ else:
 app = FastAPI(title="Circum Life Sciences API", docs_url=None if is_production() else "/docs", redoc_url=None if is_production() else "/redoc")
 
 app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=parse_allowed_origins(),
+_cors_kwargs = dict(
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "X-Circum-CSRF"],
 )
+if is_production():
+    app.add_middleware(CORSMiddleware, allow_origins=parse_allowed_origins(), **_cors_kwargs)
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=parse_allowed_origins(),
+        allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
+        **_cors_kwargs,
+    )
 
 
 @app.middleware("http")
@@ -233,13 +240,24 @@ def _delete_news_files(doc: dict) -> None:
 
 
 # ============ Seed ============
+SEED_NEWS_IDS = [
+    "a1000001-0000-4000-8000-000000000001",
+    "a1000001-0000-4000-8000-000000000002",
+    "a1000001-0000-4000-8000-000000000003",
+    "a1000001-0000-4000-8000-000000000004",
+    "a1000001-0000-4000-8000-000000000005",
+    "a1000001-0000-4000-8000-000000000006",
+    "a1000001-0000-4000-8000-000000000007",
+]
+
 SEED_NEWS: List[dict] = [
-    {"title": "Inauguration officielle du site Force One", "summary": "Notre site tunisien atteint sa pleine capacité opérationnelle avec 4 cleanrooms ISO 7/8 et 120 opérateurs qualifiés.", "tag": "Inauguration", "date": "2025-10-15", "variant": 1},
-    {"title": "Renouvellement ISO 13485 multi-sites", "summary": "Notre système qualité est reconduit sans réserve par l'organisme certificateur. Audit annuel passé sur les trois sites.", "tag": "Certification", "date": "2025-09-22", "variant": 2},
-    {"title": "Compamed & Medica Düsseldorf", "summary": "Circum sera présent du 16 au 19 novembre 2026 sur le stand E-23. Réservez votre créneau avec nos équipes commerciales.", "tag": "Salon", "date": "2026-11-17", "variant": 3},
-    {"title": "Livre blanc : intégration verticale CDMO", "summary": "Notre équipe publie une analyse de 40 pages sur les bénéfices de l'intégration verticale dans le secteur des dispositifs médicaux.", "tag": "Publication", "date": "2026-03-03", "variant": 4},
-    {"title": "Partenariat académique avec l'INSA Lyon", "summary": "Signature d'un partenariat de recherche avec l'INSA Lyon sur les polymères biocompatibles avancés. Trois thèses CIFRE lancées.", "tag": "Partenariat", "date": "2026-01-08", "variant": 5},
-    {"title": "Cleanroom C : démarrage de la construction", "summary": "Lancement des travaux d'une nouvelle cleanroom ISO 7 sur le site Force One. Mise en service prévue au troisième trimestre 2026.", "tag": "Investissement", "date": "2025-12-12", "variant": 6},
+    {"title": "Compamed & Medica Düsseldorf", "summary": "Circum Life Sciences sera au prochain salon Compamed à Düsseldorf du 17 au 20 novembre 2025 — Hall 8 B, Booth D03.", "tag": "Salon", "date": "2025-11-17", "variant": 1},
+    {"title": "Inauguration Force One", "summary": "Inauguration officielle de notre site de production Force One en Tunisie.", "tag": "Inauguration", "date": "2025-10-15", "variant": 2},
+    {"title": "Communiqué de presse — 2 octobre 2025", "summary": "Publication du communiqué de presse officiel de Circum Life Sciences.", "tag": "Presse", "date": "2025-10-02", "variant": 3},
+    {"title": "Commission européenne : exclusion des entreprises chinoises", "summary": "La Commission européenne limite la part des intrants originaires de Chine dans les achats publics de dispositifs médicaux de plus de 5 M€.", "tag": "Réglementaire", "date": "2025-06-01", "variant": 4},
+    {"title": "WHX Dubai — Booth S11.D18A", "summary": "Retrouvez-nous au WHX expo à Dubaï sur notre stand S11.D18A.", "tag": "Salon", "date": "2026-02-01", "variant": 5},
+    {"title": "DeviceMed — Mars 2026", "summary": "Circum Life Sciences au DeviceMed en mars 2026.", "tag": "Presse", "date": "2026-03-01", "variant": 6},
+    {"title": "Happy New Year — Bonne Année 2026", "summary": "Happy New Year — Bonne Année — Frohes neues Jahr — Buon Anno.", "tag": "Actualité", "date": "2026-01-01", "variant": 1},
 ]
 
 SEED_NEWSLETTER_ISSUES: List[dict] = [
@@ -260,8 +278,16 @@ async def seed_data():
     # News
     if await db["news"].count_documents({}) == 0:
         docs = []
-        for n in SEED_NEWS:
-            doc = {"_id": str(uuid.uuid4()), **n, "body_html": f"<p>{n['summary']}</p>", "gallery": [], "cover_image": None, "created_at": datetime.now(timezone.utc).isoformat()}
+        for idx, n in enumerate(SEED_NEWS):
+            article_id = SEED_NEWS_IDS[idx] if idx < len(SEED_NEWS_IDS) else str(uuid.uuid4())
+            doc = {
+                "_id": article_id,
+                **n,
+                "body_html": f"<p>{n['summary']}</p>",
+                "gallery": [],
+                "cover_image": None,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            }
             docs.append(doc)
         await db["news"].insert_many(docs)
 

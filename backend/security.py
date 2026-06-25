@@ -116,7 +116,11 @@ def validate_upload_magic(header: bytes, ext: str) -> None:
 def parse_allowed_origins() -> list[str]:
     raw = os.environ.get(
         "ALLOWED_ORIGINS",
-        "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000",
+        "http://localhost:3000,http://127.0.0.1:3000,"
+        "http://localhost:8000,http://127.0.0.1:8000,"
+        "http://localhost:5500,http://127.0.0.1:5500,"
+        "http://localhost:5503,http://127.0.0.1:5503,"
+        "http://localhost:5173,http://127.0.0.1:5173",
     )
     origins = [o.strip() for o in raw.split(",") if o.strip()]
     return origins or ["http://localhost:3000"]
