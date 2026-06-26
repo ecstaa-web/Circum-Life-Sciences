@@ -12,7 +12,7 @@
   var active = false;
   var activeEl = null;
   var savedRange = null;
-  var EDITABLE = '[data-i18n], [data-i18n-html]';
+  var EDITABLE = '[data-i18n], [data-i18n-html], [data-i18n-title], [data-i18n-placeholder]';
 
   function injectStyles() {
     if (document.getElementById('circum-visual-editor-css')) return;
@@ -21,18 +21,49 @@
     s.textContent =
       '.circum-editable{outline:2px dashed transparent;outline-offset:3px;transition:outline-color .15s,background .15s;cursor:text;border-radius:2px}' +
       '.circum-editable:hover{outline-color:rgba(32,90,153,.5);background:rgba(32,90,153,.07)}' +
-      '.circum-editable:focus,.circum-editable.circum-editing{outline:2px solid rgba(225,90,130,.9);background:rgba(225,90,130,.08)}' +
+      '.circum-editable.circum-editing{outline:2px solid rgba(225,90,130,.9);background:rgba(225,90,130,.08)}' +
+      '.circum-editable.circum-editable-attr{outline-style:dotted}' +
       '.circum-editable.circum-modified{outline-color:rgba(225,90,130,.65);outline-style:solid}' +
       'html.circum-edit-preview,html.circum-edit-preview body{min-width:1280px}';
     document.head.appendChild(s);
   }
 
   function getKey(el) {
-    return el.getAttribute('data-i18n-html') || el.getAttribute('data-i18n');
+    return el.getAttribute('data-i18n-html')
+      || el.getAttribute('data-i18n')
+      || el.getAttribute('data-i18n-title')
+      || el.getAttribute('data-i18n-placeholder');
+  }
+
+  function getEditMode(el) {
+    if (el.hasAttribute('data-i18n-html') || el.hasAttribute('data-i18n')) return 'html';
+    if (el.hasAttribute('data-i18n-title')) return 'title';
+    if (el.hasAttribute('data-i18n-placeholder')) return 'placeholder';
+    return 'html';
   }
 
   function readValue(el) {
+    var mode = getEditMode(el);
+    if (mode === 'placeholder') return (el.getAttribute('placeholder') || '').trim();
+    if (mode === 'title') {
+      if (el.tagName === 'TITLE') return (el.textContent || '').trim();
+      return (el.getAttribute('title') || el.textContent || '').trim();
+    }
     return el.innerHTML.trim();
+  }
+
+  function writeValue(el, val) {
+    var mode = getEditMode(el);
+    if (mode === 'placeholder') {
+      el.setAttribute('placeholder', val);
+      return;
+    }
+    if (mode === 'title') {
+      if (el.tagName === 'TITLE') el.textContent = val;
+      else el.setAttribute('title', val);
+      return;
+    }
+    el.innerHTML = val;
   }
 
   function saveSelection() {
@@ -135,15 +166,34 @@
 
   function bindEditable(el) {
     if (el.dataset.circumBound) return;
-    if (el.querySelector('input, select, textarea, button')) return;
+    if (el.querySelector('input, select, textarea, button') && !el.hasAttribute('data-i18n-placeholder')) return;
     var key = getKey(el);
     if (!key) return;
+    var mode = getEditMode(el);
 
     el.dataset.circumBound = '1';
     el.classList.add('circum-editable');
-    el.setAttribute('contenteditable', 'true');
-    el.setAttribute('spellcheck', 'true');
     el.setAttribute('data-circum-key', key);
+
+    if (mode === 'html') {
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'true');
+    } else {
+      el.classList.add('circum-editable-attr');
+      el.setAttribute('title', 'Double-cliquez pour modifier');
+      el.addEventListener('dblclick', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var label = mode === 'placeholder' ? 'Placeholder' : 'Titre';
+        var cur = readValue(el);
+        var nv = window.prompt(label + ' :', cur);
+        if (nv !== null && nv !== cur) {
+          writeValue(el, nv);
+          el.classList.toggle('circum-modified', nv !== baseline[key]);
+          notifyChange(el);
+        }
+      });
+    }
 
     el.addEventListener('focus', function () {
       setActiveEl(el);
@@ -207,9 +257,22 @@
   function applyPendingValues(pending) {
     if (!pending) return;
     Object.keys(pending).forEach(function (key) {
-      var el = document.querySelector('[data-i18n="' + key + '"], [data-i18n-html="' + key + '"]');
-      if (el) el.innerHTML = pending[key];
+      document.querySelectorAll(
+        '[data-i18n="' + key + '"], [data-i18n-html="' + key + '"], [data-i18n-title="' + key + '"], [data-i18n-placeholder="' + key + '"]'
+      ).forEach(function (el) {
+        writeValue(el, pending[key]);
+      });
     });
+  }
+
+  function commitBaseline(data) {
+    if (data.baseline) baseline = data.baseline;
+    document.querySelectorAll('[data-circum-key]').forEach(function (el) {
+      var key = getKey(el);
+      if (key && baseline[key] !== undefined) writeValue(el, baseline[key]);
+      el.classList.remove('circum-modified');
+    });
+    markModified();
   }
 
   function handleFmtMessage(d) {
@@ -255,6 +318,8 @@
       if (d.baseline) baseline = d.baseline;
       applyPendingValues(d.pending);
       markModified();
+    } else if (d.type === 'circum-editor-commit') {
+      commitBaseline(d);
     } else if (d.type === 'circum-fmt-exec') {
       handleFmtMessage(d);
     } else if (d.type === 'circum-fmt-save-selection') {

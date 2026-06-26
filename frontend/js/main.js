@@ -17,7 +17,12 @@
       spans[0].style.transform = isOpen ? 'rotate(45deg) translate(4px, 4px)' : '';
       spans[1].style.opacity = isOpen ? '0' : '1';
       spans[2].style.transform = isOpen ? 'rotate(-45deg) translate(5px, -5px)' : '';
+      document.body.classList.toggle('nav-open', isOpen);
       document.body.style.overflow = isOpen ? 'hidden' : '';
+      if (window.lenis) {
+        if (isOpen && typeof window.lenis.stop === 'function') window.lenis.stop();
+        else if (!isOpen && typeof window.lenis.start === 'function') window.lenis.start();
+      }
     });
   }
 
@@ -443,29 +448,59 @@
     var nav = document.querySelector('.nav');
     if (!nav) return;
     var ticking = false;
+    var SCROLL_THRESHOLD = 40;
+
     function getScrollY() {
       if (window.lenis && typeof window.lenis.scroll === 'number') {
         return window.lenis.scroll;
       }
       return window.scrollY || window.pageYOffset || 0;
     }
+
+    function needsLenisTransformPin() {
+      return document.documentElement.classList.contains('lenis')
+        && document.getElementById('lenis-root') == null;
+    }
+
+    function applyFixedPin(scrollY) {
+      var pin = needsLenisTransformPin() ? 'translate3d(0,' + scrollY + 'px,0)' : '';
+      nav.style.transform = pin;
+      var mobile = document.querySelector('.nav-mobile.open');
+      if (mobile) mobile.style.transform = pin;
+    }
+
     function update() {
-      nav.classList.toggle('scrolled', getScrollY() > 6);
+      var scrollY = getScrollY();
+      nav.classList.toggle('scrolled', scrollY > SCROLL_THRESHOLD);
+      nav.classList.toggle('nav-lenis-pinned', needsLenisTransformPin());
+      applyFixedPin(scrollY);
       ticking = false;
     }
-    window.addEventListener('scroll', function() {
+
+    function scheduleUpdate() {
       if (!ticking) {
         requestAnimationFrame(update);
         ticking = true;
       }
-    }, { passive: true });
-    if (window.lenis && typeof window.lenis.on === 'function') {
-      window.lenis.on('scroll', update);
-    } else {
+    }
+
+    function bindLenis() {
+      if (window.lenis && typeof window.lenis.on === 'function') {
+        window.lenis.on('scroll', scheduleUpdate);
+        return true;
+      }
+      return false;
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('circum:lenis-ready', function() {
+      bindLenis();
+      update();
+    });
+    if (!bindLenis()) {
       setTimeout(function() {
-        if (window.lenis && typeof window.lenis.on === 'function') {
-          window.lenis.on('scroll', update);
-        }
+        bindLenis();
+        update();
       }, 300);
     }
     update();

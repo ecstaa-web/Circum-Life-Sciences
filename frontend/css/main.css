@@ -156,6 +156,9 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   transition: padding 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   isolation: isolate;
 }
+.nav.nav-lenis-pinned {
+  will-change: transform;
+}
 .nav::before { display: none; }
 
 .nav.scrolled {
@@ -168,13 +171,13 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   max-width: var(--container);
   width: 100%;
   margin: 0 auto;
-  padding: 12px 8px 12px 12px;
-  display: flex;
+  padding: 12px 16px 12px 20px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 28px;
+  column-gap: 36px;
+  row-gap: 12px;
   min-height: 64px;
-  flex-wrap: nowrap;
 
   /* En haut de page : imprégnée, sans bulle */
   background: transparent;
@@ -222,9 +225,10 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 
 /* Au scroll : bulle horizontale flottante + liquid glass (effet loupe) */
 .nav.scrolled .nav-inner {
-  max-width: min(1060px, calc(100% - 28px));
+  max-width: min(var(--container), calc(100% - 24px));
   min-height: 58px;
-  padding: 8px 18px 8px 20px;
+  padding: 8px 20px 8px 22px;
+  column-gap: 28px;
   background: rgba(255, 255, 255, 0.58);
   backdrop-filter: blur(22px) saturate(190%) brightness(1.06);
   -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(1.06);
@@ -245,7 +249,7 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   align-items: center;
   gap: 14px;
   flex-shrink: 0;
-  padding: 4px 6px;
+  padding: 4px 12px 4px 4px;
   border-radius: 999px;
   position: relative;
   z-index: 2;
@@ -296,10 +300,10 @@ body[data-page="news-article"] .news-article-section {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
   justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
   position: relative;
   z-index: 2;
 }
@@ -308,13 +312,13 @@ body[data-page="news-article"] .news-article-section {
 }
 .nav-link {
   font-family: var(--font-nav);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.6;
   letter-spacing: -0.015em;
   text-transform: none;
   color: var(--gray-900);
-  padding: 10px 14px;
+  padding: 9px 12px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -461,11 +465,41 @@ body[data-page="news-article"] .news-article-section {
 .nav-cta-group {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-shrink: 0;
-  min-width: 0;
   position: relative;
-  z-index: 2;
+  z-index: 3;
+}
+
+.nav-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-family: var(--font-nav);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  padding: 9px 16px;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: var(--blue);
+  background:
+    linear-gradient(180deg,
+      rgba(32,90,153,0.10) 0%,
+      rgba(243,101,180,0.10) 100%);
+  border: 1px solid rgba(32,90,153,0.18);
+  transition: color 0.3s ease, background 0.3s ease, border-color 0.3s ease, transform 0.25s ease;
+}
+.nav-cta-btn:hover {
+  color: var(--blue-dark);
+  border-color: rgba(32,90,153,0.28);
+  transform: translateY(-1px);
+}
+.nav-cta-btn.active {
+  color: var(--white);
+  background: var(--blue);
+  border-color: var(--blue);
 }
 
 /* ----- LIQUID GLASS LANGUAGE SWITCHER ----- */
@@ -525,23 +559,24 @@ body[data-page="news-article"] .news-article-section {
   display: none; /* replaced by sliding indicator */
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1280px) {
+  .nav-links { display: none; }
+  .nav-cta-btn { display: none; }
+  .nav-toggle { display: flex; }
   .nav-inner {
-    flex-wrap: wrap;
-    row-gap: 10px;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 16px;
+    padding: 10px 12px 10px 14px;
+    min-height: 58px;
   }
-
-  .nav-links {
-    order: 3;
-    flex: 1 1 100%;
-    width: 100%;
-    justify-content: center;
+  .nav.scrolled .nav-inner {
+    max-width: calc(100% - 16px);
+    padding: 8px 14px 8px 16px;
   }
-
-  .nav-cta-group {
-    order: 2;
-    margin-left: auto;
-    max-width: 100%;
+  .nav-logo-img {
+    height: 44px;
+    min-width: 100px;
   }
 }
 
@@ -576,7 +611,7 @@ body[data-page="news-article"] .news-article-section {
       rgba(240,245,251,0.96) 100%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  z-index: 99;
+  z-index: 110;
   padding: 110px var(--gutter) 40px;
   overflow-y: auto;
 }
@@ -606,6 +641,34 @@ body[data-page="news-article"] .news-article-section {
 .nav-mobile-section a:hover {
   color: var(--blue);
   padding-left: 10px;
+}
+
+/* Lenis scroll root — nav stays outside so position:fixed works */
+html:has(#lenis-root),
+body:has(#lenis-root) {
+  height: 100%;
+  overflow: hidden;
+}
+#lenis-root {
+  position: fixed;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+#lenis-root::-webkit-scrollbar {
+  display: none;
+}
+#lenis-content {
+  width: 100%;
+  min-height: 100%;
+}
+
+body.nav-open #lenis-root {
+  overflow: hidden;
 }
 
 /* ----- BUTTONS ----- */
@@ -3677,8 +3740,6 @@ body[data-page="contact"] .contact-sites-lead {
 
 /* ----- RESPONSIVE ----- */
 @media (max-width: 1100px) {
-  .nav-links { display: none; }
-  .nav-toggle { display: flex; }
   .pillars-grid, .founders-grid, .news-grid { grid-template-columns: 1fr; }
   .services-grid, .newsletter-archives { grid-template-columns: 1fr; }
   .values-grid { grid-template-columns: repeat(2, 1fr); }
@@ -3720,7 +3781,9 @@ body[data-page="design"] .topbar,
 body[data-page="fabrication"] .topbar,
 body[data-page="clients"] .topbar,
 body[data-page="apropos"] .topbar,
-body[data-page="contact"] .topbar {
+body[data-page="contact"] .topbar,
+body[data-page="carrieres"] .topbar,
+body[data-page="newsletter"] .topbar {
   display: none;
   height: 0;
   padding: 0;
@@ -3768,7 +3831,9 @@ body[data-page="fabrication"] .nav:not(.scrolled) .nav-link,
 body[data-page="clients"] .nav:not(.scrolled) .nav-link,
 body[data-page="apropos"] .nav:not(.scrolled) .nav-link,
 body[data-page="contact"] .nav:not(.scrolled) .nav-link,
-body[data-page="news"] .nav:not(.scrolled) .nav-link {
+body[data-page="news"] .nav:not(.scrolled) .nav-link,
+body[data-page="newsletter"] .nav:not(.scrolled) .nav-link,
+body[data-page="carrieres"] .nav:not(.scrolled) .nav-link {
   color: rgba(255, 255, 255, 0.92);
 }
 body[data-page="home"] .nav:not(.scrolled) .nav-link:hover,
@@ -3777,7 +3842,9 @@ body[data-page="fabrication"] .nav:not(.scrolled) .nav-link:hover,
 body[data-page="clients"] .nav:not(.scrolled) .nav-link:hover,
 body[data-page="apropos"] .nav:not(.scrolled) .nav-link:hover,
 body[data-page="contact"] .nav:not(.scrolled) .nav-link:hover,
-body[data-page="news"] .nav:not(.scrolled) .nav-link:hover {
+body[data-page="news"] .nav:not(.scrolled) .nav-link:hover,
+body[data-page="newsletter"] .nav:not(.scrolled) .nav-link:hover,
+body[data-page="carrieres"] .nav:not(.scrolled) .nav-link:hover {
   color: #fff;
 }
 body[data-page="home"] .nav:not(.scrolled) .nav-link::before,
@@ -3786,7 +3853,9 @@ body[data-page="fabrication"] .nav:not(.scrolled) .nav-link::before,
 body[data-page="clients"] .nav:not(.scrolled) .nav-link::before,
 body[data-page="apropos"] .nav:not(.scrolled) .nav-link::before,
 body[data-page="contact"] .nav:not(.scrolled) .nav-link::before,
-body[data-page="news"] .nav:not(.scrolled) .nav-link::before {
+body[data-page="news"] .nav:not(.scrolled) .nav-link::before,
+body[data-page="newsletter"] .nav:not(.scrolled) .nav-link::before,
+body[data-page="carrieres"] .nav:not(.scrolled) .nav-link::before {
   background: rgba(255, 255, 255, 0.1);
 }
 body[data-page="home"] .nav:not(.scrolled) .lang-switch,
@@ -3795,7 +3864,9 @@ body[data-page="fabrication"] .nav:not(.scrolled) .lang-switch,
 body[data-page="clients"] .nav:not(.scrolled) .lang-switch,
 body[data-page="apropos"] .nav:not(.scrolled) .lang-switch,
 body[data-page="contact"] .nav:not(.scrolled) .lang-switch,
-body[data-page="news"] .nav:not(.scrolled) .lang-switch {
+body[data-page="news"] .nav:not(.scrolled) .lang-switch,
+body[data-page="newsletter"] .nav:not(.scrolled) .lang-switch,
+body[data-page="carrieres"] .nav:not(.scrolled) .lang-switch {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.22);
 }
@@ -3805,7 +3876,9 @@ body[data-page="fabrication"] .nav:not(.scrolled) .lang-btn,
 body[data-page="clients"] .nav:not(.scrolled) .lang-btn,
 body[data-page="apropos"] .nav:not(.scrolled) .lang-btn,
 body[data-page="contact"] .nav:not(.scrolled) .lang-btn,
-body[data-page="news"] .nav:not(.scrolled) .lang-btn {
+body[data-page="news"] .nav:not(.scrolled) .lang-btn,
+body[data-page="newsletter"] .nav:not(.scrolled) .lang-btn,
+body[data-page="carrieres"] .nav:not(.scrolled) .lang-btn {
   color: rgba(255, 255, 255, 0.75);
 }
 body[data-page="home"] .nav:not(.scrolled) .lang-btn.active,
@@ -3814,7 +3887,9 @@ body[data-page="fabrication"] .nav:not(.scrolled) .lang-btn.active,
 body[data-page="clients"] .nav:not(.scrolled) .lang-btn.active,
 body[data-page="apropos"] .nav:not(.scrolled) .lang-btn.active,
 body[data-page="contact"] .nav:not(.scrolled) .lang-btn.active,
-body[data-page="news"] .nav:not(.scrolled) .lang-btn.active {
+body[data-page="news"] .nav:not(.scrolled) .lang-btn.active,
+body[data-page="newsletter"] .nav:not(.scrolled) .lang-btn.active,
+body[data-page="carrieres"] .nav:not(.scrolled) .lang-btn.active {
   color: #fff;
 }
 body[data-page="home"] .nav:not(.scrolled) .nav-link.active,
@@ -3823,8 +3898,24 @@ body[data-page="fabrication"] .nav:not(.scrolled) .nav-link.active,
 body[data-page="clients"] .nav:not(.scrolled) .nav-link.active,
 body[data-page="apropos"] .nav:not(.scrolled) .nav-link.active,
 body[data-page="contact"] .nav:not(.scrolled) .nav-link.active,
-body[data-page="news"] .nav:not(.scrolled) .nav-link.active {
+body[data-page="news"] .nav:not(.scrolled) .nav-link.active,
+body[data-page="newsletter"] .nav:not(.scrolled) .nav-link.active,
+body[data-page="carrieres"] .nav:not(.scrolled) .nav-link.active {
   color: #fff;
+}
+body[data-page="home"] .nav:not(.scrolled) .nav-link.active::before,
+body[data-page="design"] .nav:not(.scrolled) .nav-link.active::before,
+body[data-page="fabrication"] .nav:not(.scrolled) .nav-link.active::before,
+body[data-page="clients"] .nav:not(.scrolled) .nav-link.active::before,
+body[data-page="apropos"] .nav:not(.scrolled) .nav-link.active::before,
+body[data-page="contact"] .nav:not(.scrolled) .nav-link.active::before,
+body[data-page="news"] .nav:not(.scrolled) .nav-link.active::before,
+body[data-page="newsletter"] .nav:not(.scrolled) .nav-link.active::before,
+body[data-page="carrieres"] .nav:not(.scrolled) .nav-link.active::before {
+  opacity: 1;
+  transform: scale(1);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 /* Make page background transparent so hero video can show through behind nav */
 body[data-page="home"],
@@ -3933,6 +4024,27 @@ body:has(.hero-video-wrap) .nav:not(.scrolled) .lang-btn {
 }
 body:has(.hero-video-wrap) .nav:not(.scrolled) .lang-btn.active {
   color: #fff;
+}
+body:has(.hero-video-wrap) .nav:not(.scrolled) .nav-link.active::before {
+  opacity: 1;
+  transform: scale(1);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+body:has(.hero-video-wrap) .nav:not(.scrolled) .nav-cta-btn {
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+body:has(.hero-video-wrap) .nav:not(.scrolled) .nav-cta-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+body:has(.hero-video-wrap) .nav:not(.scrolled) .nav-cta-btn.active {
+  color: var(--blue);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(255, 255, 255, 0.92);
 }
 body:has(.hero-video-wrap) .nav:not(.scrolled) .nav-toggle span {
   background: rgba(255, 255, 255, 0.92);

@@ -56,14 +56,10 @@
 <a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
 </div>
 </li>
-<li class="nav-item">
-<a class="nav-link active" href="contact.html"><span data-i18n="nav.contact">Contact</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
-</div>
-</li>
+<li class="nav-item"><a class="nav-link" data-i18n="nav.careers" href="carrieres.html">Carrières</a></li>
 </ul>
 <div class="nav-cta-group">
+<a class="nav-cta-btn active" data-i18n="nav.contact" href="contact.html">Contact</a>
 <div class="lang-switch">
 <button class="lang-btn active" data-lang="fr">FR</button>
 <span class="lang-divider">/</span>
@@ -97,7 +93,10 @@
 <div class="nav-mobile-section">
 <div class="nav-mobile-title" data-i18n="footer.col.contact">Contact</div>
 <a data-i18n="nav.contact" href="contact.html">Contact</a>
-<a data-i18n="nav.sub.careers" href="carrieres.html">Carrières</a>
+</div>
+<div class="nav-mobile-section">
+<div class="nav-mobile-title" data-i18n="nav.careers">Carrières</div>
+<a data-i18n="nav.careers" href="carrieres.html">Carrières</a>
 </div>
 </div>
 <!-- ==================== HOME ==================== -->
@@ -375,20 +374,6 @@
 <script src="js/i18n/loader.js"></script>
 <script src="js/hero-video.js"></script>
 <script defer="" src="js/main.js"></script>
-<script type="module">
-  import Lenis from "https://cdn.jsdelivr.net/npm/lenis@1.0.45/+esm";
-
-  const lenis = window.lenis = new Lenis({
-    duration: 1.1,
-    smoothWheel: true,
-  });
-
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-
-  requestAnimationFrame(raf);
-</script>
+<script type="module" src="js/lenis-init.mjs"></script>
 </body>
 </html>

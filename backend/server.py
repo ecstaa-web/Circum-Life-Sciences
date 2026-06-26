@@ -291,6 +291,17 @@ async def seed_data():
             docs.append(doc)
         await db["news"].insert_many(docs)
 
+    # Newsletter issues seed
+    if await db["newsletter_issues"].count_documents({}) == 0:
+        docs = []
+        for item in SEED_NEWSLETTER_ISSUES:
+            docs.append({
+                "_id": str(uuid.uuid4()),
+                **item,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            })
+        await db["newsletter_issues"].insert_many(docs)
+
     # Admin allow-list
     if await db["admin_allowlist"].count_documents({}) == 0:
         await db["admin_allowlist"].insert_one({

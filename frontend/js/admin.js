@@ -235,43 +235,35 @@
 
       '<div class="admin-view active" id="view-dashboard" data-testid="view-dashboard">' +
       '<div class="stat-row" data-testid="stats-row">' +
-        '<div class="stat"><div class="stat-value" id="dash-stat-leads" data-testid="stat-leads">—</div><div class="stat-label">Abonnés newsletter</div></div>' +
-        '<div class="stat"><div class="stat-value" id="dash-stat-contact" data-testid="stat-contact">—</div><div class="stat-label">Demandes contact</div></div>' +
-        '<div class="stat"><div class="stat-value" id="dash-stat-apps" data-testid="stat-apps">—</div><div class="stat-label">Candidatures carrières</div></div>' +
-        '<div class="stat"><div class="stat-value" id="dash-stat-admins" data-testid="stat-admins">—</div><div class="stat-label">Admins autorisés</div></div>' +
+        '<button type="button" class="stat stat-click" data-leads-tab="newsletter" data-testid="stat-leads">' +
+          '<div class="stat-value" id="dash-stat-leads">—</div><div class="stat-label">Newsletter</div></button>' +
+        '<button type="button" class="stat stat-click" data-leads-tab="contact" data-testid="stat-contact">' +
+          '<div class="stat-value" id="dash-stat-contact">—</div><div class="stat-label">Contact</div></button>' +
+        '<button type="button" class="stat stat-click" data-leads-tab="careers" data-testid="stat-apps">' +
+          '<div class="stat-value" id="dash-stat-apps">—</div><div class="stat-label">Carrières</div></button>' +
+        '<div class="stat"><div class="stat-value" id="dash-stat-admins" data-testid="stat-admins">—</div><div class="stat-label">Admins</div></div>' +
       '</div>' +
 
-      '<div class="panel" data-testid="panel-contact">' +
+      '<div class="panel leads-hub" data-testid="leads-hub">' +
         '<div class="panel-head">' +
-          '<h2>Formulaire Contact</h2>' +
-          '<div class="actions">' +
-            '<button class="btn-mini" id="dl-contact-csv" data-testid="dl-contact-csv">Télécharger CSV</button>' +
-            '<button class="btn-mini pink" id="dl-contact-json" data-testid="dl-contact-json">Télécharger JSON</button>' +
+          '<div><h2>Leads & formulaires</h2><p class="panel-sub">Demandes contact, candidatures et abonnés newsletter en temps réel.</p></div>' +
+          '<div class="leads-tabs" role="tablist">' +
+            '<button type="button" class="leads-tab active" data-leads-tab="contact" data-testid="leads-tab-contact">Contact</button>' +
+            '<button type="button" class="leads-tab" data-leads-tab="careers" data-testid="leads-tab-careers">Carrières</button>' +
+            '<button type="button" class="leads-tab" data-leads-tab="newsletter" data-testid="leads-tab-newsletter">Newsletter</button>' +
           '</div>' +
         '</div>' +
-        '<div id="contact-table" class="table-wrap"><div class="empty">Chargement…</div></div>' +
-      '</div>' +
-
-      '<div class="panel" data-testid="panel-apps">' +
-        '<div class="panel-head">' +
-          '<h2>Formulaire Carrières</h2>' +
-          '<div class="actions">' +
-            '<button class="btn-mini" id="dl-apps-csv" data-testid="dl-apps-csv">Télécharger CSV</button>' +
-            '<button class="btn-mini pink" id="dl-apps-json" data-testid="dl-apps-json">Télécharger JSON</button>' +
+        '<div class="leads-toolbar">' +
+          '<div class="leads-search-wrap">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>' +
+            '<input type="search" id="leads-search" placeholder="Rechercher par nom, email, société…" autocomplete="off"/>' +
+          '</div>' +
+          '<div class="actions" id="leads-export-actions">' +
+            '<button class="btn-mini" id="leads-dl-csv" type="button">Export CSV</button>' +
+            '<button class="btn-mini pink" id="leads-dl-json" type="button">Export JSON</button>' +
           '</div>' +
         '</div>' +
-        '<div id="apps-table" class="table-wrap"><div class="empty">Chargement…</div></div>' +
-      '</div>' +
-
-      '<div class="panel" data-testid="panel-leads">' +
-        '<div class="panel-head">' +
-          '<h2>Inscriptions Newsletter</h2>' +
-          '<div class="actions">' +
-            '<button class="btn-mini" id="dl-leads-csv" data-testid="dl-leads-csv">Télécharger CSV</button>' +
-            '<button class="btn-mini pink" id="dl-leads-json" data-testid="dl-leads-json">Télécharger JSON</button>' +
-          '</div>' +
-        '</div>' +
-        '<div id="leads-table" class="table-wrap"><div class="empty">Chargement…</div></div>' +
+        '<div id="leads-cards" class="leads-cards"><div class="empty">Chargement…</div></div>' +
       '</div>' +
 
       '<div class="panel" data-testid="panel-admins">' +
@@ -287,43 +279,55 @@
       '</div>' +
 
       '<div class="admin-view" id="view-news" data-testid="view-news">' +
-        '<div class="news-admin-wrap">' +
-          '<div class="panel news-admin-list-panel" data-testid="panel-news-list">' +
-            '<div class="panel-head">' +
-              '<h2>Actualités</h2>' +
-              '<div class="actions">' +
-                '<button type="button" class="btn-mini pink" id="news-new-btn" data-testid="news-new-btn">+ Nouvelle actualité</button>' +
-              '</div>' +
-            '</div>' +
-            '<p class="news-admin-hint">Publiez des articles avec une image de couverture (visible sur la page News) et un contenu complet consultable au clic.</p>' +
-            '<div id="news-admin-list" class="news-admin-list"><div class="empty">Chargement…</div></div>' +
+        '<div class="news-studio">' +
+          '<div class="news-studio-header">' +
+            '<div><h2 class="news-studio-title">Actualités</h2><p class="news-studio-sub">Créez, modifiez et publiez vos articles avec couverture et galerie.</p></div>' +
+            '<button type="button" class="btn-mini pink" id="news-new-btn" data-testid="news-new-btn">+ Nouvelle actualité</button>' +
           '</div>' +
-          '<div class="panel news-admin-editor-panel" id="news-editor-panel" hidden data-testid="panel-news-editor">' +
-            '<div class="panel-head">' +
+          '<div id="news-admin-list" class="news-card-grid"><div class="empty">Chargement…</div></div>' +
+        '</div>' +
+        '<div class="news-editor-drawer" id="news-editor-panel" hidden data-testid="panel-news-editor">' +
+          '<div class="news-editor-drawer-inner">' +
+            '<div class="news-editor-drawer-head">' +
               '<h2 id="news-editor-heading">Nouvelle actualité</h2>' +
+              '<button type="button" class="news-drawer-close" id="news-cancel-btn" aria-label="Fermer">&times;</button>' +
             '</div>' +
             '<form id="news-editor-form" class="news-editor-form" data-testid="news-editor-form">' +
               '<input type="hidden" id="news-edit-id" value=""/>' +
-              '<label class="news-field">Titre<input type="text" id="news-form-title" required maxlength="240" data-testid="news-form-title"/></label>' +
-              '<div class="news-field-row">' +
-                '<label class="news-field">Catégorie<input type="text" id="news-form-tag" required maxlength="80" placeholder="Inauguration, Certification, Salon…" data-testid="news-form-tag"/></label>' +
-                '<label class="news-field">Date de publication<input type="date" id="news-form-date" required data-testid="news-form-date"/></label>' +
+              '<div class="news-editor-grid">' +
+                '<div class="news-editor-main">' +
+                  '<label class="news-field">Titre<input type="text" id="news-form-title" required maxlength="240" data-testid="news-form-title" placeholder="Titre de l\'article"/></label>' +
+                  '<label class="news-field">Accroche<textarea id="news-form-summary" required maxlength="800" rows="3" data-testid="news-form-summary" placeholder="Texte visible sur la carte News"></textarea></label>' +
+                  '<div class="news-field">' +
+                    '<span>Contenu de l\'article</span>' +
+                    '<div class="news-rich-toolbar" id="news-rich-toolbar">' +
+                      '<button type="button" data-cmd="bold"><b>B</b></button>' +
+                      '<button type="button" data-cmd="italic"><em>I</em></button>' +
+                      '<button type="button" data-cmd="underline"><u>U</u></button>' +
+                      '<button type="button" data-cmd="insertUnorderedList">• Liste</button>' +
+                      '<button type="button" data-cmd="formatBlock" data-val="h2">H2</button>' +
+                      '<button type="button" data-cmd="formatBlock" data-val="h3">H3</button>' +
+                      '<button type="button" data-cmd="createLink">Lien</button>' +
+                    '</div>' +
+                    '<div id="news-form-body-editable" class="news-rich-editor" contenteditable="true" data-placeholder="Rédigez votre article…"></div>' +
+                    '<textarea id="news-form-body" hidden data-testid="news-form-body"></textarea>' +
+                  '</div>' +
+                '</div>' +
+                '<aside class="news-editor-side">' +
+                  '<label class="news-field">Catégorie<input type="text" id="news-form-tag" required maxlength="80" placeholder="Salon, Certification…" data-testid="news-form-tag"/></label>' +
+                  '<label class="news-field">Date<input type="date" id="news-form-date" required data-testid="news-form-date"/></label>' +
+                  '<label class="news-field">Couverture <span class="news-field-note" id="news-cover-note">(obligatoire)</span>' +
+                    '<input type="file" id="news-form-cover" accept="image/jpeg,image/png,image/webp" data-testid="news-form-cover"/>' +
+                    '<div id="news-cover-preview" class="news-cover-preview"></div>' +
+                  '</label>' +
+                  '<label class="news-field">Galerie (images supplémentaires)' +
+                    '<input type="file" id="news-form-gallery" accept="image/jpeg,image/png,image/webp" multiple data-testid="news-form-gallery"/>' +
+                  '</label>' +
+                  '<div id="news-existing-gallery" class="news-gallery-grid"></div>' +
+                  '<div id="news-new-gallery-preview" class="news-gallery-grid"></div>' +
+                '</aside>' +
               '</div>' +
-              '<label class="news-field">Accroche (texte visible sur la carte News)<textarea id="news-form-summary" required maxlength="800" rows="3" data-testid="news-form-summary"></textarea></label>' +
-              '<label class="news-field">Image de couverture <span class="news-field-note" id="news-cover-note">(obligatoire)</span>' +
-                '<input type="file" id="news-form-cover" accept="image/jpeg,image/png,image/webp" data-testid="news-form-cover"/>' +
-                '<div id="news-cover-preview" class="news-cover-preview"></div>' +
-              '</label>' +
-              '<label class="news-field">Contenu de l\'article (HTML)' +
-                '<textarea id="news-form-body" rows="14" placeholder="<p>Votre texte…</p>" data-testid="news-form-body"></textarea>' +
-                '<small class="news-field-help">Balises autorisées : p, br, strong, em, u, h2, h3, ul, ol, li, a, img, blockquote. Vous pouvez coller du HTML simple.</small>' +
-              '</label>' +
-              '<label class="news-field">Galerie d\'images (optionnel, affichée en bas de l\'article)' +
-                '<input type="file" id="news-form-gallery" accept="image/jpeg,image/png,image/webp" multiple data-testid="news-form-gallery"/>' +
-              '</label>' +
-              '<div id="news-existing-gallery" class="news-existing-gallery"></div>' +
               '<div class="news-form-actions">' +
-                '<button type="button" class="btn-mini ghost" id="news-cancel-btn" data-testid="news-cancel-btn">Annuler</button>' +
                 '<button type="button" class="btn-mini err" id="news-delete-btn" hidden data-testid="news-delete-btn">Supprimer</button>' +
                 '<button type="submit" class="btn-mini pink" id="news-save-btn" data-testid="news-save-btn">Publier</button>' +
               '</div>' +
@@ -339,7 +343,7 @@
             '<label>Langue<select id="content-lang-select" data-testid="content-lang-select">' +
               '<option value="fr">Français</option><option value="en">English</option><option value="de">Deutsch</option><option value="it">Italiano</option>' +
             '</select></label>' +
-            '<span class="visual-editor-hint">Cliquez sur un texte dans l\'aperçu, puis formatez-le avec la barre ci-dessous</span>' +
+            '<span class="visual-editor-hint">Cliquez sur un texte dans l\'aperçu pour le modifier — puis <strong>Valider</strong> pour publier en direct</span>' +
             '<div class="visual-editor-actions">' +
               '<button type="button" class="btn-mini ghost" id="content-reload-btn" data-testid="content-reload-btn">Recharger</button>' +
             '</div>' +
@@ -385,7 +389,7 @@
             '<span class="count" id="content-pending-count">0 modification(s)</span>' +
             '<div style="display:flex;gap:8px">' +
               '<button type="button" class="btn-mini ghost" id="content-discard-btn" data-testid="content-discard-btn">Annuler</button>' +
-              '<button type="button" class="btn-mini pink" id="content-save-btn" data-testid="content-save-btn">Enregistrer</button>' +
+              '<button type="button" class="btn-mini pink" id="content-save-btn" data-testid="content-save-btn">Valider</button>' +
             '</div>' +
           '</div>' +
         '</div>' +
@@ -410,21 +414,225 @@
       });
     });
 
-    document.getElementById('dl-leads-csv').addEventListener('click', function () { triggerDownload('/admin/leads.csv'); });
-    document.getElementById('dl-leads-json').addEventListener('click', function () { triggerDownload('/admin/leads.json'); });
-    document.getElementById('dl-apps-csv').addEventListener('click', function () { triggerDownload('/admin/applications.csv'); });
-    document.getElementById('dl-apps-json').addEventListener('click', function () { triggerDownload('/admin/applications.json'); });
-    document.getElementById('dl-contact-csv').addEventListener('click', function () { triggerDownload('/admin/contact.csv'); });
-    document.getElementById('dl-contact-json').addEventListener('click', function () { triggerDownload('/admin/contact.json'); });
+    initLeadsHub();
+    initNewsAdmin();
     document.getElementById('allow-add-form').addEventListener('submit', addAdmin);
 
-    initNewsAdmin();
-
-    loadContact();
-    loadApps();
-    loadLeads();
+    loadAllLeads();
     loadAllowlist();
   }
+
+  // ============ Leads hub (contact, carrières, newsletter) ============
+  var leadsState = { tab: 'contact', contact: [], careers: [], newsletter: [], search: '' };
+
+  var LEADS_EXPORT = {
+    contact: { csv: '/admin/contact.csv', json: '/admin/contact.json' },
+    careers: { csv: '/admin/applications.csv', json: '/admin/applications.json' },
+    newsletter: { csv: '/admin/leads.csv', json: '/admin/leads.json' }
+  };
+
+  function initLeadsHub() {
+    document.querySelectorAll('.leads-tab, .stat-click[data-leads-tab]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        switchLeadsTab(btn.getAttribute('data-leads-tab'));
+      });
+    });
+    var search = document.getElementById('leads-search');
+    if (search) {
+      search.addEventListener('input', function () {
+        leadsState.search = search.value.trim().toLowerCase();
+        renderLeadsCards();
+      });
+    }
+    var csvBtn = document.getElementById('leads-dl-csv');
+    var jsonBtn = document.getElementById('leads-dl-json');
+    if (csvBtn) csvBtn.addEventListener('click', function () {
+      var p = LEADS_EXPORT[leadsState.tab];
+      if (p) triggerDownload(p.csv);
+    });
+    if (jsonBtn) jsonBtn.addEventListener('click', function () {
+      var p = LEADS_EXPORT[leadsState.tab];
+      if (p) triggerDownload(p.json);
+    });
+  }
+
+  function switchLeadsTab(tab) {
+    if (!tab) return;
+    leadsState.tab = tab;
+    document.querySelectorAll('.leads-tab').forEach(function (t) {
+      t.classList.toggle('active', t.getAttribute('data-leads-tab') === tab);
+    });
+    renderLeadsCards();
+  }
+
+  function loadAllLeads() {
+    Promise.all([
+      api('/admin/contact').then(function (r) { return r.ok ? r.json() : { items: [], count: 0 }; }),
+      api('/admin/applications').then(function (r) { return r.ok ? r.json() : { items: [], count: 0 }; }),
+      api('/admin/leads').then(function (r) { return r.ok ? r.json() : { items: [], count: 0 }; })
+    ]).then(function (results) {
+      leadsState.contact = results[0].items || [];
+      leadsState.careers = results[1].items || [];
+      leadsState.newsletter = results[2].items || [];
+      setStatCount('dash-stat-contact', results[0].count);
+      setStatCount('dash-stat-apps', results[1].count);
+      setStatCount('dash-stat-leads', results[2].count);
+      renderLeadsCards();
+    }).catch(function () {
+      renderLeadsCards();
+    });
+  }
+
+  function filterLeadsItems(items, type) {
+    var q = leadsState.search;
+    if (!q) return items;
+    return items.filter(function (item) {
+      var hay = [
+        item.firstname, item.lastname, item.email, item.company, item.role,
+        item.phone, item.position, item.location, item.message, item.contact_type
+      ].filter(Boolean).join(' ').toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+  }
+
+  function renderLeadsCards() {
+    var el = document.getElementById('leads-cards');
+    if (!el) return;
+    var tab = leadsState.tab;
+    var items = filterLeadsItems(leadsState[tab] || [], tab);
+    if (!items.length) {
+      var emptyMsg = {
+        contact: 'Aucune demande contact.',
+        careers: 'Aucune candidature.',
+        newsletter: 'Aucun abonné newsletter.'
+      };
+      el.innerHTML = '<div class="leads-empty"><div class="leads-empty-icon">📭</div><p>' + emptyMsg[tab] + '</p></div>';
+      return;
+    }
+    el.innerHTML = items.map(function (item) {
+      return buildLeadCard(item, tab);
+    }).join('');
+    el.querySelectorAll('[data-lead-detail]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openLeadDetail(btn.getAttribute('data-lead-detail'), btn.getAttribute('data-lead-type'));
+      });
+    });
+    el.querySelectorAll('[data-lead-delete]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        deleteLeadItem(btn.getAttribute('data-lead-delete'), btn.getAttribute('data-lead-type'));
+      });
+    });
+    el.querySelectorAll('[data-lead-dl]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = btn.getAttribute('data-lead-dl');
+        var kind = btn.getAttribute('data-lead-dl-kind');
+        if (kind === 'cv') downloadCv(id);
+        else if (kind === 'att') downloadContactAttachment(id);
+      });
+    });
+  }
+
+  function buildLeadCard(item, type) {
+    var id = item.id || item._id;
+    var name = escapeHTML((item.firstname || '') + ' ' + (item.lastname || '')).trim() || '—';
+    var email = escapeHTML(item.email || '');
+    var date = escapeHTML(fmtDate(item.created_at));
+    var badge = type === 'newsletter' ? 'Newsletter' : type === 'careers' ? 'Carrières' : 'Contact';
+    var badgeClass = 'lead-badge lead-badge--' + type;
+    var meta = '';
+    var actions = '';
+    if (type === 'contact') {
+      meta = escapeHTML(item.company || '—') + (item.contact_type ? ' · ' + escapeHTML(item.contact_type) : '');
+      if (item.attachment_filename) {
+        actions = '<button type="button" class="lead-card-action" data-lead-dl="' + escapeHTML(id) + '" data-lead-dl-kind="att">Pièce jointe</button>';
+      }
+    } else if (type === 'careers') {
+      meta = escapeHTML(item.position || '—') + (item.location ? ' · ' + escapeHTML(item.location) : '');
+      if (item.cv_filename) {
+        actions = '<button type="button" class="lead-card-action" data-lead-dl="' + escapeHTML(id) + '" data-lead-dl-kind="cv">Télécharger CV</button>';
+      }
+    } else {
+      meta = escapeHTML(item.company || '—') + (item.role ? ' · ' + escapeHTML(item.role) : '');
+      actions = '<span class="pill">' + escapeHTML((item.lang || 'fr').toUpperCase()) + '</span>';
+    }
+    return '' +
+      '<article class="lead-card" data-testid="lead-card">' +
+        '<div class="lead-card-top">' +
+          '<span class="' + badgeClass + '">' + badge + '</span>' +
+          '<time class="lead-card-date">' + date + '</time>' +
+        '</div>' +
+        '<h3 class="lead-card-name">' + name + '</h3>' +
+        '<p class="lead-card-email">' + email + '</p>' +
+        '<p class="lead-card-meta">' + meta + '</p>' +
+        '<div class="lead-card-actions">' +
+          actions +
+          '<button type="button" class="lead-card-action primary" data-lead-detail="' + escapeHTML(id) + '" data-lead-type="' + type + '">Voir détail</button>' +
+          '<button type="button" class="lead-card-action danger" data-lead-delete="' + escapeHTML(id) + '" data-lead-type="' + type + '">Supprimer</button>' +
+        '</div>' +
+      '</article>';
+  }
+
+  function openLeadDetail(id, type) {
+    var list = leadsState[type] || [];
+    var item = list.find(function (x) { return (x.id || x._id) === id; });
+    if (!item) return;
+    var rows = [];
+    Object.keys(item).forEach(function (k) {
+      if (k === 'id' || k === '_id') return;
+      var val = item[k];
+      if (val == null || val === '') return;
+      rows.push('<dt>' + escapeHTML(k) + '</dt><dd>' + escapeHTML(String(val)) + '</dd>');
+    });
+    var modal = document.createElement('div');
+    modal.className = 'modal-bg lead-detail-modal';
+    modal.innerHTML =
+      '<div class="modal lead-detail">' +
+        '<div class="lead-detail-head">' +
+          '<h3>' + escapeHTML((item.firstname || '') + ' ' + (item.lastname || '')) + '</h3>' +
+          '<button type="button" class="news-drawer-close" id="lead-detail-close">&times;</button>' +
+        '</div>' +
+        '<dl class="lead-detail-grid">' + rows.join('') + '</dl>' +
+        '<div class="modal-actions">' +
+          (type === 'careers' && item.cv_filename ? '<button type="button" class="btn-mini" id="lead-detail-cv">CV ↓</button>' : '') +
+          (type === 'contact' && item.attachment_filename ? '<button type="button" class="btn-mini" id="lead-detail-att">Pièce jointe ↓</button>' : '') +
+          '<button type="button" class="btn-mini err" id="lead-detail-del">Supprimer</button>' +
+          '<button type="button" class="btn-mini pink" id="lead-detail-close2">Fermer</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    function close() { modal.remove(); }
+    modal.querySelector('#lead-detail-close').addEventListener('click', close);
+    modal.querySelector('#lead-detail-close2').addEventListener('click', close);
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+    var cvBtn = modal.querySelector('#lead-detail-cv');
+    if (cvBtn) cvBtn.addEventListener('click', function () { downloadCv(id); });
+    var attBtn = modal.querySelector('#lead-detail-att');
+    if (attBtn) attBtn.addEventListener('click', function () { downloadContactAttachment(id); });
+    modal.querySelector('#lead-detail-del').addEventListener('click', function () {
+      close();
+      deleteLeadItem(id, type);
+    });
+  }
+
+  function deleteLeadItem(id, type) {
+    var labels = { contact: 'cette demande contact', careers: 'cette candidature', newsletter: 'cet abonné' };
+    if (!confirm('Supprimer ' + (labels[type] || 'cet élément') + ' ?')) return;
+    var paths = {
+      contact: '/admin/contact/',
+      careers: '/admin/applications/',
+      newsletter: '/admin/leads/'
+    };
+    api(paths[type] + encodeURIComponent(id), { method: 'DELETE' }).then(function (r) {
+      if (r.ok) { toast('Supprimé'); loadAllLeads(); }
+      else toast('Erreur ' + r.status, true);
+    });
+  }
+
+  function loadContact() { loadAllLeads(); }
+  function loadLeads() { loadAllLeads(); }
+  function loadApps() { loadAllLeads(); }
 
   function triggerDownload(path) {
     // Use fetch to ensure credentials/cookie are sent, then create blob URL
@@ -467,42 +675,6 @@
     scaleEl.style.margin = '0 auto';
   }
 
-  function loadContact() {
-    api('/admin/contact').then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    }).then(function (data) {
-      setStatCount('dash-stat-contact', data.count);
-      var c = document.getElementById('contact-table');
-      if (!c) return;
-      var items = data.items || [];
-      if (!items.length) { c.innerHTML = '<div class="empty">Aucune demande contact pour le moment.</div>'; return; }
-      var rows = items.map(function (m) {
-        var preview = (m.message || '').slice(0, 120) + ((m.message || '').length > 120 ? '…' : '');
-        return '<tr data-testid="contact-row">' +
-          '<td><strong>' + escapeHTML(m.firstname || '') + ' ' + escapeHTML(m.lastname || '') + '</strong><br/><small style="color:var(--text-muted)">' + escapeHTML(m.email) + (m.phone ? ' · ' + escapeHTML(m.phone) : '') + '</small></td>' +
-          '<td>' + escapeHTML(m.company || '—') + '<br/><small style="color:var(--text-muted)">' + escapeHTML(m.country || '') + (m.role ? ' · ' + escapeHTML(m.role) : '') + '</small></td>' +
-          '<td>' + escapeHTML(m.contact_type || '—') + '<br/><small style="color:var(--text-muted)">' + escapeHTML(m.stage || '—') + ' · ' + escapeHTML(m.timeline || '—') + '</small></td>' +
-          '<td class="muted" style="max-width:280px">' + escapeHTML(preview) + '</td>' +
-          '<td>' + (m.attachment_filename ? '<button type="button" class="btn-mini" data-att-id="' + escapeHTML(m.id) + '" data-testid="dl-att-btn">Pièce ↓</button>' : '<span class="muted">—</span>') + '</td>' +
-          '<td class="muted">' + escapeHTML(fmtDate(m.created_at)) + '</td>' +
-          '<td><button class="btn-mini danger" data-id="' + escapeHTML(m.id) + '" data-testid="del-contact-btn">×</button></td>' +
-        '</tr>';
-      }).join('');
-      c.innerHTML = '<table class="admin-tbl"><thead><tr><th>Contact</th><th>Entreprise</th><th>Projet</th><th>Message</th><th>Fichier</th><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
-      c.querySelectorAll('button[data-testid="del-contact-btn"]').forEach(function (btn) {
-        btn.addEventListener('click', function () { deleteContact(btn.getAttribute('data-id')); });
-      });
-      c.querySelectorAll('button[data-testid="dl-att-btn"]').forEach(function (btn) {
-        btn.addEventListener('click', function () { downloadContactAttachment(btn.getAttribute('data-att-id')); });
-      });
-    }).catch(function () {
-      setStatCount('dash-stat-contact', 0);
-      var c = document.getElementById('contact-table');
-      if (c) c.innerHTML = '<div class="empty">Aucune demande contact pour le moment.</div>';
-    });
-  }
-
   function downloadContactAttachment(id) {
     if (!id) return;
     api('/contact/attachment/' + encodeURIComponent(id)).then(function (r) {
@@ -521,69 +693,6 @@
     });
   }
 
-  function deleteContact(id) {
-    if (!confirm('Supprimer cette demande contact ?')) return;
-    api('/admin/contact/' + encodeURIComponent(id), { method: 'DELETE' }).then(function (r) {
-      if (r.ok) { toast('Demande supprimée'); loadContact(); }
-      else toast('Erreur ' + r.status, true);
-    });
-  }
-
-  function loadLeads() {
-    api('/admin/leads').then(function (r) { return r.json(); }).then(function (data) {
-      setStatCount('dash-stat-leads', data.count);
-      var c = document.getElementById('leads-table');
-      if (!data.items.length) { c.innerHTML = '<div class="empty">Aucun abonné pour le moment.</div>'; return; }
-      var rows = data.items.map(function (l) {
-        return '<tr data-testid="lead-row">' +
-          '<td><strong>' + escapeHTML(l.firstname || '') + ' ' + escapeHTML(l.lastname || '') + '</strong></td>' +
-          '<td>' + escapeHTML(l.email) + '</td>' +
-          '<td>' + escapeHTML(l.company || '—') + '</td>' +
-          '<td>' + escapeHTML(l.role || '—') + '</td>' +
-          '<td><span class="pill">' + escapeHTML((l.lang || 'fr').toUpperCase()) + '</span></td>' +
-          '<td class="muted">' + escapeHTML(fmtDate(l.created_at)) + '</td>' +
-          '<td><button class="btn-mini danger" data-id="' + escapeHTML(l.id) + '" data-testid="del-lead-btn">×</button></td>' +
-        '</tr>';
-      }).join('');
-      c.innerHTML = '<table class="admin-tbl"><thead><tr><th>Nom</th><th>Email</th><th>Société</th><th>Fonction</th><th>Langue</th><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
-      c.querySelectorAll('button[data-testid="del-lead-btn"]').forEach(function (btn) {
-        btn.addEventListener('click', function () { deleteLead(btn.getAttribute('data-id')); });
-      });
-    });
-  }
-
-  function deleteLead(id) {
-    if (!confirm('Supprimer ce lead ?')) return;
-    api('/admin/leads/' + encodeURIComponent(id), { method: 'DELETE' }).then(function (r) {
-      if (r.ok) { toast('Lead supprimé'); loadLeads(); }
-      else toast('Erreur ' + r.status, true);
-    });
-  }
-
-  function loadApps() {
-    api('/admin/applications').then(function (r) { return r.json(); }).then(function (data) {
-      setStatCount('dash-stat-apps', data.count);
-      var c = document.getElementById('apps-table');
-      if (!data.items.length) { c.innerHTML = '<div class="empty">Aucune candidature pour le moment.</div>'; return; }
-      var rows = data.items.map(function (a) {
-        return '<tr data-testid="app-row">' +
-          '<td><strong>' + escapeHTML(a.firstname || '') + ' ' + escapeHTML(a.lastname || '') + '</strong><br/><small style="color:var(--text-muted)">' + escapeHTML(a.email) + (a.phone ? ' · ' + escapeHTML(a.phone) : '') + '</small></td>' +
-          '<td>' + escapeHTML(a.position || '—') + '<br/><small style="color:var(--text-muted)">' + escapeHTML(a.location || '—') + '</small></td>' +
-          '<td>' + escapeHTML(a.experience || '—') + '<br/><small style="color:var(--text-muted)">Dispo: ' + escapeHTML(a.availability || '—') + '</small></td>' +
-          '<td>' + (a.cv_filename ? '<button type="button" class="btn-mini" data-cv-id="' + escapeHTML(a.id) + '" data-testid="dl-cv-btn">CV ↓</button>' : '<span class="muted">—</span>') + '</td>' +
-          '<td class="muted">' + escapeHTML(fmtDate(a.created_at)) + '</td>' +
-          '<td><button class="btn-mini danger" data-id="' + escapeHTML(a.id) + '" data-testid="del-app-btn">×</button></td>' +
-        '</tr>';
-      }).join('');
-      c.innerHTML = '<table class="admin-tbl"><thead><tr><th>Candidat</th><th>Poste</th><th>Expérience</th><th>CV</th><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
-      c.querySelectorAll('button[data-testid="del-app-btn"]').forEach(function (btn) {
-        btn.addEventListener('click', function () { deleteApp(btn.getAttribute('data-id')); });
-      });
-      c.querySelectorAll('button[data-testid="dl-cv-btn"]').forEach(function (btn) {
-        btn.addEventListener('click', function () { downloadCv(btn.getAttribute('data-cv-id')); });
-      });
-    });
-  }
 
   function downloadCv(id) {
     if (!id) return;
@@ -600,14 +709,6 @@
         document.body.appendChild(a); a.click();
         setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 0);
       });
-    });
-  }
-
-  function deleteApp(id) {
-    if (!confirm('Supprimer cette candidature (et son CV) ?')) return;
-    api('/admin/applications/' + encodeURIComponent(id), { method: 'DELETE' }).then(function (r) {
-      if (r.ok) { toast('Candidature supprimée'); loadApps(); }
-      else toast('Erreur ' + r.status, true);
     });
   }
 
@@ -950,7 +1051,7 @@
       return { key: key, lang: contentState.lang, value: contentState.pending[key] };
     });
     var btn = document.getElementById('content-save-btn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Enregistrement…'; }
+    if (btn) { btn.disabled = true; btn.textContent = 'Validation…'; }
     api('/admin/content', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -959,14 +1060,21 @@
       if (!r.ok) return r.json().then(function (j) { throw new Error(j.detail || 'Erreur'); });
       return r.json();
     }).then(function () {
+      keys.forEach(function (key) {
+        contentState.baseline[key] = contentState.pending[key];
+      });
       contentState.pending = {};
       updateContentSaveBar();
-      toast('Contenu enregistré — visible immédiatement sur le site');
-      reloadPreviewFrame();
+      postToFrame({
+        type: 'circum-editor-commit',
+        baseline: contentState.baseline,
+        lang: contentState.lang
+      });
+      toast('Modifications validées — visibles en direct sur le site');
     }).catch(function (err) {
       toast(err.message || 'Erreur', true);
     }).finally(function () {
-      if (btn) { btn.disabled = false; btn.textContent = 'Enregistrer'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Valider'; }
     });
   }
 
@@ -984,6 +1092,9 @@
     var deleteBtn = document.getElementById('news-delete-btn');
     var form = document.getElementById('news-editor-form');
     var coverInput = document.getElementById('news-form-cover');
+    var galleryInput = document.getElementById('news-form-gallery');
+    var richEditor = document.getElementById('news-form-body-editable');
+    var richToolbar = document.getElementById('news-rich-toolbar');
     if (newBtn) newBtn.addEventListener('click', function () { openNewsEditor(null); });
     if (cancelBtn) cancelBtn.addEventListener('click', closeNewsEditor);
     if (deleteBtn) deleteBtn.addEventListener('click', deleteNewsArticle);
@@ -995,6 +1106,41 @@
         preview.innerHTML = '<img src="' + URL.createObjectURL(coverInput.files[0]) + '" alt="Aperçu couverture"/>';
       });
     }
+    if (galleryInput) {
+      galleryInput.addEventListener('change', function () {
+        var wrap = document.getElementById('news-new-gallery-preview');
+        if (!wrap || !galleryInput.files) return;
+        wrap.innerHTML = Array.prototype.map.call(galleryInput.files, function (f) {
+          return '<img src="' + URL.createObjectURL(f) + '" alt=""/>';
+        }).join('');
+      });
+    }
+    if (richToolbar && richEditor) {
+      richToolbar.querySelectorAll('button').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          richEditor.focus();
+          var cmd = btn.getAttribute('data-cmd');
+          var val = btn.getAttribute('data-val');
+          if (cmd === 'createLink') {
+            var url = window.prompt('URL du lien :', 'https://');
+            if (url) document.execCommand('createLink', false, url);
+          } else if (cmd === 'formatBlock' && val) {
+            document.execCommand('formatBlock', false, val);
+          } else if (cmd) {
+            document.execCommand(cmd, false, null);
+          }
+          syncNewsBodyField();
+        });
+      });
+      richEditor.addEventListener('input', syncNewsBodyField);
+    }
+  }
+
+  function syncNewsBodyField() {
+    var rich = document.getElementById('news-form-body-editable');
+    var hidden = document.getElementById('news-form-body');
+    if (rich && hidden) hidden.value = rich.innerHTML.trim();
   }
 
   function loadNewsAdminList() {
@@ -1013,20 +1159,24 @@
       el.innerHTML = newsState.items.map(function (item) {
         var thumb = item.cover_image
           ? '<img src="' + escapeHTML(newsMediaUrl(item.cover_image)) + '" alt=""/>'
-          : '<span class="news-admin-no-thumb">Sans image</span>';
+          : '<div class="news-card-placeholder">' + escapeHTML(item.tag || 'News') + '</div>';
+        var galleryCount = (item.gallery && item.gallery.length) ? item.gallery.length : 0;
         return '' +
-          '<div class="news-admin-row" data-testid="news-row-' + escapeHTML(item.id) + '">' +
-            '<div class="news-admin-row-cover">' + thumb + '</div>' +
-            '<div class="news-admin-row-body">' +
-              '<strong>' + escapeHTML(item.title) + '</strong>' +
-              '<small>' + escapeHTML(item.tag) + ' · ' + escapeHTML(item.date) + '</small>' +
+          '<article class="news-card" data-testid="news-row-' + escapeHTML(item.id) + '">' +
+            '<div class="news-card-media">' + thumb +
+              (galleryCount ? '<span class="news-card-gallery-badge">' + galleryCount + ' photo' + (galleryCount > 1 ? 's' : '') + '</span>' : '') +
+            '</div>' +
+            '<div class="news-card-body">' +
+              '<span class="news-card-tag">' + escapeHTML(item.tag) + '</span>' +
+              '<h3>' + escapeHTML(item.title) + '</h3>' +
               '<p>' + escapeHTML(item.summary) + '</p>' +
+              '<time>' + escapeHTML(item.date) + '</time>' +
             '</div>' +
-            '<div class="news-admin-row-actions">' +
+            '<div class="news-card-actions">' +
               '<button type="button" class="btn-mini" data-edit-news="' + escapeHTML(item.id) + '">Modifier</button>' +
-              '<a class="btn-mini ghost" href="/news-article.html?id=' + encodeURIComponent(item.id) + '" target="_blank" rel="noopener">Voir</a>' +
+              '<a class="btn-mini ghost" href="/news-article.html?id=' + encodeURIComponent(item.id) + '" target="_blank" rel="noopener">Aperçu</a>' +
             '</div>' +
-          '</div>';
+          '</article>';
       }).join('');
       el.querySelectorAll('[data-edit-news]').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -1046,6 +1196,8 @@
     var coverNote = document.getElementById('news-cover-note');
     var coverPreview = document.getElementById('news-cover-preview');
     var galleryExisting = document.getElementById('news-existing-gallery');
+    var richEditor = document.getElementById('news-form-body-editable');
+    var newGallery = document.getElementById('news-new-gallery-preview');
     if (!panel) return;
 
     document.getElementById('news-edit-id').value = id || '';
@@ -1054,10 +1206,12 @@
     document.getElementById('news-form-date').value = new Date().toISOString().slice(0, 10);
     document.getElementById('news-form-summary').value = '';
     document.getElementById('news-form-body').value = '';
+    if (richEditor) richEditor.innerHTML = '';
     if (coverInput) { coverInput.value = ''; coverInput.required = !id; }
     document.getElementById('news-form-gallery').value = '';
     if (coverPreview) coverPreview.innerHTML = '';
     if (galleryExisting) galleryExisting.innerHTML = '';
+    if (newGallery) newGallery.innerHTML = '';
     if (coverNote) coverNote.textContent = id ? '(laisser vide pour conserver l\'actuelle)' : '(obligatoire)';
 
     if (id) {
@@ -1073,20 +1227,21 @@
       document.getElementById('news-form-tag').value = item.tag || '';
       document.getElementById('news-form-date').value = item.date || '';
       document.getElementById('news-form-summary').value = item.summary || '';
-      document.getElementById('news-form-body').value = item.body_html || '';
+      var bodyHtml = item.body_html || '';
+      document.getElementById('news-form-body').value = bodyHtml;
+      if (richEditor) richEditor.innerHTML = bodyHtml;
       if (item.cover_image && coverPreview) {
         coverPreview.innerHTML = '<img src="' + escapeHTML(newsMediaUrl(item.cover_image)) + '" alt="Couverture actuelle"/>';
       }
       if (item.gallery && item.gallery.length && galleryExisting) {
-        galleryExisting.innerHTML = '<div class="news-existing-gallery-title">Images de la galerie</div>' +
-          item.gallery.map(function (name) {
-            return '' +
-              '<label class="news-gallery-remove">' +
-                '<input type="checkbox" value="' + escapeHTML(name) + '"/>' +
-                '<img src="' + escapeHTML(newsMediaUrl(name)) + '" alt=""/>' +
-                '<span>Supprimer</span>' +
-              '</label>';
-          }).join('');
+        galleryExisting.innerHTML = item.gallery.map(function (name) {
+          return '' +
+            '<label class="news-gallery-tile">' +
+              '<input type="checkbox" value="' + escapeHTML(name) + '"/>' +
+              '<img src="' + escapeHTML(newsMediaUrl(name)) + '" alt=""/>' +
+              '<span class="news-gallery-tile-del">Supprimer</span>' +
+            '</label>';
+        }).join('');
       }
     } else {
       newsState.editing = null;
@@ -1095,17 +1250,19 @@
     }
 
     panel.hidden = false;
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.body.classList.add('news-editor-open');
   }
 
   function closeNewsEditor() {
     var panel = document.getElementById('news-editor-panel');
     if (panel) panel.hidden = true;
+    document.body.classList.remove('news-editor-open');
     newsState.editing = null;
   }
 
   function saveNewsArticle(e) {
     e.preventDefault();
+    syncNewsBodyField();
     var id = document.getElementById('news-edit-id').value;
     var coverInput = document.getElementById('news-form-cover');
     var saveBtn = document.getElementById('news-save-btn');

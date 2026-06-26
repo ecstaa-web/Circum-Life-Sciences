@@ -241,6 +241,14 @@ async def load_overrides_from_db(db) -> dict[str, dict[str, str]]:
 async def get_admin_page_content(db, page_id: str, lang: str) -> dict[str, Any]:
     lang = validate_lang(lang)
     base = _load_locale_file(page_id)
+    if page_id != "common":
+        try:
+            common = _load_locale_file("common")
+            merged = dict(common)
+            merged.update(base)
+            base = merged
+        except HTTPException:
+            pass
     overrides = await load_overrides_from_db(db)
     lang_overrides = overrides.get(lang, {})
     items = []
