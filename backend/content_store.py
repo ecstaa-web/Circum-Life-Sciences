@@ -325,7 +325,6 @@ async def get_admin_page_content(db, page_id: str, lang: str) -> dict[str, Any]:
 
 
 async def save_content_updates(db, updates: list[dict[str, str]], updated_by: str) -> dict[str, Any]:
-    base = load_base_content()
     now = datetime.now(timezone.utc).isoformat()
     saved = 0
     values: list[dict[str, str]] = []
@@ -333,8 +332,6 @@ async def save_content_updates(db, updates: list[dict[str, str]], updated_by: st
     for item in updates:
         key = validate_content_key(item.get("key", ""))
         lang = validate_lang(item.get("lang", ""))
-        if key not in base:
-            logger.info("Admin save for key outside locale files: %s", key)
 
         raw = item.get("value", "")
         if not isinstance(raw, str):

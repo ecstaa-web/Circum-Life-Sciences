@@ -169,7 +169,7 @@
     if (el.querySelector('input, select, textarea, button') && !el.hasAttribute('data-i18n-placeholder')) return;
     var key = getKey(el);
     if (!key) return;
-    baseline[key] = readValue(el);
+    if (baseline[key] === undefined) baseline[key] = readValue(el);
     var mode = getEditMode(el);
 
     el.dataset.circumBound = '1';

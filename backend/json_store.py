@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import re
+import threading
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
@@ -132,22 +134,38 @@ class JsonCursor:
         return item
 
 
+logger = logging.getLogger("circum.json_store")
+
+
 class JsonCollection:
     def __init__(self, path: Path, lock: asyncio.Lock) -> None:
         self._path = path
         self._lock = lock
+        self._io = threading.RLock()
+
+    def _read_sync(self) -> list[dict]:
+        with self._io:
+            if not self._path.is_file():
+                return []
+            try:
+                text = self._path.read_text(encoding="utf-8")
+                data = json.loads(text or "[]")
+                return data if isinstance(data, list) else []
+            except json.JSONDecodeError:
+                logger.warning("Corrupt JSON in %s — treating as empty", self._path)
+                return []
+
+    def _write_sync(self, docs: list[dict]) -> None:
+        with self._io:
+            self._path.parent.mkdir(parents=True, exist_ok=True)
+            payload = json.dumps(docs, ensure_ascii=False, indent=2, default=_json_default)
+            self._path.write_text(payload, encoding="utf-8")
 
     async def _read(self) -> list[dict]:
-        if not self._path.is_file():
-            return []
-        text = await asyncio.to_thread(self._path.read_text, encoding="utf-8")
-        data = json.loads(text or "[]")
-        return data if isinstance(data, list) else []
+        return await asyncio.to_thread(self._read_sync)
 
     async def _write(self, docs: list[dict]) -> None:
-        self._path.parent.mkdir(parents=True, exist_ok=True)
-        payload = json.dumps(docs, ensure_ascii=False, indent=2, default=_json_default)
-        await asyncio.to_thread(self._path.write_text, payload, encoding="utf-8")
+        await asyncio.to_thread(self._write_sync, docs)
 
     async def create_index(self, *_args, **_kwargs) -> None:
         return None
@@ -168,14 +186,7 @@ class JsonCollection:
 
     def find(self, query: dict | None = None, projection: Optional[dict] = None) -> JsonCursor:
         query = query or {}
-        # Lecture synchrone différée via cursor — ok pour dev local mono-process
-        docs = []
-        if self._path.is_file():
-            try:
-                raw = json.loads(self._path.read_text(encoding="utf-8") or "[]")
-                docs = [d for d in raw if isinstance(d, dict) and _matches(d, query)]
-            except Exception:
-                docs = []
+        docs = [d for d in self._read_sync() if isinstance(d, dict) and _matches(d, query)]
         return JsonCursor(docs, projection)
 
     async def insert_one(self, doc: dict) -> _OpResult:

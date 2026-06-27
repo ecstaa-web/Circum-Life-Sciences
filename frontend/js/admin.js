@@ -1,8 +1,6 @@
 (function () {
   var API = (window.CIRCUM_API_BASE != null ? window.CIRCUM_API_BASE : '') + '/api';
   var csrfToken = null;
-  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-  var REDIRECT_URL = window.location.origin + '/admin.html';
 
   var mainZone = document.getElementById('main-zone');
   var userZone = document.getElementById('user-zone');
@@ -93,11 +91,6 @@
         setupHint +
         '<h1>Espace réservé.</h1>' +
         '<p>Connectez-vous pour gérer les abonnés, candidatures, demandes contact et le contenu du site.</p>' +
-        '<button class="gbtn" id="login-btn" data-testid="login-btn">' +
-          '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.83z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83C6.71 7.31 9.14 5.38 12 5.38z"/></svg>' +
-          '<span>Se connecter avec Google</span>' +
-        '</button>' +
-        '<div class="login-divider"><span>ou</span></div>' +
         '<form class="login-form" id="login-form" data-testid="login-form">' +
           '<input type="email" name="email" required placeholder="email@exemple.com" data-testid="login-email"/>' +
           '<div class="pw-wrap">' +
@@ -112,10 +105,6 @@
         '</form>' +
         (deniedEmail ? '<div class="access-denied" data-testid="access-denied">Accès refusé pour <strong>' + escapeHTML(deniedEmail) + '</strong>. Cet email n\'est pas dans la liste blanche admin.</div>' : '') +
       '</div>';
-    document.getElementById('login-btn').addEventListener('click', function () {
-      // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-      window.location.href = 'https://auth.emergentagent.com/?redirect=' + encodeURIComponent(REDIRECT_URL);
-    });
     document.getElementById('login-form').addEventListener('submit', function (e) {
       e.preventDefault();
       var f = e.target;
@@ -1184,13 +1173,19 @@
     var savedOk = false;
     requestFrameFlush().then(function () {
       var keys = Object.keys(contentState.pending);
-      if (!keys.length) {
+      var updates = keys.filter(function (key) {
+        var val = contentState.pending[key];
+        if (val == null || String(val).trim() === '') return false;
+        return normalizeContentValue(val) !== normalizeContentValue(contentState.baseline[key]);
+      }).map(function (key) {
+        return { key: key, lang: contentState.lang, value: contentState.pending[key] };
+      });
+      if (!updates.length) {
+        contentState.pending = {};
+        updateContentSaveBar();
         toast('Aucune modification à enregistrer', true);
         return Promise.reject(new Error('empty'));
       }
-      var updates = keys.map(function (key) {
-        return { key: key, lang: contentState.lang, value: contentState.pending[key] };
-      });
       return api('/admin/content', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -1209,7 +1204,14 @@
       contentState.pending = {};
       updateContentSaveBar();
       notifyContentUpdated(patch, contentState.lang);
-      return refreshContentPreviewAfterSave(patch);
+      return refreshContentPreviewAfterSave(patch).catch(function () {
+        postToFrame({
+          type: 'circum-editor-apply',
+          lang: contentState.lang,
+          baseline: contentState.baseline,
+          patch: patch || {}
+        });
+      });
     }).then(function () {
       if (savedOk) toast('Modifications validées — visibles en direct sur le site');
     }).catch(function (err) {
@@ -1667,14 +1669,6 @@
   }
 
   // ============ Boot ============
-  function exchangeSessionId(sessionId) {
-    return api('/auth/google/exchange', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: sessionId })
-    });
-  }
-
   function checkAuth() {
     api('/auth/me').then(function (r) {
       if (r.ok) {
@@ -1759,32 +1753,5 @@
     return;
   }
 
-  // 1) Handle session_id from URL fragment (returning from Google auth)
-  if (window.location.hash && window.location.hash.indexOf('session_id=') !== -1) {
-    var sid = window.location.hash.replace(/^#/, '').split('&').reduce(function (acc, kv) {
-      var p = kv.split('='); acc[p[0]] = decodeURIComponent(p[1] || ''); return acc;
-    }, {}).session_id;
-    // clean URL immediately
-    history.replaceState(null, '', window.location.pathname);
-    if (sid) {
-      exchangeSessionId(sid).then(function (r) {
-        if (r.ok) {
-          return r.json().then(function (j) {
-            csrfToken = j.csrf_token || csrfToken;
-            checkAuth();
-          });
-        } else {
-          return r.json().then(function (j) {
-            if (r.status === 403) {
-              renderLogin('');
-            } else { renderLogin(); }
-          }).catch(function () { renderLogin(); });
-        }
-      }).catch(function () { renderLogin(); });
-      return;
-    }
-  }
-
-  // 2) Otherwise check existing session
   checkAuth();
 })();
