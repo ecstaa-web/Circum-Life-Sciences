@@ -60,7 +60,11 @@ def _apply_update(doc: dict, update: dict) -> dict:
                 parts = key.split(".")
                 cur = doc
                 for part in parts[:-1]:
-                    cur = cur.setdefault(part, {})
+                    nxt = cur.get(part)
+                    if not isinstance(nxt, dict):
+                        nxt = {}
+                        cur[part] = nxt
+                    cur = nxt
                 cur[parts[-1]] = value
             else:
                 doc[key] = value

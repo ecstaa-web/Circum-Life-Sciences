@@ -13,7 +13,7 @@ window.CIRCUM_I18N_PAGE = {
     "design.signal.43": "Architecture produit",
     "design.signal.44": "Conformité documentée",
     "design.signal.45": "Préparation au transfert",
-    "design.panel_aria.46": "Points clefs du programme design Circum",
+    "design.panel_aria.46": "Points clés du programme design Circum",
     "design.panel_title.47": "Ce que votre équipe gagne",
     "design.panel_item_title.48": "Un interlocuteur de programme",
     "design.panel_item_text.49": "Le cadrage technique, qualité et planning avance dans le même tempo.",

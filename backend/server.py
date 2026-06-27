@@ -129,8 +129,13 @@ async def validation_exception_handler(_request: Request, exc: RequestValidation
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(_request: Request, exc: Exception):
+    if isinstance(exc, HTTPException):
+        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
     logger.exception("Unhandled error: %s", exc)
-    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+    detail = "Internal server error"
+    if not is_production():
+        detail = f"{type(exc).__name__}: {exc}"
+    return JSONResponse(status_code=500, content={"detail": detail})
 
 
 # ============ Helpers ============
@@ -477,7 +482,10 @@ async def content_overrides_public():
     Fusionnées côté client avec les dictionnaires i18n statiques (main.js).
     """
     overrides = await load_overrides_from_db(db)
-    return overrides
+    return JSONResponse(
+        overrides,
+        headers={"Cache-Control": "no-store, no-cache, must-revalidate"},
+    )
 
 
 @app.get("/api/newsletter/issues")

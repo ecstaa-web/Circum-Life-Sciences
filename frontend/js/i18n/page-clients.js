@@ -1,7 +1,7 @@
 window.CIRCUM_I18N_PAGE = {
   fr: {
     "clients.page_hero_eyebrow.1": "Confiance &amp; Partenariats",
-    "clients.page_hero_title.2": "Aux cotes de ceux qui <em>innovent.</em>",
+    "clients.page_hero_title.2": "Aux côtés de ceux qui <em>innovent.</em>",
     "clients.page_hero_subtitle.3": "Nous sommes agiles, flexibles, et totalement engagés à établir un vrai partenariat — des startups aux industriels chevronnés.",
     "clients.hero_btn.1": "Découvrir nos partenariats",
     "clients.hero_btn.2": "Nous contacter",
@@ -27,7 +27,7 @@ window.CIRCUM_I18N_PAGE = {
     "clients.flow_step_title.52": "Relocalisation Europe",
     "clients.flow_step_text.53": "Si vous cherchez à relocaliser votre production près de l'Europe, nous sommes prêts à vous aider à mettre ce projet en place.",
     "clients.quote_text.54": "Nous sommes agiles, flexibles, et totalement engagés à établir un vrai partenariat.",
-    "clients.quote_cite.55": "Anne Reiser, Presidente"
+    "clients.quote_cite.55": "Anne Reiser, Présidente"
   },
 
   en: {
@@ -126,6 +126,6 @@ window.CIRCUM_I18N_PAGE = {
     "clients.flow_step_title.52": "Scalare",
     "clients.flow_step_text.53": "Ramp-up di serie, governance continua e guida delle performance nel tempo.",
     "clients.quote_text.54": "Non siamo un subfornitore. Diventiamo un'estensione del team industriale del cliente, allineata a obiettivi regolatori, tempistiche e visione prodotto.",
-    "clients.quote_cite.55": "Anne Reiser, Presidente"
+    "clients.quote_cite.55": "Anne Reiser, Présidente"
   }
 };

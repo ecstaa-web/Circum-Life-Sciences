@@ -169,6 +169,7 @@
     if (el.querySelector('input, select, textarea, button') && !el.hasAttribute('data-i18n-placeholder')) return;
     var key = getKey(el);
     if (!key) return;
+    baseline[key] = readValue(el);
     var mode = getEditMode(el);
 
     el.dataset.circumBound = '1';
@@ -226,6 +227,7 @@
 
     el.addEventListener('input', function () {
       el.classList.toggle('circum-modified', readValue(el) !== baseline[key]);
+      notifyChange(el);
     });
   }
 
@@ -265,6 +267,19 @@
     });
   }
 
+  function flushAllChanges() {
+    if (activeEl) {
+      notifyChange(activeEl);
+      activeEl.classList.remove('circum-editing');
+      activeEl.blur();
+      activeEl = null;
+      savedRange = null;
+    }
+    window.parent.postMessage({
+      type: 'circum-editor-flush-done'
+    }, window.location.origin);
+  }
+
   function commitBaseline(data) {
     if (data.baseline) baseline = data.baseline;
     document.querySelectorAll('[data-circum-key]').forEach(function (el) {
@@ -273,6 +288,30 @@
       el.classList.remove('circum-modified');
     });
     markModified();
+  }
+
+  function applySavedContent(data) {
+    var applyLang = data.lang || lang;
+    if (activeEl) {
+      activeEl.classList.remove('circum-editing');
+      activeEl.blur();
+      activeEl = null;
+      savedRange = null;
+    }
+    if (data.baseline) baseline = data.baseline;
+    if (data.patch && window.CIRCUM_I18N_API) {
+      window.CIRCUM_I18N_API.mergeAndApplyOverrides(applyLang, data.patch);
+    }
+    document.querySelectorAll('[data-circum-key]').forEach(function (el) {
+      var key = getKey(el);
+      if (key) baseline[key] = readValue(el);
+      el.classList.remove('circum-modified');
+    });
+    markModified();
+    window.parent.postMessage({
+      type: 'circum-editor-baseline',
+      baseline: baseline
+    }, window.location.origin);
   }
 
   function handleFmtMessage(d) {
@@ -299,6 +338,10 @@
       setupEditables();
       applyPendingValues(data.pending);
       markModified();
+      window.parent.postMessage({
+        type: 'circum-editor-baseline',
+        baseline: baseline
+      }, window.location.origin);
     }, 100);
   }
 
@@ -320,6 +363,10 @@
       markModified();
     } else if (d.type === 'circum-editor-commit') {
       commitBaseline(d);
+    } else if (d.type === 'circum-editor-apply') {
+      applySavedContent(d);
+    } else if (d.type === 'circum-editor-flush') {
+      flushAllChanges();
     } else if (d.type === 'circum-fmt-exec') {
       handleFmtMessage(d);
     } else if (d.type === 'circum-fmt-save-selection') {

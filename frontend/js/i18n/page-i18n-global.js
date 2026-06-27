@@ -275,7 +275,7 @@
       "clients.flow_step_title.52": "Nearshoring Europa",
       "clients.flow_step_text.53": "Se cercate di relocalizzare la vostra produzione vicino all'Europa, siamo pronti ad aiutarvi a realizzare questo progetto.",
       "clients.quote_text.54": "Siamo agili, flessibili e totalmente impegnati a costruire una vera partnership.",
-      "clients.quote_cite.55": "Anne Reiser, Presidente"
+      "clients.quote_cite.55": "Anne Reiser, Présidente"
     }
   };
 })();

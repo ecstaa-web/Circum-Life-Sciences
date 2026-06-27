@@ -20,6 +20,30 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  function apiErrorMessage(j, fallback) {
+    if (!j) return fallback || 'Erreur';
+    if (typeof j === 'string') return j;
+    if (j.detail == null) return fallback || 'Erreur';
+    if (typeof j.detail === 'string') return j.detail;
+    if (Array.isArray(j.detail)) {
+      return j.detail.map(function (e) {
+        return (e && e.msg) ? e.msg : String(e);
+      }).join(', ');
+    }
+    return fallback || 'Erreur';
+  }
+
+  function parseApiResponse(r) {
+    return r.text().then(function (text) {
+      var j = null;
+      if (text) {
+        try { j = JSON.parse(text); } catch (e) { j = { detail: text.slice(0, 200) }; }
+      }
+      if (!r.ok) throw new Error(apiErrorMessage(j, 'Erreur ' + r.status));
+      return j || {};
+    });
+  }
+
   function fmtDate(iso) {
     if (!iso) return '—';
     try {
@@ -281,10 +305,51 @@
       '<div class="admin-view" id="view-news" data-testid="view-news">' +
         '<div class="news-studio">' +
           '<div class="news-studio-header">' +
-            '<div><h2 class="news-studio-title">Actualités</h2><p class="news-studio-sub">Créez, modifiez et publiez vos articles avec couverture et galerie.</p></div>' +
-            '<button type="button" class="btn-mini pink" id="news-new-btn" data-testid="news-new-btn">+ Nouvelle actualité</button>' +
+            '<div><h2 class="news-studio-title">Actualités & newsletter</h2><p class="news-studio-sub">Articles du site et numéros trimestriels de la newsletter.</p></div>' +
           '</div>' +
-          '<div id="news-admin-list" class="news-card-grid"><div class="empty">Chargement…</div></div>' +
+          '<div class="news-studio-tabs" role="tablist">' +
+            '<button type="button" class="news-studio-tab active" data-news-tab="articles" data-testid="news-tab-articles">Articles</button>' +
+            '<button type="button" class="news-studio-tab" data-news-tab="issues" data-testid="news-tab-issues">Numéros newsletter</button>' +
+          '</div>' +
+          '<div id="news-panel-articles" class="news-tab-panel active" data-testid="news-panel-articles">' +
+            '<div class="news-studio-toolbar">' +
+              '<button type="button" class="btn-mini pink" id="news-new-btn" data-testid="news-new-btn">+ Nouvelle actualité</button>' +
+            '</div>' +
+            '<div id="news-admin-list" class="adm-news-grid"><div class="empty">Chargement…</div></div>' +
+          '</div>' +
+          '<div id="news-panel-issues" class="news-tab-panel" hidden data-testid="news-panel-issues">' +
+            '<div class="news-studio-toolbar">' +
+              '<button type="button" class="btn-mini pink" id="issue-new-btn" data-testid="issue-new-btn">+ Nouveau numéro</button>' +
+            '</div>' +
+            '<div id="issues-admin-list" class="adm-news-grid"><div class="empty">Chargement…</div></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="news-editor-drawer" id="issue-editor-panel" hidden data-testid="panel-issue-editor">' +
+          '<div class="news-editor-drawer-inner">' +
+            '<div class="news-editor-drawer-head">' +
+              '<h2 id="issue-editor-heading">Nouveau numéro</h2>' +
+              '<button type="button" class="news-drawer-close" id="issue-cancel-btn" aria-label="Fermer">&times;</button>' +
+            '</div>' +
+            '<form id="issue-editor-form" class="news-editor-form" data-testid="issue-editor-form">' +
+              '<input type="hidden" id="issue-edit-id" value=""/>' +
+              '<div class="news-editor-grid">' +
+                '<div class="news-editor-main">' +
+                  '<label class="news-field">Trimestre<select id="issue-form-quarter" required data-testid="issue-form-quarter">' +
+                    '<option value="Q1">Q1</option><option value="Q2">Q2</option><option value="Q3">Q3</option><option value="Q4">Q4</option>' +
+                  '</select></label>' +
+                  '<label class="news-field">Année<input type="number" id="issue-form-year" required min="2000" max="2100" data-testid="issue-form-year"/></label>' +
+                  '<label class="news-field">Date de publication<input type="date" id="issue-form-date" required data-testid="issue-form-date"/></label>' +
+                  '<label class="news-field">Titre<input type="text" id="issue-form-title" required maxlength="240" data-testid="issue-form-title" placeholder="Titre du numéro"/></label>' +
+                  '<label class="news-field">Résumé<textarea id="issue-form-summary" required maxlength="1500" rows="4" data-testid="issue-form-summary" placeholder="Texte visible sur la page Newsletter"></textarea></label>' +
+                  '<label class="news-field">Lien (PDF ou page externe, optionnel)<input type="url" id="issue-form-link" maxlength="500" data-testid="issue-form-link" placeholder="https://…"/></label>' +
+                '</div>' +
+              '</div>' +
+              '<div class="news-form-actions">' +
+                '<button type="button" class="btn-mini err" id="issue-delete-btn" hidden data-testid="issue-delete-btn">Supprimer</button>' +
+                '<button type="submit" class="btn-mini pink" id="issue-save-btn" data-testid="issue-save-btn">Publier</button>' +
+              '</div>' +
+            '</form>' +
+          '</div>' +
         '</div>' +
         '<div class="news-editor-drawer" id="news-editor-panel" hidden data-testid="panel-news-editor">' +
           '<div class="news-editor-drawer-inner">' +
@@ -345,6 +410,7 @@
             '</select></label>' +
             '<span class="visual-editor-hint">Cliquez sur un texte dans l\'aperçu pour le modifier — puis <strong>Valider</strong> pour publier en direct</span>' +
             '<div class="visual-editor-actions">' +
+              '<button type="button" class="btn-mini ghost" id="content-open-site-btn" data-testid="content-open-site-btn">Voir le site</button>' +
               '<button type="button" class="btn-mini ghost" id="content-reload-btn" data-testid="content-reload-btn">Recharger</button>' +
             '</div>' +
           '</div>' +
@@ -410,12 +476,14 @@
           else setTimeout(fitVisualEditorFrame, 50);
         } else if (view === 'news') {
           loadNewsAdminList();
+          loadNewsletterIssuesList();
         }
       });
     });
 
     initLeadsHub();
     initNewsAdmin();
+    initNewsletterIssuesAdmin();
     document.getElementById('allow-add-form').addEventListener('submit', addAdmin);
 
     loadAllLeads();
@@ -626,7 +694,7 @@
     };
     api(paths[type] + encodeURIComponent(id), { method: 'DELETE' }).then(function (r) {
       if (r.ok) { toast('Supprimé'); loadAllLeads(); }
-      else toast('Erreur ' + r.status, true);
+      else r.json().then(function (j) { toast(apiErrorMessage(j, 'Erreur ' + r.status), true); });
     });
   }
 
@@ -843,12 +911,17 @@
     if (count) count.textContent = n + ' modification(s)';
   }
 
+  function normalizeContentValue(v) {
+    if (v == null) return '';
+    return String(v).trim()
+      .replace(/<br\s*\/?>/gi, '<br/>')
+      .replace(/\s+/g, ' ')
+      .replace(/>\s+</g, '><');
+  }
+
   function loadContentBaseline() {
     return api('/admin/content?page=' + encodeURIComponent(contentState.page) + '&lang=' + encodeURIComponent(contentState.lang))
-      .then(function (r) {
-        if (!r.ok) throw new Error('Erreur ' + r.status);
-        return r.json();
-      })
+      .then(parseApiResponse)
       .then(function (data) {
         contentState.items = data.items || [];
         contentState.baseline = {};
@@ -940,6 +1013,14 @@
     });
   }
 
+  function openLiveSiteTab() {
+    var raw = contentPageUrl(contentState.page);
+    var hashIdx = raw.indexOf('#');
+    var hash = hashIdx >= 0 ? raw.slice(hashIdx) : '';
+    var path = hashIdx >= 0 ? raw.slice(0, hashIdx) : raw;
+    window.open(path + '?_=' + Date.now() + hash, '_blank', 'noopener');
+  }
+
   function reloadPreviewFrame() {
     var frame = getPreviewFrame();
     if (!frame) return;
@@ -965,11 +1046,17 @@
     } else if (d.type === 'circum-content-change') {
       if (!d.key) return;
       var base = contentState.baseline[d.key];
-      if (d.value === base) delete contentState.pending[d.key];
+      if (normalizeContentValue(d.value) === normalizeContentValue(base)) delete contentState.pending[d.key];
       else contentState.pending[d.key] = d.value;
       updateContentSaveBar();
     } else if (d.type === 'circum-fmt-state') {
       syncAdminFmtToolbar(d);
+    } else if (d.type === 'circum-editor-baseline') {
+      if (d.baseline) {
+        Object.keys(d.baseline).forEach(function (k) {
+          contentState.baseline[k] = d.baseline[k];
+        });
+      }
     } else if (d.type === 'circum-navigate') {
       var nextPage = hrefToContentPage(d.href);
       if (nextPage === contentState.page) return;
@@ -1024,6 +1111,8 @@
           reloadPreviewFrame();
         });
       }
+      var openSiteBtn = document.getElementById('content-open-site-btn');
+      if (openSiteBtn) openSiteBtn.addEventListener('click', openLiveSiteTab);
       var reloadBtn = document.getElementById('content-reload-btn');
       if (reloadBtn) reloadBtn.addEventListener('click', function () {
         contentState.pending = {};
@@ -1044,34 +1133,91 @@
     });
   }
 
-  function saveContentChanges() {
-    var keys = Object.keys(contentState.pending);
-    if (!keys.length) return;
-    var updates = keys.map(function (key) {
-      return { key: key, lang: contentState.lang, value: contentState.pending[key] };
+  function notifyContentUpdated(patch, lang) {
+    try {
+      localStorage.setItem('circum-content-rev', String(Date.now()));
+    } catch (e) { /* ignore */ }
+    if (typeof BroadcastChannel === 'undefined') return;
+    try {
+      var bc = new BroadcastChannel('circum-content');
+      bc.postMessage({ type: 'updated', patch: patch || null, lang: lang || contentState.lang, ts: Date.now() });
+      bc.close();
+    } catch (e) { /* ignore */ }
+  }
+
+  function requestFrameFlush() {
+    return new Promise(function (resolve) {
+      var done = false;
+      function handler(e) {
+        if (e.origin !== window.location.origin || done) return;
+        if (!e.data || e.data.type !== 'circum-editor-flush-done') return;
+        done = true;
+        window.removeEventListener('message', handler);
+        resolve();
+      }
+      window.addEventListener('message', handler);
+      postToFrame({ type: 'circum-editor-flush' });
+      setTimeout(function () {
+        if (!done) {
+          done = true;
+          window.removeEventListener('message', handler);
+          resolve();
+        }
+      }, 400);
     });
+  }
+
+  function refreshContentPreviewAfterSave(patch) {
+    return loadContentBaseline().then(function (baseline) {
+      postToFrame({
+        type: 'circum-editor-apply',
+        lang: contentState.lang,
+        baseline: baseline,
+        patch: patch || {}
+      });
+    });
+  }
+
+  function saveContentChanges() {
     var btn = document.getElementById('content-save-btn');
     if (btn) { btn.disabled = true; btn.textContent = 'Validation…'; }
-    api('/admin/content', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ updates: updates })
-    }).then(function (r) {
-      if (!r.ok) return r.json().then(function (j) { throw new Error(j.detail || 'Erreur'); });
-      return r.json();
-    }).then(function () {
-      keys.forEach(function (key) {
-        contentState.baseline[key] = contentState.pending[key];
+    var savedOk = false;
+    requestFrameFlush().then(function () {
+      var keys = Object.keys(contentState.pending);
+      if (!keys.length) {
+        toast('Aucune modification à enregistrer', true);
+        return Promise.reject(new Error('empty'));
+      }
+      var updates = keys.map(function (key) {
+        return { key: key, lang: contentState.lang, value: contentState.pending[key] };
       });
+      return api('/admin/content', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates: updates })
+      }).then(parseApiResponse);
+    }).then(function (res) {
+      if (!res) return;
+      savedOk = true;
+      var patch = {};
+      if (res.values) {
+        res.values.forEach(function (item) {
+          if (item.lang === contentState.lang) patch[item.key] = item.value;
+          contentState.baseline[item.key] = item.value;
+        });
+      }
       contentState.pending = {};
       updateContentSaveBar();
-      postToFrame({
-        type: 'circum-editor-commit',
-        baseline: contentState.baseline,
-        lang: contentState.lang
-      });
-      toast('Modifications validées — visibles en direct sur le site');
+      notifyContentUpdated(patch, contentState.lang);
+      return refreshContentPreviewAfterSave(patch);
+    }).then(function () {
+      if (savedOk) toast('Modifications validées — visibles en direct sur le site');
     }).catch(function (err) {
+      if (err && err.message === 'empty') return;
+      if (savedOk) {
+        toast('Enregistré — rechargez l\'aperçu si le texte n\'a pas bougé', true);
+        return;
+      }
       toast(err.message || 'Erreur', true);
     }).finally(function () {
       if (btn) { btn.disabled = false; btn.textContent = 'Valider'; }
@@ -1159,20 +1305,20 @@
       el.innerHTML = newsState.items.map(function (item) {
         var thumb = item.cover_image
           ? '<img src="' + escapeHTML(newsMediaUrl(item.cover_image)) + '" alt=""/>'
-          : '<div class="news-card-placeholder">' + escapeHTML(item.tag || 'News') + '</div>';
+          : '<div class="adm-news-placeholder">' + escapeHTML(item.tag || 'News') + '</div>';
         var galleryCount = (item.gallery && item.gallery.length) ? item.gallery.length : 0;
         return '' +
-          '<article class="news-card" data-testid="news-row-' + escapeHTML(item.id) + '">' +
-            '<div class="news-card-media">' + thumb +
-              (galleryCount ? '<span class="news-card-gallery-badge">' + galleryCount + ' photo' + (galleryCount > 1 ? 's' : '') + '</span>' : '') +
+          '<article class="adm-news-card" data-testid="news-row-' + escapeHTML(item.id) + '">' +
+            '<div class="adm-news-media">' + thumb +
+              (galleryCount ? '<span class="adm-news-gallery-badge">' + galleryCount + ' photo' + (galleryCount > 1 ? 's' : '') + '</span>' : '') +
             '</div>' +
-            '<div class="news-card-body">' +
-              '<span class="news-card-tag">' + escapeHTML(item.tag) + '</span>' +
+            '<div class="adm-news-body">' +
+              '<span class="adm-news-tag">' + escapeHTML(item.tag) + '</span>' +
               '<h3>' + escapeHTML(item.title) + '</h3>' +
               '<p>' + escapeHTML(item.summary) + '</p>' +
               '<time>' + escapeHTML(item.date) + '</time>' +
             '</div>' +
-            '<div class="news-card-actions">' +
+            '<div class="adm-news-actions">' +
               '<button type="button" class="btn-mini" data-edit-news="' + escapeHTML(item.id) + '">Modifier</button>' +
               '<a class="btn-mini ghost" href="/news-article.html?id=' + encodeURIComponent(item.id) + '" target="_blank" rel="noopener">Aperçu</a>' +
             '</div>' +
@@ -1256,7 +1402,9 @@
   function closeNewsEditor() {
     var panel = document.getElementById('news-editor-panel');
     if (panel) panel.hidden = true;
-    document.body.classList.remove('news-editor-open');
+    if (!document.getElementById('issue-editor-panel') || document.getElementById('issue-editor-panel').hidden) {
+      document.body.classList.remove('news-editor-open');
+    }
     newsState.editing = null;
   }
 
@@ -1302,10 +1450,17 @@
     api(path, { method: id ? 'PUT' : 'POST', body: fd }).then(function (r) {
       if (!r.ok) return r.json().then(function (j) { throw new Error(j.detail || ('Erreur ' + r.status)); });
       return r.json();
-    }).then(function () {
+    }).then(function (res) {
       toast(id ? 'Actualité mise à jour' : 'Actualité publiée');
       closeNewsEditor();
       loadNewsAdminList();
+      var savedId = (res && res.id) || id;
+      if (savedId) {
+        setTimeout(function () {
+          var card = document.querySelector('[data-testid="news-row-' + savedId + '"]');
+          if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 400);
+      }
     }).catch(function (err) {
       toast(err.message || 'Erreur', true);
     }).finally(function () {
@@ -1320,10 +1475,190 @@
     var deleteBtn = document.getElementById('news-delete-btn');
     deleteBtn.disabled = true;
     api('/admin/news/' + encodeURIComponent(id), { method: 'DELETE' }).then(function (r) {
-      if (!r.ok) return r.json().then(function (j) { throw new Error(j.detail || 'Erreur'); });
+      if (!r.ok) return r.json().then(function (j) { throw new Error(apiErrorMessage(j, 'Erreur')); });
       toast('Actualité supprimée');
       closeNewsEditor();
       loadNewsAdminList();
+    }).catch(function (err) {
+      toast(err.message || 'Erreur', true);
+    }).finally(function () {
+      deleteBtn.disabled = false;
+    });
+  }
+
+  // ============ Gestion des numéros newsletter ============
+  var issuesState = { items: [], editing: null, tab: 'articles' };
+
+  function switchNewsStudioTab(tab) {
+    issuesState.tab = tab;
+    document.querySelectorAll('.news-studio-tab').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-news-tab') === tab);
+    });
+    var articlesPanel = document.getElementById('news-panel-articles');
+    var issuesPanel = document.getElementById('news-panel-issues');
+    if (articlesPanel) {
+      articlesPanel.classList.toggle('active', tab === 'articles');
+      articlesPanel.hidden = tab !== 'articles';
+    }
+    if (issuesPanel) {
+      issuesPanel.classList.toggle('active', tab === 'issues');
+      issuesPanel.hidden = tab !== 'issues';
+    }
+    if (tab === 'issues') loadNewsletterIssuesList();
+  }
+
+  function initNewsletterIssuesAdmin() {
+    document.querySelectorAll('.news-studio-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        switchNewsStudioTab(btn.getAttribute('data-news-tab'));
+      });
+    });
+    var newBtn = document.getElementById('issue-new-btn');
+    var cancelBtn = document.getElementById('issue-cancel-btn');
+    var deleteBtn = document.getElementById('issue-delete-btn');
+    var form = document.getElementById('issue-editor-form');
+    if (newBtn) newBtn.addEventListener('click', function () { openIssueEditor(null); });
+    if (cancelBtn) cancelBtn.addEventListener('click', closeIssueEditor);
+    if (deleteBtn) deleteBtn.addEventListener('click', deleteNewsletterIssue);
+    if (form) form.addEventListener('submit', saveNewsletterIssue);
+  }
+
+  function loadNewsletterIssuesList() {
+    var el = document.getElementById('issues-admin-list');
+    if (!el) return;
+    el.innerHTML = '<div class="empty">Chargement…</div>';
+    api('/admin/newsletter/issues').then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (data) {
+      var items = Array.isArray(data) ? data : (data.items || []);
+      issuesState.items = items;
+      if (!items.length) {
+        el.innerHTML = '<div class="empty">Aucun numéro publié. Cliquez sur « Nouveau numéro ».</div>';
+        return;
+      }
+      el.innerHTML = items.map(function (item) {
+        return '' +
+          '<article class="adm-news-card adm-issue-card" data-testid="issue-row-' + escapeHTML(item.id) + '">' +
+            '<div class="adm-news-media adm-issue-badge">' +
+              '<strong>' + escapeHTML(item.quarter || '') + '</strong>' +
+              '<span>' + escapeHTML(String(item.year || '')) + '</span>' +
+            '</div>' +
+            '<div class="adm-news-body">' +
+              '<time>' + escapeHTML(item.date || '') + '</time>' +
+              '<h3>' + escapeHTML(item.title || '') + '</h3>' +
+              '<p>' + escapeHTML(item.summary || '') + '</p>' +
+              (item.link ? '<a class="adm-news-ext-link" href="' + escapeHTML(item.link) + '" target="_blank" rel="noopener">Voir le numéro →</a>' : '') +
+            '</div>' +
+            '<div class="adm-news-actions">' +
+              '<button type="button" class="btn-mini" data-edit-issue="' + escapeHTML(item.id) + '">Modifier</button>' +
+              '<a class="btn-mini ghost" href="/newsletter.html" target="_blank" rel="noopener">Aperçu site</a>' +
+            '</div>' +
+          '</article>';
+      }).join('');
+      el.querySelectorAll('[data-edit-issue]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          openIssueEditor(btn.getAttribute('data-edit-issue'));
+        });
+      });
+    }).catch(function () {
+      el.innerHTML = '<div class="empty">Impossible de charger les numéros newsletter.</div>';
+    });
+  }
+
+  function openIssueEditor(id) {
+    var panel = document.getElementById('issue-editor-panel');
+    var heading = document.getElementById('issue-editor-heading');
+    var deleteBtn = document.getElementById('issue-delete-btn');
+    if (!panel) return;
+
+    document.getElementById('issue-edit-id').value = id || '';
+    document.getElementById('issue-form-quarter').value = 'Q1';
+    document.getElementById('issue-form-year').value = new Date().getFullYear();
+    document.getElementById('issue-form-date').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('issue-form-title').value = '';
+    document.getElementById('issue-form-summary').value = '';
+    document.getElementById('issue-form-link').value = '';
+
+    if (id) {
+      var item = issuesState.items.find(function (n) { return n.id === id; });
+      if (!item) {
+        toast('Numéro introuvable', true);
+        return;
+      }
+      issuesState.editing = item;
+      heading.textContent = 'Modifier le numéro';
+      deleteBtn.hidden = false;
+      document.getElementById('issue-form-quarter').value = item.quarter || 'Q1';
+      document.getElementById('issue-form-year').value = item.year || new Date().getFullYear();
+      document.getElementById('issue-form-date').value = item.date || '';
+      document.getElementById('issue-form-title').value = item.title || '';
+      document.getElementById('issue-form-summary').value = item.summary || '';
+      document.getElementById('issue-form-link').value = item.link || '';
+    } else {
+      issuesState.editing = null;
+      heading.textContent = 'Nouveau numéro';
+      deleteBtn.hidden = true;
+    }
+
+    panel.hidden = false;
+    document.body.classList.add('news-editor-open');
+  }
+
+  function closeIssueEditor() {
+    var panel = document.getElementById('issue-editor-panel');
+    if (panel) panel.hidden = true;
+    if (!document.getElementById('news-editor-panel') || document.getElementById('news-editor-panel').hidden) {
+      document.body.classList.remove('news-editor-open');
+    }
+    issuesState.editing = null;
+  }
+
+  function saveNewsletterIssue(e) {
+    e.preventDefault();
+    var id = document.getElementById('issue-edit-id').value;
+    var saveBtn = document.getElementById('issue-save-btn');
+    var payload = {
+      quarter: document.getElementById('issue-form-quarter').value,
+      year: parseInt(document.getElementById('issue-form-year').value, 10),
+      date: document.getElementById('issue-form-date').value,
+      title: document.getElementById('issue-form-title').value.trim(),
+      summary: document.getElementById('issue-form-summary').value.trim(),
+      link: document.getElementById('issue-form-link').value.trim() || null
+    };
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Enregistrement…';
+    var path = id ? '/admin/newsletter/issues/' + encodeURIComponent(id) : '/admin/newsletter/issues';
+    api(path, {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (j) { throw new Error(apiErrorMessage(j, 'Erreur ' + r.status)); });
+      return r.json();
+    }).then(function () {
+      toast(id ? 'Numéro mis à jour' : 'Numéro publié');
+      closeIssueEditor();
+      loadNewsletterIssuesList();
+    }).catch(function (err) {
+      toast(err.message || 'Erreur', true);
+    }).finally(function () {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Publier';
+    });
+  }
+
+  function deleteNewsletterIssue() {
+    var id = document.getElementById('issue-edit-id').value;
+    if (!id || !window.confirm('Supprimer définitivement ce numéro ?')) return;
+    var deleteBtn = document.getElementById('issue-delete-btn');
+    deleteBtn.disabled = true;
+    api('/admin/newsletter/issues/' + encodeURIComponent(id), { method: 'DELETE' }).then(function (r) {
+      if (!r.ok) return r.json().then(function (j) { throw new Error(apiErrorMessage(j, 'Erreur')); });
+      toast('Numéro supprimé');
+      closeIssueEditor();
+      loadNewsletterIssuesList();
     }).catch(function (err) {
       toast(err.message || 'Erreur', true);
     }).finally(function () {

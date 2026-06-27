@@ -49,11 +49,29 @@ BACKUP_JSON = Path(__file__).resolve().parent / "data" / "content_overrides.json
 ALLOWED_TAGS = frozenset({
     "br", "em", "strong", "b", "i", "u", "s", "strike", "del", "mark",
     "span", "a", "sup", "sub", "font",
+    "p", "div", "blockquote", "hr", "small", "abbr",
+    "h1", "h2", "h3", "h4", "h5", "h6",
+    "ul", "ol", "li",
 })
+_BLOCK_CLASS_ATTRS = frozenset({"class", "style"})
 ALLOWED_ATTRS: dict[str, frozenset[str]] = {
     "a": frozenset({"href", "class", "target", "rel"}),
     "span": frozenset({"class", "style"}),
     "font": frozenset({"face", "color", "style"}),
+    "p": _BLOCK_CLASS_ATTRS,
+    "div": _BLOCK_CLASS_ATTRS,
+    "blockquote": _BLOCK_CLASS_ATTRS,
+    "small": _BLOCK_CLASS_ATTRS,
+    "abbr": frozenset({"title", "class"}),
+    "h1": _BLOCK_CLASS_ATTRS,
+    "h2": _BLOCK_CLASS_ATTRS,
+    "h3": _BLOCK_CLASS_ATTRS,
+    "h4": _BLOCK_CLASS_ATTRS,
+    "h5": _BLOCK_CLASS_ATTRS,
+    "h6": _BLOCK_CLASS_ATTRS,
+    "ul": frozenset({"class"}),
+    "ol": frozenset({"class"}),
+    "li": frozenset({"class"}),
 }
 ALLOWED_STYLE_PROPS = frozenset({
     "color", "background-color", "font-family", "font-size",
@@ -184,7 +202,7 @@ def _load_locale_file(page_id: str) -> dict[str, dict[str, str]]:
     path = LOCALES_DIR / filename
     if not path.is_file():
         raise HTTPException(status_code=404, detail="Locale file not found")
-    with path.open(encoding="utf-8") as fh:
+    with path.open(encoding="utf-8-sig") as fh:
         data = json.load(fh)
     if not isinstance(data, dict):
         raise HTTPException(status_code=500, detail="Invalid locale file")
@@ -192,17 +210,42 @@ def _load_locale_file(page_id: str) -> dict[str, dict[str, str]]:
 
 
 def load_base_content() -> dict[str, dict[str, str]]:
-    """Fusionne tous les fichiers locales en un dict {clé: {lang: texte}}."""
+    """Fusionne tous les fichiers locales + clés page-i18n-global.js."""
     merged: dict[str, dict[str, str]] = {}
     for page_id in PAGE_FILES:
         path = LOCALES_DIR / PAGE_FILES[page_id]
         if not path.is_file():
             continue
-        with path.open(encoding="utf-8") as fh:
+        with path.open(encoding="utf-8-sig") as fh:
             data = json.load(fh)
         if isinstance(data, dict):
             merged.update(data)
+    for lang in LANGS:
+        for key, val in _load_global_js_keys().get(lang, {}).items():
+            merged.setdefault(key, {})[lang] = val
     return merged
+
+
+def _load_global_js_keys() -> dict[str, dict[str, str]]:
+    """Extrait les clés de page-i18n-global.js (textes présents sur le site mais absents des locales)."""
+    js_path = LOCALES_DIR.parent.parent / "js" / "i18n" / "page-i18n-global.js"
+    result: dict[str, dict[str, str]] = {lang: {} for lang in LANGS}
+    if not js_path.is_file():
+        return result
+    try:
+        text = js_path.read_text(encoding="utf-8-sig")
+    except OSError:
+        return result
+    for lang in LANGS:
+        block = re.search(rf'"{lang}"\s*:\s*\{{(.*?)\n\s*\}}', text, re.DOTALL)
+        if not block:
+            continue
+        body = block.group(1)
+        for km in re.finditer(r'"([a-z][a-z0-9_.]*)"\s*:\s*"((?:\\.|[^"\\])*)"', body):
+            key = km.group(1)
+            val = km.group(2).replace('\\"', '"').replace("\\n", "\n").replace("\\'", "'")
+            result[lang][key] = val
+    return result
 
 
 def list_pages() -> list[dict[str, str]]:
@@ -223,7 +266,7 @@ def list_pages() -> list[dict[str, str]]:
 
 
 async def load_overrides_from_db(db) -> dict[str, dict[str, str]]:
-    """Retourne {lang: {clé: texte}} depuis MongoDB."""
+    """Retourne {lang: {clé: texte}} depuis MongoDB (+ fichier backup si besoin)."""
     result: dict[str, dict[str, str]] = {lang: {} for lang in LANGS}
     cursor = db["site_content_overrides"].find({})
     async for doc in cursor:
@@ -235,6 +278,22 @@ async def load_overrides_from_db(db) -> dict[str, dict[str, str]]:
             val = values.get(lang)
             if isinstance(val, str) and val:
                 result[lang][key] = val
+
+    total = sum(len(result[lang]) for lang in LANGS)
+    if total == 0 and BACKUP_JSON.is_file():
+        try:
+            payload = json.loads(BACKUP_JSON.read_text(encoding="utf-8-sig"))
+            flat = payload.get("overrides") or {}
+            if isinstance(flat, dict):
+                for key, langs in flat.items():
+                    if not isinstance(key, str) or not isinstance(langs, dict):
+                        continue
+                    for lang in LANGS:
+                        val = langs.get(lang)
+                        if isinstance(val, str) and val:
+                            result[lang][key] = val
+        except Exception as exc:
+            logger.warning("Could not read content backup JSON: %s", exc)
     return result
 
 
@@ -269,12 +328,13 @@ async def save_content_updates(db, updates: list[dict[str, str]], updated_by: st
     base = load_base_content()
     now = datetime.now(timezone.utc).isoformat()
     saved = 0
+    values: list[dict[str, str]] = []
 
     for item in updates:
         key = validate_content_key(item.get("key", ""))
         lang = validate_lang(item.get("lang", ""))
         if key not in base:
-            raise HTTPException(status_code=400, detail=f"Unknown content key: {key}")
+            logger.info("Admin save for key outside locale files: %s", key)
 
         raw = item.get("value", "")
         if not isinstance(raw, str):
@@ -283,36 +343,25 @@ async def save_content_updates(db, updates: list[dict[str, str]], updated_by: st
             raise HTTPException(status_code=400, detail="Content value too long")
 
         value = sanitize_html(raw)
-        default = (base.get(key) or {}).get(lang, "")
 
         coll = db["site_content_overrides"]
-        if value == default:
-            await coll.update_one({"_id": key}, {"$unset": {f"values.{lang}": ""}})
-            doc = await coll.find_one({"_id": key})
-            values = (doc or {}).get("values") or {}
-            if not values:
-                await coll.delete_one({"_id": key})
-            else:
-                await coll.update_one(
-                    {"_id": key},
-                    {"$set": {"updated_at": now, "updated_by": updated_by}},
-                )
-        else:
-            await coll.update_one(
-                {"_id": key},
-                {
-                    "$set": {
-                        f"values.{lang}": value,
-                        "updated_at": now,
-                        "updated_by": updated_by,
-                    }
-                },
-                upsert=True,
-            )
+        # Toujours persister : l'admin a validé explicitement cette valeur.
+        await coll.update_one(
+            {"_id": key},
+            {
+                "$set": {
+                    f"values.{lang}": value,
+                    "updated_at": now,
+                    "updated_by": updated_by,
+                }
+            },
+            upsert=True,
+        )
         saved += 1
+        values.append({"key": key, "lang": lang, "value": value})
 
     await _write_backup_json(db)
-    return {"ok": True, "saved": saved}
+    return {"ok": True, "saved": saved, "values": values}
 
 
 async def _write_backup_json(db) -> None:

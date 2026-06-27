@@ -59,6 +59,20 @@ class TestSanitizeHtml:
         assert "javascript" not in out.lower()
         assert "x" in out
 
+    def test_block_tags_preserved(self):
+        raw = '<p>Intro <strong>gras</strong></p><ul><li>Item 1</li><li>Item 2</li></ul>'
+        out = sanitize_html(raw)
+        assert "<p>" in out
+        assert "<strong>gras</strong>" in out
+        assert "<ul>" in out
+        assert "<li>Item 1</li>" in out
+
+
+class TestLocaleEncoding:
+    def test_bom_locale_files_load(self):
+        base = load_base_content()
+        assert len(base) > 50
+
 
 class TestValidators:
     def test_valid_key(self):
