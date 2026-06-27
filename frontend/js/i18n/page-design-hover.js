@@ -46,17 +46,21 @@
     window.CIRCUM_I18N_PAGE[lang] = Object.assign(window.CIRCUM_I18N_PAGE[lang] || {}, extra[lang] || {});
   });
 
-  if (window.CIRCUM_VMODEL_HTML) {
+  var vmodelByLang = window.CIRCUM_VMODEL_HTML_BY_LANG || {};
+  var vmodelFallback = window.CIRCUM_VMODEL_HTML || '';
+  if (vmodelFallback || Object.keys(vmodelByLang).length) {
     ['fr', 'en', 'de', 'it'].forEach(function (lang) {
       var key = 'design.conception_hover_content.73';
       var content = window.CIRCUM_I18N_PAGE[lang] && window.CIRCUM_I18N_PAGE[lang][key];
       if (!content || content.indexOf('vv-model') === -1) return;
+      var vmodelHtml = vmodelByLang[lang] || vmodelByLang.en || vmodelFallback;
+      if (!vmodelHtml) return;
       var listMatch = content.match(/<ol class='vv-model-list'>([\s\S]*?)<\/ol>/);
       var listInner = listMatch ? listMatch[1] : '';
       var intro = content.split("<div class='vv-model'>")[0];
       window.CIRCUM_I18N_PAGE[lang][key] =
         intro +
-        window.CIRCUM_VMODEL_HTML +
+        vmodelHtml +
         (listInner ? '<ol class="circum-vdiagram-list">' + listInner + '</ol>' : '');
     });
   }

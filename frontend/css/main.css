@@ -1256,6 +1256,10 @@ body[data-page="design"] .design-stages {
   background: linear-gradient(180deg, #f6f9fd 0%, #ecf3fb 100%);
   padding-top: clamp(56px, 9vw, 102px);
   padding-bottom: clamp(64px, 9vw, 110px);
+  overflow: visible;
+}
+body[data-page="design"] .design-stages .container {
+  overflow: visible;
 }
 body[data-page="design"] .design-stage-grid {
   margin-top: clamp(34px, 5vw, 56px);
