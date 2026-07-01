@@ -157,6 +157,49 @@ class ContentSavePayload(BaseModel):
     updates: list[ContentUpdateItem] = Field(min_length=1, max_length=200)
 
 
+class ContentRevertItem(BaseModel):
+    key: str = Field(min_length=1, max_length=120)
+    lang: str = Field(min_length=2, max_length=2)
+
+    @field_validator("lang")
+    @classmethod
+    def validate_content_lang(cls, v: str) -> str:
+        lang = v.lower()
+        if lang not in LANGS:
+            raise ValueError("Invalid language")
+        return lang
+
+
+class ContentRevertPayload(BaseModel):
+    items: list[ContentRevertItem] = Field(min_length=1, max_length=200)
+
+
+class CmsSeoIn(BaseModel):
+    meta_title: Optional[str] = Field(default="", max_length=160)
+    meta_description: Optional[str] = Field(default="", max_length=320)
+    og_image: Optional[str] = Field(default="", max_length=500)
+    robots: Optional[str] = Field(default="index,follow", max_length=40)
+
+
+class CmsPageCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=240)
+    slug: str = Field(min_length=1, max_length=80)
+    seo: Optional[CmsSeoIn] = None
+
+
+class CmsPageUpdate(BaseModel):
+    title: Optional[str] = Field(default=None, max_length=240)
+    slug: Optional[str] = Field(default=None, max_length=80)
+    status: Optional[Literal["draft", "published"]] = None
+    blocks: Optional[list[dict]] = None
+    seo: Optional[CmsSeoIn] = None
+
+
+class AllowlistAddWithRole(BaseModel):
+    email: EmailStr
+    role: Literal["admin", "editor"] = "editor"
+
+
 class ContactSubmitForm(BaseModel):
     firstname: str
     lastname: str

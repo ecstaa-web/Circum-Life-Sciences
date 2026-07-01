@@ -83,6 +83,11 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+// Pages CMS dynamiques (blocs)
+app.get('/p/:slug', (req, res) => {
+  res.sendFile(path.join(__dirname, 'cms-page.html'));
+});
+
 if (!IS_PROD) {
   app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');

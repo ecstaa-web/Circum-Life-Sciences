@@ -1,4 +1,4 @@
-/** Corrections globales de cohérence (sites, fondateurs) — fusionné par loader.js */
+/** Corrections globales de cohérence (sites, fondateurs), fusionné par loader.js */
 (function () {
   'use strict';
   window.CIRCUM_I18N_SITE = {

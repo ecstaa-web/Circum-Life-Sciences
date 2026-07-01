@@ -2,9 +2,9 @@ window.CIRCUM_I18N_PAGE = {
   fr: {
     "fabrication.page_hero_eyebrow.1": "Fabrication · Production industrielle CDMO",
     "fabrication.page_hero_title.2": "Fabrication <em>intégrée.</em>",
-    "fabrication.page_hero_subtitle.3": "Force One est notre nouvelle usine ISO 7 — 4 000 m², salle propre 700 m², avec possibilités d'extension. Moulage par injection, assemblage et stérilisation.",
+    "fabrication.page_hero_subtitle.3": "Force One est notre nouvelle usine ISO 7, 4 000 m², salle propre 700 m², avec possibilités d'extension. Moulage par injection, assemblage et stérilisation.",
     "fabrication.signature_title.41": "Force One est notre <em>nouvelle usine ISO 7.</em>",
-    "fabrication.signature_lead.42": "Notre bâtiment tout neuf offre une superficie de 4 000 m² et des possibilités d'extension. Notre salle propre a une surface de 700 m². Grâce à des partenariats, nous offrons des capacités de production supplémentaires — tous ces projets sont réalisés avec notre propre système de qualité.",
+    "fabrication.signature_lead.42": "Notre bâtiment tout neuf offre une superficie de 4 000 m² et des possibilités d'extension. Notre salle propre a une surface de 700 m². Grâce à des partenariats, nous offrons des capacités de production supplémentaires, tous ces projets sont réalisés avec notre propre système de qualité.",
     "fabrication.figure_label.16": "Superficie bâtiment",
     "fabrication.figure_label.17": "Salle propre ISO 7",
     "fabrication.figure_label.18": "Extension possible",

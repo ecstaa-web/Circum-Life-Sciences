@@ -13,9 +13,9 @@
   },
   "home.hero_subtitle.3": {
     "fr": "Circum Life Sciences est une entreprise CDMO intégrée verticalement, opérant dans les domaines des dispositifs médicaux et des sciences de la vie. Une couverture complète, de la conception à la fabrication.",
-    "en": "Circum Life Sciences is a vertically integrated CDMO operating in medical devices and life sciences — full coverage from design to manufacturing.",
-    "de": "Circum Life Sciences ist ein vertikal integriertes CDMO in Medizinprodukten und Life Sciences — vollständige Abdeckung von der Konstruktion bis zur Fertigung.",
-    "it": "Circum Life Sciences è un CDMO integrato verticalmente nei dispositivi medici e nelle life sciences — copertura completa dalla progettazione alla produzione."
+    "en": "Circum Life Sciences is a vertically integrated CDMO operating in medical devices and life sciences, full coverage from design to manufacturing.",
+    "de": "Circum Life Sciences ist ein vertikal integriertes CDMO in Medizinprodukten und Life Sciences, vollständige Abdeckung von der Konstruktion bis zur Fertigung.",
+    "it": "Circum Life Sciences è un CDMO integrato verticalmente nei dispositivi medici e nelle life sciences, copertura completa dalla progettazione alla produzione."
   },
   "home.hero_meta.4": {
     "fr": "Suisse · France · Tunisie",
@@ -36,14 +36,14 @@
     "it": "Sostenere il nostro settore con soluzioni <strong>innovative</strong> e <em>affidabili.</em>"
   },
   "home.mission_text.6": {
-    "fr": "Notre raison d'être : améliorer les traitements de santé pour le compte de nos partenaires. Nous proposons une large gamme de technologies médicales et adaptons notre offre à vos besoins spécifiques · parce que vos exigences sont uniques.",
-    "en": "Our purpose: improving healthcare treatments for our partners. We offer a broad range of medical technologies tailored to your specific needs — because your requirements are unique.",
+    "fr": "Notre raison d'être : améliorer les traitements de santé pour le compte de nos partenaires. Nous proposons une large gamme de technologies médicales et adaptons notre offre à vos besoins.",
+    "en": "Our purpose: improving healthcare treatments for our partners. We offer a broad range of medical technologies tailored to your specific needs, because your requirements are unique.",
     "de": "Unser Auftrag: Gesundheitsversorgung für unsere Partner verbessern. Wir bieten ein breites Spektrum medizinischer Technologien, angepasst an Ihre spezifischen Anforderungen.",
     "it": "La nostra missione: migliorare i trattamenti sanitari per i nostri partner. Offriamo un'ampia gamma di tecnologie mediche adattate alle vostre esigenze specifiche."
   },
   "home.mission_text.7": {
     "fr": "Notre approche globale nous permet d'offrir à nos clients des produits innovants et fiables, d'accélérer leur mise sur le marché et de garantir leur succès. Notre flexibilité nous permet de collaborer avec des entreprises de toutes tailles · des startups aux plus grandes entreprises mondiales de dispositifs médicaux.",
-    "en": "Our integrated approach delivers innovative, reliable products, accelerates time to market and ensures success. We work with companies of all sizes — from startups to global medtech leaders.",
+    "en": "Our integrated approach delivers innovative, reliable products, accelerates time to market and ensures success. We work with companies of all sizes, from startups to global medtech leaders.",
     "de": "Unser ganzheitlicher Ansatz liefert innovative, zuverlässige Produkte, beschleunigt die Markteinführung und sichert den Erfolg. Wir arbeiten mit Unternehmen jeder Größe.",
     "it": "Il nostro approccio integrato offre prodotti innovativi e affidabili, accelera il time to market e garantisce il successo. Collaboriamo con aziende di ogni dimensione."
   },

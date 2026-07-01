@@ -32,6 +32,14 @@ def _matches(doc: dict, query: dict) -> bool:
                 if not re.search(expected["$regex"], value, flags):
                     return False
                 continue
+            if "$ne" in expected:
+                if doc.get(key) == expected["$ne"]:
+                    return False
+                continue
+            if "$in" in expected:
+                if doc.get(key) not in expected["$in"]:
+                    return False
+                continue
             return False
         if doc.get(key) != expected:
             return False
@@ -105,19 +113,65 @@ class JsonCursor:
         self._sort_dir = -1
         self._index = 0
         self._prepared: Optional[list[dict]] = None
+        self._skip = 0
+        self._limit: Optional[int] = None
 
-    def sort(self, field: str, direction: int = -1) -> "JsonCursor":
-        self._sort_field = field
-        self._sort_dir = direction
+    def sort(self, field, direction: int = -1) -> "JsonCursor":
+        if isinstance(field, list) and field:
+            first = field[0]
+            if isinstance(first, (list, tuple)) and len(first) >= 2:
+                self._sort_field = first[0]
+                self._sort_dir = first[1]
+            else:
+                self._sort_field = str(first)
+                self._sort_dir = direction
+        else:
+            self._sort_field = field
+            self._sort_dir = direction
         self._prepared = None
         return self
+
+    def skip(self, n: int) -> "JsonCursor":
+        self._skip = max(0, int(n))
+        self._prepared = None
+        return self
+
+    def limit(self, n: int) -> "JsonCursor":
+        self._limit = max(0, int(n))
+        self._prepared = None
+        return self
+
+    def _normalize_sort(self) -> tuple[Optional[str], int]:
+        field = self._sort_field
+        direction = self._sort_dir
+        if isinstance(field, list):
+            if not field:
+                return None, direction
+            first = field[0]
+            if isinstance(first, (list, tuple)) and len(first) >= 2:
+                return str(first[0]), int(first[1])
+            if isinstance(first, (list, tuple)) and len(first) == 1:
+                return str(first[0]), direction
+            return str(first), direction
+        if isinstance(field, tuple) and len(field) >= 2:
+            return str(field[0]), int(field[1])
+        if isinstance(field, str) and field:
+            return field, direction
+        return None, direction
 
     def _materialize(self) -> list[dict]:
         if self._prepared is not None:
             return self._prepared
         docs = list(self._docs)
-        if self._sort_field:
-            docs.sort(key=lambda d: d.get(self._sort_field) or "", reverse=self._sort_dir < 0)
+        sort_field, sort_dir = self._normalize_sort()
+        if sort_field:
+            docs.sort(key=lambda d: d.get(sort_field) or "", reverse=sort_dir < 0)
+        skip = getattr(self, "_skip", 0)
+        lim = getattr(self, "_limit", None)
+        if skip:
+            docs = docs[skip:]
+        if lim is not None:
+            docs = docs[:lim]
         self._prepared = [_apply_projection(d, self._projection) for d in docs]
         return self._prepared
 

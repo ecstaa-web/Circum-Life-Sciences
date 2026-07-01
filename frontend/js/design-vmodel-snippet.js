@@ -1,4 +1,4 @@
-/** V-Model « Design stages » — panneau Conception (design page). */
+/** V-Model « Design stages », panneau Conception (design page). */
 (function () {
   'use strict';
 
@@ -62,7 +62,7 @@
 
   var fr = {
     heading: 'Étapes de conception',
-    aria: 'Modèle en V — étapes de conception',
+    aria: 'Modèle en V, étapes de conception',
     verification: 'Vérification',
     validation: 'Validation',
     step0: 'Étape 0',

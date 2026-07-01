@@ -18,6 +18,34 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  function studioBrandHTML(compact) {
+    var gradId = 'sg' + (compact ? '-c' : '');
+    return (
+      '<div class="studio-brand' + (compact ? ' studio-brand-compact' : '') + '">' +
+        '<div class="studio-brand-mark" aria-hidden="true">' +
+          '<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs><linearGradient id="' + gradId + '" x1="4" y1="4" x2="40" y2="40">' +
+              '<stop stop-color="#205a99"/><stop offset="1" stop-color="#f365b4"/>' +
+            '</linearGradient></defs>' +
+            '<circle cx="22" cy="22" r="17" stroke="url(#' + gradId + ')" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="32 75" transform="rotate(-35 22 22)"/>' +
+            '<circle cx="22" cy="22" r="11" stroke="rgba(243,101,180,0.5)" stroke-width="1.5" stroke-dasharray="20 55" transform="rotate(95 22 22)"/>' +
+            '<circle cx="22" cy="22" r="3.5" fill="url(#' + gradId + ')"/>' +
+          '</svg>' +
+        '</div>' +
+        '<div class="studio-brand-word">' +
+          '<span class="studio-brand-circum">Circum</span>' +
+          '<span class="studio-brand-studio">STUDIO</span>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function setAdminNavOpen(open) {
+    document.body.classList.toggle('admin-nav-open', !!open);
+    var btn = document.getElementById('admin-menu-toggle');
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
   function apiErrorMessage(j, fallback) {
     if (!j) return fallback || 'Erreur';
     if (typeof j === 'string') return j;
@@ -43,7 +71,7 @@
   }
 
   function fmtDate(iso) {
-    if (!iso) return '—';
+    if (!iso) return '…';
     try {
       var d = new Date(iso);
       return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) +
@@ -89,8 +117,8 @@
     mainZone.innerHTML =
       '<div class="login-card" data-testid="login-card">' +
         setupHint +
-        '<h1>Espace réservé.</h1>' +
-        '<p>Connectez-vous pour gérer les abonnés, candidatures, demandes contact et le contenu du site.</p>' +
+        '<div class="studio-login-brand">' + studioBrandHTML(true) + '</div>' +
+        '<p>Connectez-vous pour gérer pages, contenus, médias et formulaires.</p>' +
         '<form class="login-form" id="login-form" data-testid="login-form">' +
           '<input type="email" name="email" required placeholder="email@exemple.com" data-testid="login-email"/>' +
           '<div class="pw-wrap">' +
@@ -213,53 +241,184 @@
     return map[name] || 'home';
   }
 
+  var BREADCRUMBS = {
+    home: 'Accueil',
+    'cms-pages': 'Pages',
+    'cms-media': 'Médias',
+    content: 'Éditeur visuel',
+    news: 'Actualités',
+    leads: 'Formulaires',
+    users: 'Utilisateurs',
+    settings: 'Paramètres'
+  };
+
+  function adminNavigate(view, opts) {
+    opts = opts || {};
+    document.querySelectorAll('.admin-nav-item').forEach(function (t) {
+      t.classList.toggle('active', t.getAttribute('data-view') === view);
+    });
+    document.querySelectorAll('.admin-view').forEach(function (v) {
+      v.classList.toggle('active', v.id === 'view-' + view);
+    });
+    var shell = document.getElementById('admin-shell');
+    if (shell) {
+      shell.classList.toggle('admin-wide', view === 'content');
+    }
+    var bc = document.getElementById('admin-breadcrumb');
+    if (bc) bc.innerHTML = '<strong>Circum STUDIO</strong> · ' + escapeHTML(BREADCRUMBS[view] || view);
+
+    if (window.CircumDecor) window.CircumDecor.refresh();
+
+    if (view === 'home' && window.CircumDashboard && currentUser) {
+      window.CircumDashboard.renderHome(document.getElementById('view-home'), currentUser);
+    } else if (view === 'content') {
+      if (opts.contentPage) {
+        contentState.page = opts.contentPage;
+        contentState.pending = {};
+        var pageSel = document.getElementById('content-page-select');
+        if (pageSel) pageSel.value = opts.contentPage;
+      }
+      if (!contentState.editorReady) initContentEditor();
+      else if (opts.contentPage) reloadPreviewFrame();
+      else setTimeout(fitVisualEditorFrame, 50);
+    } else if (view === 'news') {
+      loadNewsAdminList();
+      loadNewsletterIssuesList();
+      if (opts.action === 'new-article') {
+        setTimeout(function () {
+          var btn = document.getElementById('news-new-btn');
+          if (btn) btn.click();
+        }, 200);
+      }
+    } else if (view === 'cms-pages' || view === 'cms-media') {
+      if (window.CircumCms) {
+        window.CircumCms.switchToView(view, true);
+        if (view === 'cms-pages' && opts.action === 'new-page') {
+          setTimeout(function () {
+            var btn = document.getElementById('cms-new-page');
+            if (btn) btn.click();
+          }, 200);
+        }
+      }
+    } else if (view === 'leads') {
+      if (opts.leadsTab) switchLeadsTab(opts.leadsTab);
+      renderLeadsCards();
+    } else if (view === 'users') {
+      loadAllowlist();
+    } else if (view === 'settings' && window.CircumDashboard) {
+      window.CircumDashboard.renderSettings(document.getElementById('view-settings'));
+    }
+  }
+
+  var currentUser = null;
+
   function renderDashboard(user) {
+    currentUser = user;
     setDashboardShell(true);
     userZone.innerHTML =
       '<div class="admin-user" data-testid="admin-user">' +
         (user.picture ? '<img src="' + escapeHTML(user.picture) + '" alt=""/>' : '') +
-        '<div class="who"><strong>' + escapeHTML(user.name || user.email) + '</strong><small>' + escapeHTML(user.email) + '</small></div>' +
+        '<div class="who"><strong>' + escapeHTML(user.name || user.email) + '</strong>' +
+        '<small>' + escapeHTML(user.email) + (user.role ? ' · ' + escapeHTML(user.role) : '') + '</small></div>' +
         '<button class="logout" id="logout-btn" data-testid="logout-btn">Déconnexion</button>' +
       '</div>';
+
+    var topbar = document.getElementById('admin-topbar');
+    if (topbar && !document.getElementById('admin-breadcrumb')) {
+      if (!document.getElementById('admin-menu-toggle')) {
+        var menuBtn = document.createElement('button');
+        menuBtn.type = 'button';
+        menuBtn.className = 'admin-menu-toggle';
+        menuBtn.id = 'admin-menu-toggle';
+        menuBtn.setAttribute('aria-label', 'Menu');
+        menuBtn.setAttribute('aria-expanded', 'false');
+        menuBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>';
+        topbar.insertBefore(menuBtn, topbar.firstChild);
+        menuBtn.addEventListener('click', function () {
+          setAdminNavOpen(!document.body.classList.contains('admin-nav-open'));
+        });
+      }
+      var bc = document.createElement('div');
+      bc.className = 'admin-topbar-breadcrumb';
+      bc.id = 'admin-breadcrumb';
+      topbar.insertBefore(bc, document.getElementById('user-zone'));
+    }
+
+    document.body.addEventListener('click', function adminNavOutsideClick(e) {
+      if (!document.body.classList.contains('admin-nav-open')) return;
+      if (e.target.closest('.admin-sidebar') || e.target.closest('.admin-menu-toggle')) return;
+      setAdminNavOpen(false);
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 900) setAdminNavOpen(false);
+    });
+
     document.getElementById('logout-btn').addEventListener('click', logout);
+
+    var navBtn = function (view, label, svg) {
+      return '<button type="button" class="admin-nav-item" data-view="' + view + '" data-testid="tab-' + view + '">' + svg + label + '</button>';
+    };
+
+    var ic = {
+      home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+      pages: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>',
+      media: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
+      edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>',
+      news: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2z"/></svg>',
+      leads: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+      users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
+      settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+    };
 
     mainZone.innerHTML =
       '<aside class="admin-sidebar" data-testid="admin-sidebar">' +
         '<div class="admin-sidebar-brand">' +
-          '<img alt="Circum" src="/assets/img/circum-logo.png"/>' +
-          '<span>Administration</span>' +
+          studioBrandHTML() +
         '</div>' +
         '<nav class="admin-sidebar-nav" data-testid="admin-tabs">' +
-          '<button type="button" class="admin-nav-item active" data-view="dashboard" data-testid="tab-dashboard">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>' +
-            'Tableau de bord' +
-          '</button>' +
-          '<button type="button" class="admin-nav-item" data-view="news" data-testid="tab-news">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 002-2V4a2 2 0 00-2-2H8a2 2 0 00-2 2v16a2 2 0 01-2 2zm0 0a2 2 0 01-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6z"/></svg>' +
-            'Actualités' +
-          '</button>' +
-          '<button type="button" class="admin-nav-item" data-view="content" data-testid="tab-content">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>' +
-            'Éditeur visuel' +
-          '</button>' +
+          '<div class="admin-nav-group">' +
+            '<span class="admin-nav-label">Principal</span>' +
+            navBtn('home', 'Accueil', ic.home) +
+          '</div>' +
+          '<div class="admin-nav-group">' +
+            '<span class="admin-nav-label">Contenu</span>' +
+            navBtn('cms-pages', 'Pages', ic.pages) +
+            navBtn('content', 'Éditeur visuel', ic.edit) +
+            navBtn('cms-media', 'Médias', ic.media) +
+            navBtn('news', 'Actualités', ic.news) +
+          '</div>' +
+          '<div class="admin-nav-group">' +
+            '<span class="admin-nav-label">Formulaires</span>' +
+            navBtn('leads', 'Demandes & leads', ic.leads) +
+          '</div>' +
+          '<div class="admin-nav-group">' +
+            '<span class="admin-nav-label">Système</span>' +
+            navBtn('users', 'Utilisateurs', ic.users) +
+            navBtn('settings', 'Paramètres', ic.settings) +
+          '</div>' +
         '</nav>' +
+        '<div class="admin-sidebar-footer">' +
+          '<a href="/" target="_blank" rel="noopener">↗ Voir le site en direct</a>' +
+        '</div>' +
       '</aside>' +
       '<div class="admin-main">' +
 
-      '<div class="admin-view active" id="view-dashboard" data-testid="view-dashboard">' +
+      '<div class="admin-view active" id="view-home" data-testid="view-home"></div>' +
+      '<div class="admin-view" id="view-cms-pages" data-testid="view-cms-pages"></div>' +
+      '<div class="admin-view" id="view-cms-media" data-testid="view-cms-media"></div>' +
+
+      '<div class="admin-view" id="view-leads" data-testid="view-leads">' +
+      '<div class="cms-view-header"><h1>Formulaires & leads</h1><p>Contact, candidatures et abonnés newsletter.</p></div>' +
       '<div class="stat-row" data-testid="stats-row">' +
         '<button type="button" class="stat stat-click" data-leads-tab="newsletter" data-testid="stat-leads">' +
-          '<div class="stat-value" id="dash-stat-leads">—</div><div class="stat-label">Newsletter</div></button>' +
+          '<div class="stat-value" id="dash-stat-leads">…</div><div class="stat-label">Newsletter</div></button>' +
         '<button type="button" class="stat stat-click" data-leads-tab="contact" data-testid="stat-contact">' +
-          '<div class="stat-value" id="dash-stat-contact">—</div><div class="stat-label">Contact</div></button>' +
+          '<div class="stat-value" id="dash-stat-contact">…</div><div class="stat-label">Contact</div></button>' +
         '<button type="button" class="stat stat-click" data-leads-tab="careers" data-testid="stat-apps">' +
-          '<div class="stat-value" id="dash-stat-apps">—</div><div class="stat-label">Carrières</div></button>' +
-        '<div class="stat"><div class="stat-value" id="dash-stat-admins" data-testid="stat-admins">—</div><div class="stat-label">Admins</div></div>' +
+          '<div class="stat-value" id="dash-stat-apps">…</div><div class="stat-label">Carrières</div></button>' +
       '</div>' +
-
       '<div class="panel leads-hub" data-testid="leads-hub">' +
         '<div class="panel-head">' +
-          '<div><h2>Leads & formulaires</h2><p class="panel-sub">Demandes contact, candidatures et abonnés newsletter en temps réel.</p></div>' +
           '<div class="leads-tabs" role="tablist">' +
             '<button type="button" class="leads-tab active" data-leads-tab="contact" data-testid="leads-tab-contact">Contact</button>' +
             '<button type="button" class="leads-tab" data-leads-tab="careers" data-testid="leads-tab-careers">Carrières</button>' +
@@ -278,23 +437,31 @@
         '</div>' +
         '<div id="leads-cards" class="leads-cards"><div class="empty">Chargement…</div></div>' +
       '</div>' +
+      '</div>' +
 
+      '<div class="admin-view" id="view-users" data-testid="view-users">' +
+      '<div class="cms-view-header"><h1>Utilisateurs</h1><p>Gérez les accès admin et les rôles éditeur.</p></div>' +
       '<div class="panel" data-testid="panel-admins">' +
-        '<div class="panel-head">' +
-          '<h2>Gestion des admins</h2>' +
-        '</div>' +
+        '<div class="panel-head"><h2>Équipe CMS</h2></div>' +
         '<div id="allowlist-list"></div>' +
         '<form class="allow-add" id="allow-add-form" data-testid="allow-add-form">' +
-          '<input type="email" id="allow-add-email" data-testid="allow-add-email" placeholder="nouveau.admin@circumlifesciences.com" required/>' +
-          '<button class="btn-mini" type="submit" data-testid="allow-add-btn">Ajouter admin</button>' +
+          '<input type="email" id="allow-add-email" data-testid="allow-add-email" placeholder="email@circumlifesciences.com" required/>' +
+          '<select id="allow-add-role" data-testid="allow-add-role" aria-label="Rôle">' +
+            '<option value="editor">Éditeur</option>' +
+            '<option value="admin">Admin</option>' +
+          '</select>' +
+          '<button class="btn-mini" type="submit" data-testid="allow-add-btn">Inviter</button>' +
         '</form>' +
       '</div>' +
       '</div>' +
 
+      '<div class="admin-view" id="view-settings" data-testid="view-settings"></div>' +
+
       '<div class="admin-view" id="view-news" data-testid="view-news">' +
+        '<div class="cms-view-header"><h1>Actualités</h1><p>Articles du site et numéros trimestriels newsletter.</p></div>' +
         '<div class="news-studio">' +
           '<div class="news-studio-header">' +
-            '<div><h2 class="news-studio-title">Actualités & newsletter</h2><p class="news-studio-sub">Articles du site et numéros trimestriels de la newsletter.</p></div>' +
+            '<div></div>' +
           '</div>' +
           '<div class="news-studio-tabs" role="tablist">' +
             '<button type="button" class="news-studio-tab active" data-news-tab="articles" data-testid="news-tab-articles">Articles</button>' +
@@ -391,13 +558,17 @@
       '</div>' +
 
       '<div class="admin-view" id="view-content" data-testid="view-content">' +
+        '<div class="cms-view-header" style="padding:20px 28px 0;margin:0">' +
+          '<h1>Éditeur visuel</h1>' +
+          '<p>Cliquez sur un texte dans l\'aperçu pour le modifier.</p>' +
+        '</div>' +
         '<div class="visual-editor-shell" data-testid="panel-content">' +
           '<div class="visual-editor-toolbar">' +
             '<label>Page<select id="content-page-select" data-testid="content-page-select"></select></label>' +
             '<label>Langue<select id="content-lang-select" data-testid="content-lang-select">' +
               '<option value="fr">Français</option><option value="en">English</option><option value="de">Deutsch</option><option value="it">Italiano</option>' +
             '</select></label>' +
-            '<span class="visual-editor-hint">Cliquez sur un texte dans l\'aperçu pour le modifier — puis <strong>Valider</strong> pour publier en direct</span>' +
+            '<span class="visual-editor-hint">Cliquez sur un texte dans l\'aperçu pour le modifier, puis <strong>Valider</strong> pour publier en direct</span>' +
             '<div class="visual-editor-actions">' +
               '<button type="button" class="btn-mini ghost" id="content-open-site-btn" data-testid="content-open-site-btn">Voir le site</button>' +
               '<button type="button" class="btn-mini ghost" id="content-reload-btn" data-testid="content-reload-btn">Recharger</button>' +
@@ -453,21 +624,34 @@
 
     document.querySelectorAll('.admin-nav-item').forEach(function (tab) {
       tab.addEventListener('click', function () {
-        var view = tab.getAttribute('data-view');
-        document.querySelectorAll('.admin-nav-item').forEach(function (t) { t.classList.toggle('active', t === tab); });
-        document.querySelectorAll('.admin-view').forEach(function (v) {
-          v.classList.toggle('active', v.id === 'view-' + view);
-        });
-        var shell = document.getElementById('admin-shell');
-        if (shell) shell.classList.toggle('admin-wide', view === 'content');
-        if (view === 'content') {
-          if (!contentState.editorReady) initContentEditor();
-          else setTimeout(fitVisualEditorFrame, 50);
-        } else if (view === 'news') {
-          loadNewsAdminList();
-          loadNewsletterIssuesList();
-        }
+        setAdminNavOpen(false);
+        adminNavigate(tab.getAttribute('data-view'));
       });
+    });
+
+    if (window.CircumDashboard) {
+      window.CircumDashboard.init({
+        api: api,
+        navigate: adminNavigate,
+        escapeHTML: escapeHTML
+      });
+    }
+
+    if (window.CircumCms) {
+      window.CircumCms.init({
+        api: api,
+        toast: toast,
+        escapeHTML: escapeHTML,
+        fmtDate: fmtDate,
+        userRole: user.role || 'editor',
+        navigate: adminNavigate
+      });
+    }
+
+    if (window.CircumDecor) window.CircumDecor.init();
+
+    document.querySelectorAll('.admin-nav-item[data-view="home"]').forEach(function (t) {
+      t.classList.add('active');
     });
 
     initLeadsHub();
@@ -477,6 +661,18 @@
 
     loadAllLeads();
     loadAllowlist();
+    adminNavigate('home');
+
+    var brandHome = document.querySelector('.admin-sidebar-brand .studio-brand');
+    if (brandHome) {
+      brandHome.setAttribute('role', 'button');
+      brandHome.setAttribute('tabindex', '0');
+      brandHome.style.cursor = 'pointer';
+      brandHome.addEventListener('click', function () { adminNavigate('home'); });
+      brandHome.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); adminNavigate('home'); }
+      });
+    }
   }
 
   // ============ Leads hub (contact, carrières, newsletter) ============
@@ -491,7 +687,12 @@
   function initLeadsHub() {
     document.querySelectorAll('.leads-tab, .stat-click[data-leads-tab]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        switchLeadsTab(btn.getAttribute('data-leads-tab'));
+        var tab = btn.getAttribute('data-leads-tab');
+        if (btn.classList.contains('stat-click')) {
+          adminNavigate('leads', { leadsTab: tab });
+        } else {
+          switchLeadsTab(tab);
+        }
       });
     });
     var search = document.getElementById('leads-search');
@@ -534,6 +735,7 @@
       setStatCount('dash-stat-contact', results[0].count);
       setStatCount('dash-stat-apps', results[1].count);
       setStatCount('dash-stat-leads', results[2].count);
+      if (window.CircumDashboard) window.CircumDashboard.loadStats();
       renderLeadsCards();
     }).catch(function () {
       renderLeadsCards();
@@ -593,7 +795,7 @@
 
   function buildLeadCard(item, type) {
     var id = item.id || item._id;
-    var name = escapeHTML((item.firstname || '') + ' ' + (item.lastname || '')).trim() || '—';
+    var name = escapeHTML((item.firstname || '') + ' ' + (item.lastname || '')).trim() || '…';
     var email = escapeHTML(item.email || '');
     var date = escapeHTML(fmtDate(item.created_at));
     var badge = type === 'newsletter' ? 'Newsletter' : type === 'careers' ? 'Carrières' : 'Contact';
@@ -601,17 +803,17 @@
     var meta = '';
     var actions = '';
     if (type === 'contact') {
-      meta = escapeHTML(item.company || '—') + (item.contact_type ? ' · ' + escapeHTML(item.contact_type) : '');
+      meta = escapeHTML(item.company || '…') + (item.contact_type ? ' · ' + escapeHTML(item.contact_type) : '');
       if (item.attachment_filename) {
         actions = '<button type="button" class="lead-card-action" data-lead-dl="' + escapeHTML(id) + '" data-lead-dl-kind="att">Pièce jointe</button>';
       }
     } else if (type === 'careers') {
-      meta = escapeHTML(item.position || '—') + (item.location ? ' · ' + escapeHTML(item.location) : '');
+      meta = escapeHTML(item.position || '…') + (item.location ? ' · ' + escapeHTML(item.location) : '');
       if (item.cv_filename) {
         actions = '<button type="button" class="lead-card-action" data-lead-dl="' + escapeHTML(id) + '" data-lead-dl-kind="cv">Télécharger CV</button>';
       }
     } else {
-      meta = escapeHTML(item.company || '—') + (item.role ? ' · ' + escapeHTML(item.role) : '');
+      meta = escapeHTML(item.company || '…') + (item.role ? ' · ' + escapeHTML(item.role) : '');
       actions = '<span class="pill">' + escapeHTML((item.lang || 'fr').toUpperCase()) + '</span>';
     }
     return '' +
@@ -772,11 +974,13 @@
 
   function loadAllowlist() {
     api('/admin/allowlist').then(function (r) { return r.json(); }).then(function (data) {
-      setStatCount('dash-stat-admins', data.count);
       var c = document.getElementById('allowlist-list');
+      if (!c) return;
       c.innerHTML = data.items.map(function (a) {
         return '<div class="allow-row" data-testid="allow-row">' +
-          '<div class="who"><strong>' + escapeHTML(a.email) + '</strong><small>ajouté par ' + escapeHTML(a.added_by || '—') + ' · ' + escapeHTML(fmtDate(a.created_at)) + '</small></div>' +
+          '<div class="who"><strong>' + escapeHTML(a.email) + '</strong>' +
+          '<span class="tag" style="margin-left:8px">' + escapeHTML(a.role || 'admin') + '</span>' +
+          '<small>ajouté par ' + escapeHTML(a.added_by || '…') + ' · ' + escapeHTML(fmtDate(a.created_at)) + '</small></div>' +
           '<button class="btn-mini" data-email="' + escapeHTML(a.email) + '" data-testid="set-password-btn">Mot de passe</button>' +
           '<button class="btn-mini danger" data-email="' + escapeHTML(a.email) + '" data-testid="allow-remove-btn">Retirer</button>' +
         '</div>';
@@ -796,7 +1000,7 @@
     modal.setAttribute('data-testid', 'password-modal');
     modal.innerHTML =
       '<div class="modal" style="max-width:420px">' +
-        '<h3>Mot de passe — ' + escapeHTML(email) + '</h3>' +
+        '<h3>Mot de passe pour ' + escapeHTML(email) + '</h3>' +
         '<form id="pw-form" data-testid="password-form">' +
           '<label>Nouveau mot de passe (12 caractères minimum, maj/min/chiffre)' +
             '<div class="pw-wrap">' +
@@ -857,12 +1061,13 @@
   function addAdmin(e) {
     e.preventDefault();
     var input = document.getElementById('allow-add-email');
+    var roleSel = document.getElementById('allow-add-role');
     var email = input.value.trim();
     if (!email) return;
     api('/admin/allowlist', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
+      body: JSON.stringify({ email: email, role: roleSel ? roleSel.value : 'editor' })
     }).then(function (r) {
       if (!r.ok) { return r.json().then(function (j) { throw new Error(j.detail || 'error'); }); }
       return r.json();
@@ -1213,11 +1418,14 @@
         });
       });
     }).then(function () {
-      if (savedOk) toast('Modifications validées — visibles en direct sur le site');
+      if (savedOk) {
+        toast('Modifications validées et visibles sur le site');
+        setTimeout(reloadPreviewFrame, 250);
+      }
     }).catch(function (err) {
       if (err && err.message === 'empty') return;
       if (savedOk) {
-        toast('Enregistré — rechargez l\'aperçu si le texte n\'a pas bougé', true);
+        toast('Enregistré. Rechargez l\'aperçu si le texte n\'a pas bougé', true);
         return;
       }
       toast(err.message || 'Erreur', true);

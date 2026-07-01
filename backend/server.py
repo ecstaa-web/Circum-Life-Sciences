@@ -28,18 +28,49 @@ from security import (
     is_production,
     parse_allowed_origins,
     rate_limit,
+    reset_rate_limit,
     safe_error_detail,
     validate_email_path,
     validate_upload_magic,
     validate_image_magic,
     validate_uuid,
 )
-from content_store import get_admin_page_content, list_pages, load_overrides_from_db, save_content_updates
+from content_store import (
+    get_admin_page_content,
+    list_content_revisions,
+    list_pages,
+    load_overrides_from_db,
+    revert_content_keys,
+    save_content_updates,
+)
+from cms_store import (
+    create_page,
+    delete_media,
+    delete_page,
+    duplicate_page,
+    get_page,
+    get_page_by_slug,
+    get_user_role,
+    list_media,
+    list_pages as cms_list_pages,
+    list_revisions,
+    media_file_path,
+    publish_page,
+    replace_media,
+    revert_page,
+    seed_cms_pages,
+    update_page,
+    upload_media,
+)
 from validators import (
     AllowlistAdd,
+    AllowlistAddWithRole,
     CareersApplyForm,
     ContactSubmitForm,
+    ContentRevertPayload,
     ContentSavePayload,
+    CmsPageCreate,
+    CmsPageUpdate,
     ForgotPasswordPayload,
     LoginPayload,
     NewsletterIssueIn,
@@ -118,7 +149,14 @@ else:
 @app.middleware("http")
 async def global_api_rate_limit(request: Request, call_next):
     if request.url.path.startswith("/api/"):
-        rate_limit(f"api:{get_client_ip(request)}", 600, 3600)
+        path = request.url.path
+        # Endpoints publics très sollicités (polling contenu) — limite séparée plus haute
+        if path.startswith("/api/content/overrides"):
+            rate_limit(f"overrides:{get_client_ip(request)}", 5000, 3600)
+        elif path == "/api/health" or path.endswith("/health"):
+            pass
+        else:
+            rate_limit(f"api:{get_client_ip(request)}", 600, 3600)
     return await call_next(request)
 
 
@@ -275,6 +313,11 @@ SEED_NEWSLETTER_ISSUES: List[dict] = [
 
 @app.on_event("startup")
 async def seed_data():
+    if not is_production():
+        reset_rate_limit()
+        await db["login_attempts"].delete_many({})
+        logger.info("Dev mode: rate limits and login lockouts reset on startup")
+
     # Indexes
     await db["users"].create_index("email", unique=True, sparse=True)
     await db["user_sessions"].create_index("session_token", unique=True)
@@ -312,8 +355,13 @@ async def seed_data():
         await db["admin_allowlist"].insert_one({
             "_id": DEFAULT_ADMIN_EMAIL,
             "added_by": "system",
+            "role": "admin",
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
+
+    await seed_cms_pages(db)
+    await db["cms_revisions"].create_index([("page_id", 1), ("created_at", -1)])
+    await db["content_revisions"].create_index([("key", 1), ("lang", 1), ("created_at", -1)])
 
     # Seed admin user with password (idempotent — set initial password ONLY if user
     # has no password_hash yet. NEVER overwrite a user-set password on restart.)
@@ -369,9 +417,22 @@ async def _get_session(request: Request, authorization: Optional[str] = None) ->
 
 
 async def require_admin(request: Request, authorization: Optional[str] = Header(None)) -> dict:
+    user = await _require_editor(request, authorization)
+    role = await get_user_role(db, user["email"])
+    user["role"] = role
+    return user
+
+
+async def require_admin_role(request: Request, authorization: Optional[str] = Header(None)) -> dict:
+    user = await require_admin(request, authorization)
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin role required")
+    return user
+
+
+async def _require_editor(request: Request, authorization: Optional[str] = Header(None)) -> dict:
     user = await _get_session(request, authorization)
     using_bearer = bool(authorization and authorization.lower().startswith("bearer "))
-    # CSRF protects cookie-based browser sessions; Bearer tokens are not auto-sent cross-site.
     if request.method not in ("GET", "HEAD", "OPTIONS") and not using_bearer:
         csrf = request.headers.get("x-circum-csrf")
         expected = (user.get("_session") or {}).get("csrf_token")
@@ -379,6 +440,7 @@ async def require_admin(request: Request, authorization: Optional[str] = Header(
             raise HTTPException(status_code=403, detail="Forbidden")
     if not await _is_allowlisted(user["email"]):
         raise HTTPException(status_code=403, detail="Forbidden")
+    user["role"] = await get_user_role(db, user["email"])
     return user
 
 
@@ -410,6 +472,8 @@ async def _create_session(user_id: str) -> tuple[str, str]:
 
 
 async def _check_brute_force(email: str, ip: str) -> None:
+    if not is_production():
+        return
     identifier = f"{ip}:{email.lower()}"
     doc = await db["login_attempts"].find_one({"identifier": identifier})
     if not doc:
@@ -917,11 +981,13 @@ async def auth_exchange(payload: SessionExchange, request: Request, response: Re
 async def auth_me(request: Request, authorization: Optional[str] = Header(None)):
     user = await _get_session(request, authorization)
     csrf = (user.get("_session") or {}).get("csrf_token")
+    role = await get_user_role(db, user["email"])
     return {
         "user_id": user["user_id"],
         "email": user["email"],
         "name": user.get("name"),
         "picture": user.get("picture"),
+        "role": role,
         "csrf_token": csrf,
     }
 
@@ -1144,28 +1210,35 @@ async def download_contact_attachment(msg_id: str, _: dict = Depends(require_adm
 
 # ============ Admin allow-list ============
 @app.get("/api/admin/allowlist")
-async def allowlist_list(_: dict = Depends(require_admin)):
+async def allowlist_list(_: dict = Depends(require_admin_role)):
     cursor = db["admin_allowlist"].find({}).sort("created_at", 1)
     items = []
     async for d in cursor:
-        items.append({"email": d["_id"], "added_by": d.get("added_by"), "created_at": d.get("created_at")})
+        items.append({
+            "email": d["_id"],
+            "role": d.get("role") or "admin",
+            "added_by": d.get("added_by"),
+            "created_at": d.get("created_at"),
+        })
     return {"count": len(items), "items": items}
 
 
 @app.post("/api/admin/allowlist")
-async def allowlist_add(payload: AllowlistAdd, user: dict = Depends(require_admin)):
+async def allowlist_add(payload: AllowlistAddWithRole, user: dict = Depends(require_admin_role)):
     email = payload.email.lower()
     if await db["admin_allowlist"].find_one({"_id": email}):
         return {"ok": True, "already_present": True}
     await db["admin_allowlist"].insert_one({
-        "_id": email, "added_by": user["email"],
+        "_id": email,
+        "added_by": user["email"],
+        "role": payload.role,
         "created_at": datetime.now(timezone.utc).isoformat(),
     })
-    return {"ok": True, "email": email}
+    return {"ok": True, "email": email, "role": payload.role}
 
 
 @app.delete("/api/admin/allowlist/{email}")
-async def allowlist_remove(email: str, user: dict = Depends(require_admin)):
+async def allowlist_remove(email: str, user: dict = Depends(require_admin_role)):
     email = validate_email_path(email)
     total = await db["admin_allowlist"].count_documents({})
     if total <= 1:
@@ -1179,7 +1252,7 @@ async def allowlist_remove(email: str, user: dict = Depends(require_admin)):
 
 
 @app.put("/api/admin/allowlist/{email}/password")
-async def allowlist_set_password(email: str, payload: SetPasswordPayload, user: dict = Depends(require_admin)):
+async def allowlist_set_password(email: str, payload: SetPasswordPayload, user: dict = Depends(require_admin_role)):
     email = validate_email_path(email)
     if not await _is_allowlisted(email):
         raise HTTPException(status_code=404, detail="Email not in allow-list")
@@ -1403,3 +1476,119 @@ async def admin_content_save(payload: ContentSavePayload, user: dict = Depends(r
     """
     updates = [u.model_dump() for u in payload.updates]
     return await save_content_updates(db, updates, user["email"])
+
+
+@app.post("/api/admin/content/revert")
+async def admin_content_revert(payload: ContentRevertPayload, user: dict = Depends(require_admin)):
+    items = [i.model_dump() for i in payload.items]
+    return await revert_content_keys(db, items, user["email"])
+
+
+@app.get("/api/admin/content/revisions")
+async def admin_content_revisions(key: str, lang: str = "fr", _: dict = Depends(require_admin)):
+    items = await list_content_revisions(db, key, lang)
+    return {"items": items}
+
+
+# ============ CMS — pages, blocs, médias ============
+@app.get("/api/cms/pages")
+async def public_cms_pages():
+    items = await cms_list_pages(db, status="published")
+    return {"items": [p for p in items if p.get("page_type") == "custom"]}
+
+
+@app.get("/api/cms/pages/{slug}")
+async def public_cms_page(slug: str):
+    return await get_page_by_slug(db, slug, published_only=True)
+
+
+@app.get("/api/cms/media/{filename}")
+async def public_cms_media_file(filename: str):
+    path = media_file_path(filename)
+    return FileResponse(path)
+
+
+@app.get("/api/admin/cms/pages")
+async def admin_cms_pages(status: Optional[str] = None, _: dict = Depends(require_admin)):
+    if not is_production():
+        await seed_cms_pages(db)
+    return {"items": await cms_list_pages(db, status=status)}
+
+
+@app.post("/api/admin/cms/pages")
+async def admin_cms_create(payload: CmsPageCreate, user: dict = Depends(require_admin)):
+    data = payload.model_dump()
+    return await create_page(db, data, user["email"])
+
+
+@app.get("/api/admin/cms/pages/{page_id}")
+async def admin_cms_get(page_id: str, _: dict = Depends(require_admin)):
+    return await get_page(db, page_id)
+
+
+@app.put("/api/admin/cms/pages/{page_id}")
+async def admin_cms_update(page_id: str, payload: CmsPageUpdate, user: dict = Depends(require_admin)):
+    data = {k: v for k, v in payload.model_dump().items() if v is not None}
+    return await update_page(db, page_id, data, user["email"])
+
+
+@app.delete("/api/admin/cms/pages/{page_id}")
+async def admin_cms_delete(page_id: str, user: dict = Depends(require_admin_role)):
+    return await delete_page(db, page_id)
+
+
+@app.post("/api/admin/cms/pages/{page_id}/duplicate")
+async def admin_cms_duplicate(page_id: str, user: dict = Depends(require_admin)):
+    return await duplicate_page(db, page_id, user["email"])
+
+
+@app.post("/api/admin/cms/pages/{page_id}/publish")
+async def admin_cms_publish(page_id: str, user: dict = Depends(require_admin)):
+    return await publish_page(db, page_id, user["email"])
+
+
+@app.get("/api/admin/cms/pages/{page_id}/revisions")
+async def admin_cms_revisions(page_id: str, _: dict = Depends(require_admin)):
+    return {"items": await list_revisions(db, page_id)}
+
+
+@app.post("/api/admin/cms/pages/{page_id}/revert/{revision_id}")
+async def admin_cms_revert(page_id: str, revision_id: str, user: dict = Depends(require_admin)):
+    return await revert_page(db, page_id, revision_id, user["email"])
+
+
+@app.get("/api/admin/cms/media")
+async def admin_cms_media_list(_: dict = Depends(require_admin)):
+    return {"items": await list_media(db)}
+
+
+@app.post("/api/admin/cms/media")
+async def admin_cms_media_upload(
+    file: UploadFile = File(...),
+    alt: str = Form(""),
+    user: dict = Depends(require_admin),
+):
+    return await upload_media(db, file, alt, user["email"])
+
+
+@app.delete("/api/admin/cms/media/{media_id}")
+async def admin_cms_media_delete(media_id: str, _: dict = Depends(require_admin)):
+    return await delete_media(db, media_id)
+
+
+@app.put("/api/admin/cms/media/{media_id}")
+async def admin_cms_media_replace(
+    media_id: str,
+    file: UploadFile = File(...),
+    user: dict = Depends(require_admin),
+):
+    return await replace_media(db, media_id, file, user["email"])
+
+
+@app.get("/api/admin/cms/block-templates")
+async def admin_cms_block_templates(_: dict = Depends(require_admin)):
+    from cms_store import BLOCK_TYPES, default_block
+    return {
+        "types": sorted(BLOCK_TYPES),
+        "templates": {t: default_block(t) for t in BLOCK_TYPES},
+    }

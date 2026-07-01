@@ -342,7 +342,11 @@ async def save_content_updates(db, updates: list[dict[str, str]], updated_by: st
         value = sanitize_html(raw)
 
         coll = db["site_content_overrides"]
-        # Toujours persister : l'admin a validé explicitement cette valeur.
+        prev = await coll.find_one({"_id": key})
+        old_val = None
+        if prev and isinstance(prev.get("values"), dict):
+            old_val = prev["values"].get(lang)
+
         await coll.update_one(
             {"_id": key},
             {
@@ -354,11 +358,70 @@ async def save_content_updates(db, updates: list[dict[str, str]], updated_by: st
             },
             upsert=True,
         )
+        await db["content_revisions"].insert_one({
+            "_id": f"{key}:{lang}:{now}",
+            "key": key,
+            "lang": lang,
+            "old_value": old_val,
+            "new_value": value,
+            "created_at": now,
+            "created_by": updated_by,
+        })
         saved += 1
         values.append({"key": key, "lang": lang, "value": value})
 
     await _write_backup_json(db)
     return {"ok": True, "saved": saved, "values": values}
+
+
+async def revert_content_keys(db, items: list[dict[str, str]], updated_by: str) -> dict[str, Any]:
+    """Supprime les surcharges pour revenir aux textes par défaut (Git)."""
+    reverted = 0
+    now = datetime.now(timezone.utc).isoformat()
+    coll = db["site_content_overrides"]
+    for item in items:
+        key = validate_content_key(item.get("key", ""))
+        lang = validate_lang(item.get("lang", ""))
+        doc = await coll.find_one({"_id": key})
+        if not doc:
+            continue
+        old_val = (doc.get("values") or {}).get(lang)
+        await coll.update_one({"_id": key}, {"$unset": {f"values.{lang}": ""}})
+        fresh = await coll.find_one({"_id": key})
+        if fresh and not (fresh.get("values") or {}):
+            await coll.delete_one({"_id": key})
+        await db["content_revisions"].insert_one({
+            "_id": f"{key}:{lang}:revert:{now}",
+            "key": key,
+            "lang": lang,
+            "old_value": old_val,
+            "new_value": None,
+            "created_at": now,
+            "created_by": updated_by,
+            "action": "revert",
+        })
+        reverted += 1
+    await _write_backup_json(db)
+    return {"ok": True, "reverted": reverted}
+
+
+async def list_content_revisions(db, key: str, lang: str, limit: int = 20) -> list[dict[str, Any]]:
+    key = validate_content_key(key)
+    lang = validate_lang(lang)
+    cursor = db["content_revisions"].find({"key": key, "lang": lang}).sort("created_at", -1).limit(limit)
+    items = []
+    async for doc in cursor:
+        items.append({
+            "id": doc["_id"],
+            "key": doc["key"],
+            "lang": doc["lang"],
+            "old_value": doc.get("old_value"),
+            "new_value": doc.get("new_value"),
+            "action": doc.get("action"),
+            "created_at": doc.get("created_at"),
+            "created_by": doc.get("created_by"),
+        })
+    return items
 
 
 async def _write_backup_json(db) -> None:

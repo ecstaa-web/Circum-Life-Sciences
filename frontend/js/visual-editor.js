@@ -1,5 +1,5 @@
 /**
- * Éditeur visuel Circum — iframe admin (textes éditables, commandes depuis la barre admin).
+ * Éditeur visuel Circum, iframe admin (textes éditables, commandes depuis la barre admin).
  */
 (function () {
   'use strict';

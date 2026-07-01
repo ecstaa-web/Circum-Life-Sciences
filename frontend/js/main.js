@@ -1,27 +1,69 @@
 /* ==========================================================================
-   CIRCUM LIFE SCIENCES — SHARED SCRIPTS
+   CIRCUM LIFE SCIENCES, SHARED SCRIPTS
    ========================================================================== */
 
 (function() {
   'use strict';
 
   // ===== Mobile nav toggle =====
+  function setMobileNavOpen(isOpen) {
+    var toggle = document.querySelector('.nav-toggle');
+    var mobile = document.querySelector('.nav-mobile');
+    if (!toggle || !mobile) return;
+
+    mobile.classList.toggle('open', isOpen);
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    toggle.setAttribute('aria-label', isOpen ? 'Fermer le menu' : 'Menu');
+
+    var spans = toggle.querySelectorAll('span');
+    if (spans[0]) spans[0].style.transform = isOpen ? 'rotate(45deg) translate(4px, 4px)' : '';
+    if (spans[1]) spans[1].style.opacity = isOpen ? '0' : '1';
+    if (spans[2]) spans[2].style.transform = isOpen ? 'rotate(-45deg) translate(5px, -5px)' : '';
+
+    document.body.classList.toggle('nav-open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+
+    if (window.lenis) {
+      if (isOpen && typeof window.lenis.stop === 'function') window.lenis.stop();
+      else if (!isOpen && typeof window.lenis.start === 'function') window.lenis.start();
+    }
+  }
+
   function initMobileNav() {
     var toggle = document.querySelector('.nav-toggle');
     var mobile = document.querySelector('.nav-mobile');
     if (!toggle || !mobile) return;
+
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-controls', 'site-mobile-nav');
+    mobile.id = 'site-mobile-nav';
+
+    if (!mobile.querySelector('.nav-mobile-inner')) {
+      var inner = document.createElement('div');
+      inner.className = 'nav-mobile-inner';
+      while (mobile.firstChild) inner.appendChild(mobile.firstChild);
+      mobile.appendChild(inner);
+    }
+
     toggle.addEventListener('click', function() {
-      mobile.classList.toggle('open');
-      var spans = toggle.querySelectorAll('span');
-      var isOpen = mobile.classList.contains('open');
-      spans[0].style.transform = isOpen ? 'rotate(45deg) translate(4px, 4px)' : '';
-      spans[1].style.opacity = isOpen ? '0' : '1';
-      spans[2].style.transform = isOpen ? 'rotate(-45deg) translate(5px, -5px)' : '';
-      document.body.classList.toggle('nav-open', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-      if (window.lenis) {
-        if (isOpen && typeof window.lenis.stop === 'function') window.lenis.stop();
-        else if (!isOpen && typeof window.lenis.start === 'function') window.lenis.start();
+      setMobileNavOpen(!mobile.classList.contains('open'));
+    });
+
+    mobile.querySelectorAll('a[href]').forEach(function(link) {
+      link.addEventListener('click', function() {
+        setMobileNavOpen(false);
+      });
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && mobile.classList.contains('open')) {
+        setMobileNavOpen(false);
+      }
+    });
+
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 1280 && mobile.classList.contains('open')) {
+        setMobileNavOpen(false);
       }
     });
   }
@@ -122,15 +164,7 @@
   function closeMobileNav() {
     var mobile = document.querySelector('.nav-mobile.open');
     if (!mobile) return;
-    mobile.classList.remove('open');
-    document.body.style.overflow = '';
-    var toggle = document.querySelector('.nav-toggle');
-    if (toggle) {
-      var spans = toggle.querySelectorAll('span');
-      if (spans[0]) spans[0].style.transform = '';
-      if (spans[1]) spans[1].style.opacity = '1';
-      if (spans[2]) spans[2].style.transform = '';
-    }
+    setMobileNavOpen(false);
   }
 
   // Intercept clicks on links pointing to an anchor on the CURRENT page and
@@ -165,7 +199,7 @@
   // ===== Floating localisation mini-map (hover) =====
   // Works on any element carrying data-map-lat / data-map-lng (apropos site
   // cards, home implantation cards, ...). Renders static OpenStreetMap tiles
-  // with a centered pin — no zoom controls, no attribution banner.
+  // with a centered pin, no zoom controls, no attribution banner.
   function initSiteMapBubble() {
     var cards = document.querySelectorAll('[data-map-lat]');
     if (!cards.length) return;
@@ -960,13 +994,13 @@
 
   // ===== Dynamic news loader =====
   var NEWS_FALLBACK = [
-    { id: 'a1000001-0000-4000-8000-000000000001', title: 'Compamed & Medica Düsseldorf', summary: 'Circum Life Sciences sera au prochain salon Compamed à Düsseldorf du 17 au 20 novembre 2025 — Hall 8 B, Booth D03.', tag: 'Salon', date: '2025-11-17', variant: 1, body_html: '<p>Circum Life Sciences sera au prochain salon Compamed à Düsseldorf du <strong>17 au 20 novembre 2025</strong>, Hall 8 B, Booth D03.</p><p>Venez rencontrer nos équipes pour découvrir nos capacités CDMO intégrées — de la conception à la fabrication.</p>' },
-    { id: 'a1000001-0000-4000-8000-000000000002', title: 'Inauguration Force One', summary: 'Inauguration officielle de notre site de production Force One en Tunisie.', tag: 'Inauguration', date: '2025-10-15', variant: 2, body_html: '<p>Inauguration officielle du site <strong>Force One</strong> — notre nouvelle usine ISO 7.</p><p>4 000 m² de bâtiment, 700 m² de salle propre, avec possibilités d\'extension. Moulage, assemblage et stérilisation sous notre système qualité intégré.</p>' },
-    { id: 'a1000001-0000-4000-8000-000000000003', title: 'Communiqué de presse — 2 octobre 2025', summary: 'Publication du communiqué de presse officiel de Circum Life Sciences.', tag: 'Presse', date: '2025-10-02', variant: 3, body_html: '<p>Communiqué de presse du <strong>2 octobre 2025</strong> — COMMUNIQUE_PRESSE_021025.</p><p>Retrouvez l\'ensemble de nos actualités et publications sur cette page News &amp; Media.</p>' },
+    { id: 'a1000001-0000-4000-8000-000000000001', title: 'Compamed & Medica Düsseldorf', summary: 'Circum Life Sciences sera au prochain salon Compamed à Düsseldorf du 17 au 20 novembre 2025, Hall 8 B, Booth D03.', tag: 'Salon', date: '2025-11-17', variant: 1, body_html: '<p>Circum Life Sciences sera au prochain salon Compamed à Düsseldorf du <strong>17 au 20 novembre 2025</strong>, Hall 8 B, Booth D03.</p><p>Venez rencontrer nos équipes pour découvrir nos capacités CDMO intégrées, de la conception à la fabrication.</p>' },
+    { id: 'a1000001-0000-4000-8000-000000000002', title: 'Inauguration Force One', summary: 'Inauguration officielle de notre site de production Force One en Tunisie.', tag: 'Inauguration', date: '2025-10-15', variant: 2, body_html: '<p>Inauguration officielle du site <strong>Force One</strong>, notre nouvelle usine ISO 7.</p><p>4 000 m² de bâtiment, 700 m² de salle propre, avec possibilités d\'extension. Moulage, assemblage et stérilisation sous notre système qualité intégré.</p>' },
+    { id: 'a1000001-0000-4000-8000-000000000003', title: 'Communiqué de presse, 2 octobre 2025', summary: 'Publication du communiqué de presse officiel de Circum Life Sciences.', tag: 'Presse', date: '2025-10-02', variant: 3, body_html: '<p>Communiqué de presse du <strong>2 octobre 2025</strong>, COMMUNIQUE_PRESSE_021025.</p><p>Retrouvez l\'ensemble de nos actualités et publications sur cette page News &amp; Media.</p>' },
     { id: 'a1000001-0000-4000-8000-000000000004', title: 'Commission européenne : exclusion des entreprises chinoises', summary: 'La Commission européenne limite la part des intrants originaires de Chine dans les achats publics de dispositifs médicaux de plus de 5 M€.', tag: 'Réglementaire', date: '2025-06-01', variant: 4, body_html: '<p>La Commission européenne a décidé d\'exclure les entreprises chinoises des achats, par les pouvoirs publics de l\'Union européenne, de dispositifs médicaux d\'un montant supérieur à 5 millions d\'euros.</p><p>Cette mesure limite à 50 % la part que les intrants originaires de Chine peuvent représenter dans les offres retenues.</p><p><a href="https://ec.europa.eu/commission/presscorner/detail/fr/ip_25_1569" rel="noopener noreferrer" target="_blank">Lire le communiqué de la Commission européenne</a></p>' },
-    { id: 'a1000001-0000-4000-8000-000000000005', title: 'WHX Dubai — Booth S11.D18A', summary: 'Retrouvez-nous au WHX expo à Dubaï sur notre stand S11.D18A.', tag: 'Salon', date: '2026-02-01', variant: 5, body_html: '<p>You can visit us in Dubai at <strong>WHX expo</strong> on our booth <strong>S11.D18A</strong>.</p><p>Meet our team and discover our vertically integrated CDMO capabilities for medical devices.</p>' },
-    { id: 'a1000001-0000-4000-8000-000000000006', title: 'DeviceMed — Mars 2026', summary: 'Circum Life Sciences au DeviceMed en mars 2026.', tag: 'Presse', date: '2026-03-01', variant: 6, body_html: '<p><strong>DeviceMed</strong> — Mars 2026.</p><p>Retrouvez Circum Life Sciences dans les pages de DeviceMed pour nos dernières actualités industrielles et réglementaires.</p>' },
-    { id: 'a1000001-0000-4000-8000-000000000007', title: 'Happy New Year — Bonne Année 2026', summary: 'Happy New Year — Bonne Année — Frohes neues Jahr — Buon Anno.', tag: 'Actualité', date: '2026-01-01', variant: 1, body_html: '<p><strong>Happy New Year</strong> — Bonne Année — Frohes neues Jahr — Buon Anno.</p><p>Toute l\'équipe Circum Life Sciences vous souhaite une excellente année 2026, riche en innovations et en partenariats durables.</p>' }
+    { id: 'a1000001-0000-4000-8000-000000000005', title: 'WHX Dubai, Booth S11.D18A', summary: 'Retrouvez-nous au WHX expo à Dubaï sur notre stand S11.D18A.', tag: 'Salon', date: '2026-02-01', variant: 5, body_html: '<p>You can visit us in Dubai at <strong>WHX expo</strong> on our booth <strong>S11.D18A</strong>.</p><p>Meet our team and discover our vertically integrated CDMO capabilities for medical devices.</p>' },
+    { id: 'a1000001-0000-4000-8000-000000000006', title: 'DeviceMed, Mars 2026', summary: 'Circum Life Sciences au DeviceMed en mars 2026.', tag: 'Presse', date: '2026-03-01', variant: 6, body_html: '<p><strong>DeviceMed</strong>, Mars 2026.</p><p>Retrouvez Circum Life Sciences dans les pages de DeviceMed pour nos dernières actualités industrielles et réglementaires.</p>' },
+    { id: 'a1000001-0000-4000-8000-000000000007', title: 'Happy New Year, Bonne Année 2026', summary: 'Happy New Year, Bonne Année, Frohes neues Jahr, Buon Anno.', tag: 'Actualité', date: '2026-01-01', variant: 1, body_html: '<p><strong>Happy New Year</strong>, Bonne Année, Frohes neues Jahr, Buon Anno.</p><p>Toute l\'équipe Circum Life Sciences vous souhaite une excellente année 2026, riche en innovations et en partenariats durables.</p>' }
   ];
 
   function getNewsFallbackById(id) {

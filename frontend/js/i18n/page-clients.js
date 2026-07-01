@@ -2,7 +2,7 @@ window.CIRCUM_I18N_PAGE = {
   fr: {
     "clients.page_hero_eyebrow.1": "Confiance &amp; Partenariats",
     "clients.page_hero_title.2": "Aux côtés de ceux qui <em>innovent.</em>",
-    "clients.page_hero_subtitle.3": "Nous sommes agiles, flexibles, et totalement engagés à établir un vrai partenariat — des startups aux industriels chevronnés.",
+    "clients.page_hero_subtitle.3": "Nous sommes agiles, flexibles, et totalement engagés à établir un vrai partenariat, des startups aux industriels chevronnés.",
     "clients.hero_btn.1": "Découvrir nos partenariats",
     "clients.hero_btn.2": "Nous contacter",
     "clients.signature_label.32": "Pourquoi nous choisir",
@@ -21,7 +21,7 @@ window.CIRCUM_I18N_PAGE = {
     "clients.flow_label.46": "Nos clients",
     "clients.flow_title.47": "Start-ups &amp; <em>industriels.</em>",
     "clients.flow_step_title.48": "Start-ups",
-    "clients.flow_step_text.49": "Du concept initial à la livraison d'un produit manufacturé — autorisations réglementaires simplifiées et POC pragmatique.",
+    "clients.flow_step_text.49": "Du concept initial à la livraison d'un produit manufacturé, autorisations réglementaires simplifiées et POC pragmatique.",
     "clients.flow_step_title.50": "Double approvisionnement",
     "clients.flow_step_text.51": "Si vous êtes à la recherche d'un double approvisionnement, nous pouvons concevoir un plan ensemble.",
     "clients.flow_step_title.52": "Relocalisation Europe",

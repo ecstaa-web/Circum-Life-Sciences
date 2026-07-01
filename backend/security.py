@@ -58,7 +58,16 @@ class RateLimiter:
         window_start = now - window_seconds
         hits = [t for t in self._hits[key] if t > window_start]
         if len(hits) >= max_hits:
-            raise HTTPException(status_code=429, detail="Too many requests. Please try again later.")
+            retry_after = int(window_seconds - (now - hits[0])) if hits else window_seconds
+            retry_after = max(1, min(retry_after, window_seconds))
+            raise HTTPException(
+                status_code=429,
+                detail=(
+                    f"Trop de requêtes. Réessayez dans {retry_after // 60 or 1} min."
+                    if not is_production()
+                    else "Too many requests. Please try again later."
+                ),
+            )
         hits.append(now)
         self._hits[key] = hits
 
@@ -89,7 +98,18 @@ def get_client_ip(request: Request) -> str:
 
 
 def rate_limit(key: str, max_hits: int, window_seconds: int) -> None:
+    """Applique un rate limit. Limites très assouplies en développement local."""
+    if not is_production():
+        max_hits = max(max_hits * 100, 10_000)
     rate_limiter.hit(key, max_hits, window_seconds)
+
+
+def reset_rate_limit(key: Optional[str] = None) -> None:
+    """Réinitialise le compteur (dev / tests). key=None → tout effacer."""
+    if key is None:
+        rate_limiter._hits.clear()
+    else:
+        rate_limiter._hits.pop(key, None)
 
 
 def validate_uuid(value: str, field_name: str = "id") -> str:
