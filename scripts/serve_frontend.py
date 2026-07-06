@@ -54,13 +54,11 @@ class CircumHandler(SimpleHTTPRequestHandler):
         sys.stderr.write("%s - [%s] %s\n" % (self.address_string(), self.log_date_time_string(), fmt % args))
 
     def _send_security_headers(self) -> None:
-        path = self.path.split("?", 1)[0].rstrip("/")
-        is_admin = path in ("/admin", "/admin.html")
         for key, value in SECURITY_HEADERS.items():
             if key == "X-Frame-Options":
-                self.send_header(key, "DENY" if is_admin else "SAMEORIGIN")
+                self.send_header(key, "SAMEORIGIN")
                 continue
-            if key == "Content-Security-Policy" and not is_admin:
+            if key == "Content-Security-Policy":
                 value = value.replace("frame-ancestors 'none'", "frame-ancestors 'self'")
             self.send_header(key, value)
         if not IS_PROD:
@@ -117,11 +115,6 @@ class CircumHandler(SimpleHTTPRequestHandler):
         if raw in ("", "/"):
             candidate = FRONTEND / "index.html"
             return candidate if candidate.is_file() else None
-
-        # Route courte /admin → frontend/admin.html
-        if raw.rstrip("/") == "/admin":
-            admin = FRONTEND / "admin.html"
-            return admin if admin.is_file() else None
 
         rel = raw.lstrip("/")
         direct = FRONTEND / rel

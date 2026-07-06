@@ -7,13 +7,7 @@ from fastapi import HTTPException
 from pydantic import ValidationError
 
 from security import RateLimiter, validate_email_path, validate_upload_magic, validate_uuid
-from validators import (
-    CareersApplyForm,
-    LoginPayload,
-    NewsletterSubscribe,
-    ResetPasswordPayload,
-    SetPasswordPayload,
-)
+from validators import CareersApplyForm, NewsletterSubscribe
 
 
 class TestValidateUuid:
@@ -80,26 +74,6 @@ class TestNewsletterSubscribe:
             )
 
 
-class TestLoginPayload:
-    def test_short_password_rejected(self):
-        with pytest.raises(ValidationError):
-            LoginPayload(email="a@b.com", password="short")
-
-    def test_valid_login(self):
-        p = LoginPayload(email="a@b.com", password="ValidPass1")
-        assert p.password == "ValidPass1"
-
-
-class TestPasswordStrength:
-    def test_weak_admin_password_rejected(self):
-        with pytest.raises(ValidationError):
-            SetPasswordPayload(password="weakpassword")
-
-    def test_strong_password_accepted(self):
-        p = SetPasswordPayload(password="StrongPass123")
-        assert len(p.password) >= 12
-
-
 class TestCareersForm:
     def test_consent_required(self):
         with pytest.raises(ValueError):
@@ -144,10 +118,6 @@ class TestAttackScenarios:
                 email="not-an-email",
                 consent=True,
             )
-
-    def test_reset_token_too_short(self):
-        with pytest.raises(ValidationError):
-            ResetPasswordPayload(token="short", password="StrongPass123")
 
     def test_id_manipulation_invalid_uuid(self):
         with pytest.raises(HTTPException):

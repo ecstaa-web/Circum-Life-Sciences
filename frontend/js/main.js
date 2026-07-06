@@ -383,46 +383,6 @@
   }
 
   var I18N = (typeof window.CIRCUM_I18N !== 'undefined') ? window.CIRCUM_I18N : {};
-  var I18N_BASE = null;
-
-  function snapshotI18nBase() {
-    if (I18N_BASE) return;
-    I18N_BASE = {};
-    LANGS.forEach(function (lang) {
-      if (I18N[lang]) I18N_BASE[lang] = JSON.parse(JSON.stringify(I18N[lang]));
-    });
-  }
-  snapshotI18nBase();
-
-  function applyOverridesToI18n(overrides) {
-    LANGS.forEach(function (lang) {
-      if (!I18N[lang] || !I18N_BASE || !I18N_BASE[lang]) return;
-      var next = Object.assign({}, I18N_BASE[lang]);
-      if (overrides && overrides[lang]) Object.assign(next, overrides[lang]);
-      Object.keys(I18N[lang]).forEach(function (k) { delete I18N[lang][k]; });
-      Object.assign(I18N[lang], next);
-    });
-  }
-
-  // Charge les surcharges admin depuis l'API (MongoDB) et les fusionne dans I18N.
-  function loadContentOverrides() {
-    return fetchJsonApi('/content/overrides?_=' + Date.now(), { cache: 'no-store' })
-      .then(function (overrides) {
-        if (!overrides) return false;
-        applyOverridesToI18n(overrides);
-        return true;
-      })
-      .catch(function () { return false; /* preview sans proxy : fallback 8000 */ });
-  }
-
-  var contentRefreshTimer = null;
-  function scheduleContentRefresh() {
-    if (contentRefreshTimer) clearTimeout(contentRefreshTimer);
-    contentRefreshTimer = setTimeout(function () {
-      contentRefreshTimer = null;
-      refreshContentOverrides(getCurrentLang());
-    }, 120);
-  }
 
   function translatePage(lang) {
     if (!I18N[lang]) return;
@@ -478,64 +438,10 @@
     requestAnimationFrame(function(){ moveLangIndicator(lang); });
   }
 
-  function mergeAndApplyOverrides(lang, patch) {
-    if (!I18N[lang]) return;
-    if (patch) Object.assign(I18N[lang], patch);
-    translatePage(lang);
-  }
-
-  function refreshContentOverrides(lang) {
-    var l = lang || getCurrentLang();
-    return loadContentOverrides().then(function () {
-      translatePage(l);
-    });
-  }
-
-  function initContentLiveSync() {
-    function onRemoteContentUpdate(data) {
-      var current = getCurrentLang();
-      if (data && data.patch && data.lang && I18N[data.lang]) {
-        Object.assign(I18N[data.lang], data.patch);
-        if (data.lang === current) translatePage(current);
-      }
-      scheduleContentRefresh();
-    }
-
-    if (typeof BroadcastChannel !== 'undefined') {
-      try {
-        var bc = new BroadcastChannel('circum-content');
-        bc.onmessage = function (ev) {
-          var d = ev.data || {};
-          if (d.type === 'updated') onRemoteContentUpdate(d);
-        };
-      } catch (e) { /* ignore */ }
-    }
-
-    try {
-      window.addEventListener('storage', function (ev) {
-        if (ev.key === 'circum-content-rev' && ev.newValue) scheduleContentRefresh();
-      });
-    } catch (e) { /* ignore */ }
-
-    document.addEventListener('visibilitychange', function () {
-      if (document.visibilityState === 'visible') scheduleContentRefresh();
-    });
-    window.addEventListener('focus', scheduleContentRefresh);
-
-    // Preview local (Cursor :3001, Live Server :5503…) ≠ admin (:3000) → pas de BroadcastChannel
-    if (isLocalDevHost() && window.location.port !== '3000') {
-      setInterval(function () {
-        if (document.visibilityState === 'visible') scheduleContentRefresh();
-      }, 3000);
-    }
-  }
-
   window.CIRCUM_I18N_API = {
     getLang: getCurrentLang,
     setLang: applyLang,
-    translate: translatePage,
-    mergeAndApplyOverrides: mergeAndApplyOverrides,
-    refreshContentOverrides: refreshContentOverrides
+    translate: translatePage
   };
 
   function initLangSwitcher() {
@@ -1152,15 +1058,6 @@
     }).catch(function () { /* keep static fallback */ });
   }
 
-  function maybeLoadVisualEditor() {
-    if (window.parent === window) return;
-    if (new URLSearchParams(location.search).get('circum_edit') !== '1') return;
-    var s = document.createElement('script');
-    s.src = '/js/visual-editor.js';
-    s.async = true;
-    document.body.appendChild(s);
-  }
-
   // ===== Init all =====
   document.addEventListener('DOMContentLoaded', function() {
     if ('scrollRestoration' in history) {
@@ -1174,17 +1071,13 @@
     initReveal();
     initDynamicNews();
     initNewsArticle();
-    initContentLiveSync();
-    loadContentOverrides().then(function() {
-      initLangSwitcher();
-      initNavScroll();
-      initFileInputs();
-      initForms();
-      initVideoPrefetch();
-      initCountUpAnimation();
-      initDynamicIssues();
-      scrollToHash();
-      maybeLoadVisualEditor();
-    });
+    initLangSwitcher();
+    initNavScroll();
+    initFileInputs();
+    initForms();
+    initVideoPrefetch();
+    initCountUpAnimation();
+    initDynamicIssues();
+    scrollToHash();
   });
 })();

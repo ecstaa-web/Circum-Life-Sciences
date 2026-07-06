@@ -25,15 +25,13 @@ const DEFAULT_CSP = [
 app.disable('x-powered-by');
 
 app.use((req, res, next) => {
-  const path = (req.path || '').replace(/\/$/, '');
-  const isAdmin = path === '/admin' || path === '/admin.html';
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', isAdmin ? 'DENY' : 'SAMEORIGIN');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   res.setHeader('X-XSS-Protection', '0');
   let csp = process.env.CONTENT_SECURITY_POLICY || DEFAULT_CSP;
-  if (!isAdmin) csp = csp.replace("frame-ancestors 'none'", "frame-ancestors 'self'");
+  csp = csp.replace("frame-ancestors 'none'", "frame-ancestors 'self'");
   res.setHeader('Content-Security-Policy', csp);
   if (IS_PROD) {
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
@@ -77,16 +75,6 @@ function proxyApiRequest(req, res) {
 }
 
 app.use('/api', proxyApiRequest);
-
-// Page admin (auth + édition de contenu) — /admin et /admin.html
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
-});
-
-// Pages CMS dynamiques (blocs)
-app.get('/p/:slug', (req, res) => {
-  res.sendFile(path.join(__dirname, 'cms-page.html'));
-});
 
 if (!IS_PROD) {
   app.use((req, res, next) => {

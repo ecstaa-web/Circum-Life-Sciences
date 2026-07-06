@@ -63,13 +63,10 @@ try {
 }
 
 Write-Host ""
-Write-Host "  Site  : http://127.0.0.1:3000/index.html" -ForegroundColor Green
-Write-Host "  Admin : http://127.0.0.1:3000/admin.html" -ForegroundColor Green
-Write-Host "  Email : stag3@circumlifesciences.com"
-Write-Host "  Mot de passe : Stag3Admin2026!"
+Write-Host "  Site : http://127.0.0.1:3000/index.html" -ForegroundColor Green
 Write-Host ""
 Write-Host "Ouverture du navigateur..."
-Start-Process "http://127.0.0.1:3000/admin.html"
+Start-Process "http://127.0.0.1:3000/index.html"
 Write-Host "Fermez cette fenetre (Ctrl+C) pour arreter le site."
 Write-Host ""
 

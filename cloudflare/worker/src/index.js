@@ -26,9 +26,6 @@ const SECURITY_HEADERS = {
 
 /** @type {Record<string, { max: number; windowSec: number }>} */
 const RATE_RULES = {
-  'auth/login': { max: 10, windowSec: 3600 },
-  'auth/forgot-password': { max: 5, windowSec: 3600 },
-  'auth/google/exchange': { max: 20, windowSec: 3600 },
   'careers/apply': { max: 5, windowSec: 3600 },
   'newsletter/subscribe': { max: 10, windowSec: 3600 },
 };

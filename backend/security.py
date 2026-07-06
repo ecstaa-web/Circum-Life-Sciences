@@ -146,17 +146,6 @@ def parse_allowed_origins() -> list[str]:
     return origins or ["http://localhost:3000"]
 
 
-def cookie_settings() -> dict:
-    samesite = os.environ.get("COOKIE_SAMESITE", "lax").lower()
-    if samesite not in ("lax", "strict", "none"):
-        samesite = "lax"
-    secure_env = os.environ.get("COOKIE_SECURE", "true" if is_production() else "false").lower()
-    secure = secure_env in ("1", "true", "yes")
-    if samesite == "none" and not secure:
-        secure = True
-    return {"secure": secure, "samesite": samesite}
-
-
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable):
         response: Response = await call_next(request)
@@ -178,15 +167,6 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         if "server" in response.headers:
             del response.headers["server"]
         return response
-
-
-def require_admin_csrf(request: Request) -> None:
-    """Block simple cross-site form posts to cookie-authenticated admin API."""
-    if request.method in ("GET", "HEAD", "OPTIONS"):
-        return
-    token = request.headers.get("x-circum-csrf")
-    if not token or len(token) < 8:
-        raise HTTPException(status_code=403, detail="Forbidden")
 
 
 def safe_error_detail(public: str, internal: Optional[str] = None) -> str:

@@ -33,7 +33,7 @@ const MOBILE_NEW = `<div class="nav-mobile-section">
 </div>`;
 
 let n = 0;
-for (const file of fs.readdirSync(FRONTEND).filter((f) => f.endsWith('.html') && f !== 'admin.html')) {
+for (const file of fs.readdirSync(FRONTEND).filter((f) => f.endsWith('.html'))) {
   const p = path.join(FRONTEND, file);
   let html = fs.readFileSync(p, 'utf8');
   if (!DESKTOP_OLD.test(html) && !html.includes('nav.sub.careers')) continue;

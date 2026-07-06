@@ -1,5 +1,4 @@
-/* Merges common + page dictionaries; used by main.js.
-   Surcharges admin (MongoDB) fusionnées ensuite dans main.js via /api/content/overrides. */
+/* Merges common + page dictionaries; used by main.js. */
 (function () {
   'use strict';
   window.CIRCUM_I18N = { fr: {}, en: {}, de: {}, it: {} };
