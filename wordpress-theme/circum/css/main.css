@@ -268,8 +268,7 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 .nav.scrolled .nav-logo-img { height: 46px; }
 
 /* ----- LOGO LIGHT/DARK CROSSFADE -----
-   Top of page: transparent nav over the dark hero -> light (white) logo.
-   Scrolled: light glass bubble -> dark (color) logo. */
+   Sur les pages avec hero vidéo : logo blanc en haut, logo couleur au scroll. */
 .nav-logo-img { transition: opacity 0.4s ease, height 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
 .nav-logo-light {
   position: absolute;
@@ -278,10 +277,10 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
   opacity: 0;
   pointer-events: none;
 }
-.nav:not(.scrolled) .nav-logo-dark { opacity: 0; }
-.nav:not(.scrolled) .nav-logo-light { opacity: 1; }
-.nav.scrolled .nav-logo-dark { opacity: 1; }
-.nav.scrolled .nav-logo-light { opacity: 0; }
+body:has(.hero-video-wrap) .nav:not(.scrolled) .nav-logo-dark { opacity: 0; }
+body:has(.hero-video-wrap) .nav:not(.scrolled) .nav-logo-light { opacity: 1; }
+body:has(.hero-video-wrap) .nav.scrolled .nav-logo-dark { opacity: 1; }
+body:has(.hero-video-wrap) .nav.scrolled .nav-logo-light { opacity: 0; }
 
 /* Pages without dark hero (article detail, etc.) — dark logo & links at top */
 body[data-page="news-article"] .nav:not(.scrolled) .nav-logo-dark { opacity: 1; }
@@ -3809,8 +3808,8 @@ body[data-page="contact"] .contact-sites-lead {
 
 /* ----- REVEAL ANIMATIONS ----- */
 .reveal {
-  opacity: 0;
-  transform: translateY(24px);
+  opacity: 1;
+  transform: translateY(16px);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }

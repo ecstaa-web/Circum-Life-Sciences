@@ -1,29 +1,6 @@
 <?php
 defined('ABSPATH') || exit;
 
-/**
- * Slug data-page pour le JS (équivalent data-page des HTML statiques).
- */
-function circum_body_page_slug(): string
-{
-    if (is_front_page()) {
-        return 'home';
-    }
-    $slug = get_post_field('post_name', get_queried_object_id());
-    $map = [
-        'apropos'      => 'apropos',
-        'design'       => 'design',
-        'fabrication'  => 'fabrication',
-        'clients'      => 'clients',
-        'news'         => 'news',
-        'news-article' => 'news-article',
-        'newsletter'   => 'newsletter',
-        'carrieres'    => 'carrieres',
-        'contact'      => 'contact',
-    ];
-    return $map[$slug] ?? ($slug ?: '');
-}
-
 add_action('init', 'circum_register_post_types');
 
 function circum_register_post_types(): void
@@ -64,6 +41,5 @@ function circum_register_post_types(): void
         'show_in_menu' => true,
         'menu_icon'    => 'dashicons-forms',
         'supports'     => ['title', 'custom-fields'],
-        'capability_type' => 'post',
     ]);
 }

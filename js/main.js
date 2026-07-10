@@ -306,8 +306,11 @@
 
   // ===== Reveal on scroll =====
   function initReveal() {
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      el.classList.add('visible');
+    });
+
     if (!('IntersectionObserver' in window)) {
-      document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
       return;
     }
     var obs = new IntersectionObserver(function(entries) {
@@ -931,6 +934,15 @@
     } catch (e) { return iso; }
   }
 
+  function newsArticleHref(id) {
+    var wp = getCircumWp();
+    if (wp && wp.newsArticleBase) {
+      var sep = wp.newsArticleBase.indexOf('?') >= 0 ? '&' : '?';
+      return wp.newsArticleBase + sep + 'id=' + encodeURIComponent(id);
+    }
+    return 'news-article.html?id=' + encodeURIComponent(id);
+  }
+
   function escapeHTML(str) {
     return String(str == null ? '' : str)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -986,7 +998,7 @@
           '</div>' +
         '</article>';
       if (n.id) {
-        return '<a class="news-card-link" href="news-article.html?id=' + encodeURIComponent(n.id) + '" data-testid="news-card-' + idx + '">' + card + '</a>';
+        return '<a class="news-card-link" href="' + escapeHTML(newsArticleHref(n.id)) + '" data-testid="news-card-' + idx + '">' + card + '</a>';
       }
       return '<div class="news-card-link" data-testid="news-card-' + idx + '">' + card + '</div>';
     }).join('');

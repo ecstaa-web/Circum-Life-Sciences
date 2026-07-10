@@ -1,108 +1,15 @@
-﻿<!DOCTYPE html>
+<?php
+/**
+ * Template Name: Fabrication
+ * Page template: fabrication
+ */
+defined('ABSPATH') || exit;
 
-<html lang="fr">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title data-i18n-title="meta.fabrication.title">Fabrication · Circum Life Sciences</title>
-<meta content="Circum Life Sciences, CDMO dispositifs médicaux. Suisse · France · Tunisie." name="description"/>
-<link href="css/main.css" rel="stylesheet"/>
-<link as="fetch" crossorigin="" href="assets/video/fabrication-hero.mp4" rel="preload" type="video/mp4"/>
-<link as="image" href="assets/img/force-one-facade.jpg" rel="preload"/>
-</head>
-<body data-page="fabrication">
-<div class="topbar">
-<div class="topbar-inner">
-<a data-i18n="topbar.email" href="contact.html">contact@circumlifesciences.com</a>
-<span class="topbar-divider"></span>
-<a data-i18n="topbar.newsletter" href="newsletter.html">Newsletter</a>
-<span class="topbar-divider"></span>
-<a data-i18n="topbar.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
-<nav class="nav">
-<div class="nav-inner">
-<a class="nav-logo" href="index.html">
-<img alt="Circum Life Sciences Logo" class="nav-logo-img" decoding="async" src="assets/img/circum-logo.png"/>
-</a>
-<ul class="nav-links">
-<li class="nav-item">
-<a class="nav-link" href="apropos.html"><span data-i18n="nav.about">À propos</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
-<a data-i18n="nav.sub.board" href="apropos.html#board">Board &amp; Conseil stratégique</a>
-<a data-i18n="nav.sub.environment" href="apropos.html#environnement">Politique environnementale</a>
-</div>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="design.html"><span data-i18n="nav.design">Design &amp; Développement</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.conception" href="design.html#conception">Conception</a>
-<a data-i18n="nav.sub.qara" href="design.html#qara">Qualité &amp; Affaires Réglementaires</a>
-</div>
-</li>
-<li class="nav-item">
-<a class="nav-link active" href="fabrication.html"><span data-i18n="nav.manufacturing">Fabrication</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="nav.sub.molding" href="fabrication.html#flux">Flux de production</a>
-</div>
-</li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.clients" href="clients.html">Clients</a></li>
-<li class="nav-item">
-<a class="nav-link" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
-</div>
-</li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.careers" href="carrieres.html">Carrières</a></li>
-</ul>
-<div class="nav-cta-group">
-<a class="nav-cta-btn" data-i18n="nav.contact" href="contact.html">Contact</a>
-<div class="lang-switch">
-<button class="lang-btn active" data-lang="fr">FR</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="en">EN</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="de">DE</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="it">IT</button>
-</div>
-<button aria-label="Menu" class="nav-toggle"><span></span><span></span><span></span></button>
-</div>
-</div>
-</nav>
-<div class="nav-mobile">
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="mobile.title.about">À propos</div>
-<a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
-</div>
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="mobile.title.services">Services</div>
-<a data-i18n="footer.link.design" href="design.html">Design &amp; Développement</a>
-<a data-i18n="footer.link.manufacturing" href="fabrication.html">Fabrication</a>
-<a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
-</div>
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="mobile.news">News &amp; Media</div>
-<a data-i18n="nav.news" href="news.html">News</a>
-<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
-</div>
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="footer.col.contact">Contact</div>
-<a data-i18n="nav.contact" href="contact.html">Contact</a>
-</div>
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="nav.careers">Carrières</div>
-<a data-i18n="nav.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
-<!-- ==================== HOME ==================== -->
+get_header();
+?>
 <main class="page-content">
 <section class="hero-video-wrap">
-<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="assets/video/fabrication-hero.mp4"></video>
+<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="<?php echo esc_url( circum_asset('assets/video/fabrication-hero.mp4') ); ?>"></video>
 <div class="hero-video-overlay"></div>
 <div class="hero-video-content">
 <div class="hero-eyebrow reveal" data-i18n="fabrication.page_hero_eyebrow.1">Fabrication · Production industrielle CDMO</div>
@@ -110,7 +17,7 @@
 <p class="hero-subtitle reveal" data-i18n="fabrication.page_hero_subtitle.3">Force One : 8 000 m² de production à Sousse, Tunisie. Cleanrooms qualifiées, moulage par injection, assemblage automatisé, stérilisation et conditionnement maîtrisés en interne.</p>
 <div class="hero-actions reveal">
 <a class="btn btn-pink" href="#force-one"><span data-i18n="fabrication.hero_btn.1">Découvrir Force One</span><span class="btn-arrow">→</span></a>
-<a class="btn btn-outline-white" href="contact.html"><span data-i18n="fabrication.hero_btn.2">Nous contacter</span></a>
+<a class="btn btn-outline-white" href="<?php echo esc_url( circum_url('contact') ); ?>"><span data-i18n="fabrication.hero_btn.2">Nous contacter</span></a>
 </div>
 <div class="hero-meta reveal"><span data-i18n="fabrication.hero_meta.4">Cleanrooms · assemblage · stérilisation</span><span data-i18n="fabrication.hero_meta.5">Sousse · Tunisie · production série · capacité industrielle</span></div>
 </div>
@@ -148,15 +55,15 @@
 </div>
 <div class="fabrication-campus-gallery reveal">
 <figure class="fabrication-campus-photo fabrication-campus-photo--hero">
-<img alt="Façade du campus Force One à Sousse" data-i18n-alt="fabrication.campus_photo_alt.1" decoding="async" loading="lazy" src="assets/img/force-one-facade.jpg"/>
+<img alt="Façade du campus Force One à Sousse" data-i18n-alt="fabrication.campus_photo_alt.1" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/force-one-facade.jpg') ); ?>"/>
 <figcaption data-i18n="fabrication.campus_caption.1">Force One · Campus industriel</figcaption>
 </figure>
 <figure class="fabrication-campus-photo">
-<img alt="Vue d'ensemble de la salle propre ISO 7" data-i18n-alt="fabrication.campus_photo_alt.2" decoding="async" loading="lazy" src="assets/img/force-one-cleanroom-overview.jpg"/>
+<img alt="Vue d'ensemble de la salle propre ISO 7" data-i18n-alt="fabrication.campus_photo_alt.2" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/force-one-cleanroom-overview.jpg') ); ?>"/>
 <figcaption data-i18n="fabrication.campus_caption.2">Salle propre ISO 7</figcaption>
 </figure>
 <figure class="fabrication-campus-photo">
-<img alt="Drapeaux Circum et Union européenne" data-i18n-alt="fabrication.campus_photo_alt.3" decoding="async" loading="lazy" src="assets/img/force-one-flags.jpg"/>
+<img alt="Drapeaux Circum et Union européenne" data-i18n-alt="fabrication.campus_photo_alt.3" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/force-one-flags.jpg') ); ?>"/>
 <figcaption data-i18n="fabrication.campus_caption.3">Présence internationale</figcaption>
 </figure>
 </div>
@@ -174,7 +81,7 @@
 <div class="fabrication-stream-grid reveal">
 <article class="fabrication-stream-card vv-hover-card" id="moulage" tabindex="0">
 <div class="fabrication-stream-media">
-<img alt="Moulage par injection, salle propre Force One" data-i18n-alt="fabrication.photo_alt.1" decoding="async" loading="lazy" src="assets/img/moulage-injection.jpg"/>
+<img alt="Moulage par injection, salle propre Force One" data-i18n-alt="fabrication.photo_alt.1" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/moulage-injection.jpg') ); ?>"/>
 <span class="fabrication-stream-index">01</span>
 </div>
 <div class="fabrication-stream-body">
@@ -217,7 +124,7 @@
 </article>
 <article class="fabrication-stream-card vv-hover-card" id="assemblage" tabindex="0">
 <div class="fabrication-stream-media">
-<img alt="Lignes d'assemblage en salle propre" data-i18n-alt="fabrication.photo_alt.2" decoding="async" loading="lazy" src="assets/img/assemblage-cleanroom.jpg"/>
+<img alt="Lignes d'assemblage en salle propre" data-i18n-alt="fabrication.photo_alt.2" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/assemblage-cleanroom.jpg') ); ?>"/>
 <span class="fabrication-stream-index">02</span>
 </div>
 <div class="fabrication-stream-body">
@@ -257,7 +164,7 @@
 </article>
 <article class="fabrication-stream-card vv-hover-card" id="sterilisation" tabindex="0">
 <div class="fabrication-stream-media">
-<img alt="Contrôle qualité et précision en production" data-i18n-alt="fabrication.photo_alt.3" decoding="async" loading="lazy" src="assets/img/quality-precision.jpg"/>
+<img alt="Contrôle qualité et précision en production" data-i18n-alt="fabrication.photo_alt.3" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/quality-precision.jpg') ); ?>"/>
 <span class="fabrication-stream-index">03</span>
 </div>
 <div class="fabrication-stream-body">
@@ -307,78 +214,4 @@
 </div>
 </section>
 </main>
-<section class="newsletter-strip">
-<div class="newsletter-strip-inner">
-<div>
-<h3 class="newsletter-strip-title" data-i18n-html="strip.title"><strong>Newsletter trimestrielle.</strong> Restez informé.</h3>
-<p class="newsletter-strip-text" data-i18n="strip.text">Recevez chaque trimestre nos actualités, innovations et publications. Désinscription en un clic.</p>
-</div>
-<form class="newsletter-strip-form" data-form="newsletter" data-implicit-consent="true" novalidate="">
-<input aria-label="Adresse email" data-i18n-placeholder="strip.placeholder" placeholder="votre@email.com" required="" type="email" name="email"/>
-<button data-i18n="strip.submit" type="submit">S'inscrire →</button>
-</form>
-</div>
-</section>
-<section class="cta-final">
-<div class="cta-final-inner">
-<div>
-<div class="cta-final-eyebrow" data-i18n="cta.eyebrow">Démarrer un projet</div>
-<h2 class="cta-final-title" data-i18n-html="cta.title">Un dispositif. Une vision.<br/><em>Un partenaire.</em></h2>
-<p class="cta-final-text" data-i18n="cta.text">Échangeons sur votre projet : conception, fabrication, conformité. Notre équipe vous répond sous 24 heures ouvrées.</p>
-<div class="cta-final-actions">
-<a class="btn btn-pink" href="contact.html"><span data-i18n="cta.btn.contact">Contactez-nous</span><span class="btn-arrow">→</span></a>
-<a class="btn btn-outline-white" href="apropos.html"><span data-i18n="cta.btn.about">À propos de nous</span></a>
-</div>
-</div>
-</div>
-</section>
-<footer class="footer">
-<div class="footer-inner">
-<div class="footer-grid">
-<div class="footer-brand">
-<div class="footer-logo"><img alt="Circum Life Sciences Logo" class="footer-logo-img" decoding="async" loading="lazy" src="assets/img/circum-logo.png"/></div>
-<p class="footer-desc" data-i18n="footer.desc">Entreprise CDMO intégrée verticalement dans les domaines des dispositifs médicaux et des sciences de la vie. Implantation Suisse · France · Tunisie.</p>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.company">Société</div>
-<div class="footer-list">
-<a data-i18n="footer.link.about" href="apropos.html">À propos</a>
-<a data-i18n="footer.link.founders" href="apropos.html#founders">Fondateurs</a>
-<a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="footer.link.environment" href="apropos.html#environnement">Environnement</a>
-<a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.services">Services</div>
-<div class="footer-list">
-<a data-i18n="footer.link.design" href="design.html">Design &amp; Développement</a>
-<a data-i18n="footer.link.manufacturing" href="fabrication.html">Fabrication</a>
-<a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
-<a data-i18n="footer.link.news" href="news.html">News &amp; Media</a>
-</div>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.contact">Contact</div>
-<div class="footer-contact-item"><strong data-i18n="footer.hq">Siège · Suisse</strong><span data-i18n="footer.zurich">Zug, Suisse</span></div>
-<div class="footer-contact-item"><strong data-i18n="footer.email">Email</strong><a href="mailto:contact@circumlifesciences.com" style="color: rgba(255,255,255,0.85);">contact@circumlifesciences.com</a></div>
-<div class="footer-contact-item"><strong data-i18n="footer.newsletter">Newsletter</strong><a data-i18n="footer.subscribe" href="newsletter.html" style="color: var(--pink-light);">S'inscrire →</a></div>
-</div>
-</div>
-<div class="footer-bottom">
-<small data-i18n="footer.copy">© 2026 Circum Life Sciences. Tous droits réservés.</small>
-<div class="footer-legal"><a href="legal-notice.html">Mentions légales</a><a href="privacy-policy.html">Confidentialité</a><a href="cookies.html">Cookies</a></div>
-</div>
-</div>
-</footer>
-<script src="js/i18n/common.js"></script>
-<script src="js/i18n/page-fabrication.js"></script>
-<script src="js/i18n/page-fabrication-hover.js"></script>
-<script src="js/i18n/page-i18n-global.js"></script>
-<script src="js/i18n/loader.js"></script>
-<script src="js/hero-video.js"></script>
-<script defer="" src="js/main.js"></script>
-<script type="module" src="js/lenis-init.mjs"></script>
-</body>
-</html>
+<?php get_footer();

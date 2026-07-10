@@ -1,109 +1,15 @@
-﻿<!DOCTYPE html>
+<?php
+/**
+ * Template Name: Ã€ propos
+ * Page template: apropos
+ */
+defined('ABSPATH') || exit;
 
-<html lang="fr">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title data-i18n-title="meta.apropos.title">À propos · Circum Life Sciences</title>
-<meta content="Circum Life Sciences, CDMO dispositifs médicaux. Suisse · France · Tunisie." name="description"/>
-<link href="css/main.css" rel="stylesheet"/>
-<link href="css/apropos.css" rel="stylesheet"/>
-<link as="fetch" crossorigin="" href="assets/video/apropos-hero.mp4" rel="preload" type="video/mp4"/>
-<link as="image" href="assets/img/circum-logo.png" rel="preload"/>
-</head>
-<body data-page="apropos">
-<div class="topbar">
-<div class="topbar-inner">
-<a data-i18n="topbar.email" href="contact.html">contact@circumlifesciences.com</a>
-<span class="topbar-divider"></span>
-<a data-i18n="topbar.newsletter" href="newsletter.html">Newsletter</a>
-<span class="topbar-divider"></span>
-<a data-i18n="topbar.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
-<nav class="nav">
-<div class="nav-inner">
-<a class="nav-logo" href="index.html">
-<img alt="Circum Life Sciences Logo" class="nav-logo-img" decoding="async" src="assets/img/circum-logo.png"/>
-</a>
-<ul class="nav-links">
-<li class="nav-item">
-<a class="nav-link active" href="apropos.html"><span data-i18n="nav.about">À propos</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
-<a data-i18n="nav.sub.board" href="apropos.html#board">Board &amp; Conseil stratégique</a>
-<a data-i18n="nav.sub.environment" href="apropos.html#environnement">Politique environnementale</a>
-</div>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="design.html"><span data-i18n="nav.design">Design &amp; Développement</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.conception" href="design.html#conception">Conception</a>
-<a data-i18n="nav.sub.qara" href="design.html#qara">Qualité &amp; Affaires Réglementaires</a>
-</div>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="fabrication.html"><span data-i18n="nav.manufacturing">Fabrication</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="nav.sub.molding" href="fabrication.html#flux">Flux de production</a>
-</div>
-</li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.clients" href="clients.html">Clients</a></li>
-<li class="nav-item">
-<a class="nav-link" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
-</div>
-</li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.careers" href="carrieres.html">Carrières</a></li>
-</ul>
-<div class="nav-cta-group">
-<a class="nav-cta-btn" data-i18n="nav.contact" href="contact.html">Contact</a>
-<div class="lang-switch">
-<button class="lang-btn active" data-lang="fr">FR</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="en">EN</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="de">DE</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="it">IT</button>
-</div>
-<button aria-label="Menu" class="nav-toggle"><span></span><span></span><span></span></button>
-</div>
-</div>
-</nav>
-<div class="nav-mobile">
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="mobile.title.about">À propos</div>
-<a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
-</div>
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="mobile.title.services">Services</div>
-<a data-i18n="footer.link.design" href="design.html">Design &amp; Développement</a>
-<a data-i18n="footer.link.manufacturing" href="fabrication.html">Fabrication</a>
-<a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
-</div>
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="mobile.news">News &amp; Media</div>
-<a data-i18n="nav.news" href="news.html">News</a>
-<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
-</div>
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="footer.col.contact">Contact</div>
-<a data-i18n="nav.contact" href="contact.html">Contact</a>
-</div>
-<div class="nav-mobile-section">
-<div class="nav-mobile-title" data-i18n="nav.careers">Carrières</div>
-<a data-i18n="nav.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
-<!-- ==================== HOME ==================== -->
+get_header();
+?>
 <main class="page-content">
 <section class="hero-video-wrap">
-<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="assets/video/apropos-hero.mp4"></video>
+<video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="<?php echo esc_url( circum_asset('assets/video/apropos-hero.mp4') ); ?>"></video>
 <div class="hero-video-overlay"></div>
 <div class="hero-video-content">
 <div class="hero-eyebrow reveal" data-i18n="apropos.page_hero_eyebrow.1">Notre entreprise</div>
@@ -220,8 +126,8 @@
 </article>
 </div>
 <div class="about-force-one-visual reveal">
-<img alt="Campus Force One, production et drapeaux Circum" class="about-force-one-photo about-force-one-photo--main" decoding="async" loading="lazy" src="assets/img/force-one-production-floor.jpg"/>
-<img alt="Drapeaux Circum et Union européenne à Force One" class="about-force-one-photo about-force-one-photo--flags" decoding="async" loading="lazy" src="assets/img/force-one-flags.jpg"/>
+<img alt="Campus Force One, production et drapeaux Circum" class="about-force-one-photo about-force-one-photo--main" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/force-one-production-floor.jpg') ); ?>"/>
+<img alt="Drapeaux Circum et Union européenne à Force One" class="about-force-one-photo about-force-one-photo--flags" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/force-one-flags.jpg') ); ?>"/>
 </div>
 </div>
 </section>
@@ -265,19 +171,19 @@
 </div>
 <div class="founders-grid">
 <div class="founder reveal">
-<div class="founder-portrait" data-tone="blue"><img alt="Anne Reiser" class="founder-image" decoding="async" loading="lazy" src="assets/img/Anne.png"/></div>
+<div class="founder-portrait" data-tone="blue"><img alt="Anne Reiser" class="founder-image" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/Anne.png') ); ?>"/></div>
 <h3 class="founder-name" data-i18n="fondateurs.founder_name.10">Anne Reiser</h3>
 <div class="founder-role" data-i18n="fondateurs.founder_role.13">Présidente</div>
 <p class="founder-bio" data-i18n="fondateurs.founder_bio.16">« Chez Circum Life Sciences, nous sommes flexibles, agiles, et nous écoutons activement nos clients. »</p>
 </div>
 <div class="founder reveal">
-<div class="founder-portrait" data-tone="pink"><img alt="Mohamed Rekik" class="founder-image" decoding="async" loading="lazy" src="assets/img/Mohamed-1501x1536.png"/></div>
+<div class="founder-portrait" data-tone="pink"><img alt="Mohamed Rekik" class="founder-image" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/Mohamed-1501x1536.png') ); ?>"/></div>
 <h3 class="founder-name" data-i18n="fondateurs.founder_name.11">Mohamed Rekik</h3>
 <div class="founder-role" data-i18n="fondateurs.founder_role.14">Directeur général</div>
 <p class="founder-bio" data-i18n="fondateurs.founder_bio.17">« Notre équipe est totalement dédiée à satisfaire nos clients. Vous venez avec un concept, et vous repartez avec une solution prête à l'emploi. »</p>
 </div>
 <div class="founder reveal">
-<div class="founder-portrait" data-tone="dark"><img alt="Serge Barneaud" class="founder-image" decoding="async" loading="lazy" src="assets/img/Serge-1523x1536.png"/></div>
+<div class="founder-portrait" data-tone="dark"><img alt="Serge Barneaud" class="founder-image" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/Serge-1523x1536.png') ); ?>"/></div>
 <h3 class="founder-name" data-i18n="fondateurs.founder_name.12">Serge Barneaud</h3>
 <div class="founder-role" data-i18n="fondateurs.founder_role.15">Directeur technique</div>
 <p class="founder-bio" data-i18n="fondateurs.founder_bio.18">« Chez Circum Life Sciences, nous nous entraidons. C'est une aventure humaine. »</p>
@@ -299,25 +205,25 @@
 <div class="board-council-grid-cards reveal">
 <article class="board-member">
 <div class="board-member-portrait">
-<img alt="Nicolas Bordas" class="board-member-photo" decoding="async" loading="lazy" src="assets/img/board/nicolas-bordas.png"/>
+<img alt="Nicolas Bordas" class="board-member-photo" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/board/nicolas-bordas.png') ); ?>"/>
 </div>
 <p class="board-member-name">Nicolas Bordas</p>
 </article>
 <article class="board-member">
 <div class="board-member-portrait">
-<img alt="Eric Cazergue" class="board-member-photo" decoding="async" loading="lazy" src="assets/img/board/eric-cazergue.png"/>
+<img alt="Eric Cazergue" class="board-member-photo" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/board/eric-cazergue.png') ); ?>"/>
 </div>
 <p class="board-member-name">Eric Cazergue</p>
 </article>
 <article class="board-member">
 <div class="board-member-portrait">
-<img alt="Antoine Héral" class="board-member-photo" decoding="async" loading="lazy" src="assets/img/board/antoine-heral.png"/>
+<img alt="Antoine Héral" class="board-member-photo" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/board/antoine-heral.png') ); ?>"/>
 </div>
 <p class="board-member-name">Antoine Héral</p>
 </article>
 <article class="board-member">
 <div class="board-member-portrait">
-<img alt="Pr Patrick Lévy" class="board-member-photo" decoding="async" loading="lazy" src="assets/img/board/patrick-levy.png"/>
+<img alt="Pr Patrick Lévy" class="board-member-photo" decoding="async" loading="lazy" src="<?php echo esc_url( circum_asset('assets/img/board/patrick-levy.png') ); ?>"/>
 </div>
 <p class="board-member-name">Pr Patrick Lévy</p>
 </article>
@@ -364,98 +270,4 @@
 </div>
 </section>
 </main>
-<section class="newsletter-strip">
-<div class="newsletter-strip-inner">
-<div>
-<h3 class="newsletter-strip-title" data-i18n-html="strip.title"><strong>Newsletter trimestrielle.</strong> Restez informé.</h3>
-<p class="newsletter-strip-text" data-i18n="strip.text">Recevez chaque trimestre nos actualités, innovations et publications. Désinscription en un clic.</p>
-</div>
-<form class="newsletter-strip-form" data-form="newsletter" data-implicit-consent="true" novalidate="">
-<input aria-label="Adresse email" data-i18n-placeholder="strip.placeholder" placeholder="votre@email.com" required="" type="email" name="email"/>
-<button data-i18n="strip.submit" type="submit">S'inscrire →</button>
-</form>
-</div>
-</section>
-<section class="cta-final">
-<div class="cta-final-inner">
-<div>
-<div class="cta-final-eyebrow" data-i18n="cta.eyebrow">Démarrer un projet</div>
-<h2 class="cta-final-title" data-i18n-html="cta.title">Un dispositif. Une vision.<br/><em>Un partenaire.</em></h2>
-<p class="cta-final-text" data-i18n="cta.text">Échangeons sur votre projet : conception, fabrication, conformité. Notre équipe vous répond sous 24 heures ouvrées.</p>
-<div class="cta-final-actions">
-<a class="btn btn-pink" href="contact.html"><span data-i18n="cta.btn.contact">Contactez-nous</span><span class="btn-arrow">→</span></a>
-<a class="btn btn-outline-white" href="apropos.html"><span data-i18n="cta.btn.about">À propos de nous</span></a>
-</div>
-</div>
-</div>
-</section>
-<footer class="footer">
-<div class="footer-inner">
-<div class="footer-grid">
-<div class="footer-brand">
-<div class="footer-logo"><img alt="Circum Life Sciences Logo" class="footer-logo-img" decoding="async" loading="lazy" src="assets/img/circum-logo.png"/></div>
-<p class="footer-desc" data-i18n="footer.desc">Entreprise CDMO intégrée verticalement dans les domaines des dispositifs médicaux et des sciences de la vie. Implantation Suisse · France · Tunisie.</p>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.company">Société</div>
-<div class="footer-list">
-<a data-i18n="footer.link.about" href="apropos.html">À propos</a>
-<a data-i18n="footer.link.founders" href="apropos.html#founders">Fondateurs</a>
-<a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="footer.link.environment" href="apropos.html#environnement">Environnement</a>
-<a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.services">Services</div>
-<div class="footer-list">
-<a data-i18n="footer.link.design" href="design.html">Design &amp; Développement</a>
-<a data-i18n="footer.link.manufacturing" href="fabrication.html">Fabrication</a>
-<a data-i18n="nav.sub.forceone" href="fabrication.html#force-one">Force One</a>
-<a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
-<a data-i18n="footer.link.news" href="news.html">News &amp; Media</a>
-</div>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.contact">Contact</div>
-<div class="footer-contact-item"><strong data-i18n="footer.hq">Siège · Suisse</strong><span data-i18n="footer.zurich">Zug, Suisse</span></div>
-<div class="footer-contact-item"><strong data-i18n="footer.email">Email</strong><a href="mailto:contact@circumlifesciences.com" style="color: rgba(255,255,255,0.85);">contact@circumlifesciences.com</a></div>
-<div class="footer-contact-item"><strong data-i18n="footer.newsletter">Newsletter</strong><a data-i18n="footer.subscribe" href="newsletter.html" style="color: var(--pink-light);">S'inscrire →</a></div>
-</div>
-</div>
-<div class="footer-bottom">
-<small data-i18n="footer.copy">© 2026 Circum Life Sciences. Tous droits réservés.</small>
-<div class="footer-legal"><a href="legal-notice.html">Mentions légales</a><a href="privacy-policy.html">Confidentialité</a><a href="cookies.html">Cookies</a></div>
-</div>
-</div>
-</footer>
-<script src="js/i18n/common.js"></script>
-<script src="js/i18n/page-apropos.js"></script>
-<script>window.__CIRCUM_APROPOS_PAGE = window.CIRCUM_I18N_PAGE;</script>
-<script src="js/i18n/page-fondateurs.js"></script>
-<script>
-/* Merge the founders translations into the À propos page dictionary.
-   À propos keys take precedence on any conflict. */
-(function () {
-  var a = window.__CIRCUM_APROPOS_PAGE || {};
-  var f = window.CIRCUM_I18N_PAGE || {};
-  var langs = {}, merged = {}, l, k;
-  for (l in a) if (a.hasOwnProperty(l)) langs[l] = 1;
-  for (l in f) if (f.hasOwnProperty(l)) langs[l] = 1;
-  for (l in langs) {
-    merged[l] = {};
-    var fl = f[l] || {}, al = a[l] || {};
-    for (k in fl) if (fl.hasOwnProperty(k)) merged[l][k] = fl[k];
-    for (k in al) if (al.hasOwnProperty(k)) merged[l][k] = al[k];
-  }
-  window.CIRCUM_I18N_PAGE = merged;
-})();
-</script>
-<script src="js/i18n/page-apropos-extra.js"></script>
-<script src="js/i18n/page-i18n-global.js"></script>
-<script src="js/i18n/loader.js"></script>
-<script src="js/hero-video.js"></script>
-<script defer="" src="js/main.js"></script>
-<script type="module" src="js/lenis-init.mjs"></script>
-</body>
-</html>
+<?php get_footer();

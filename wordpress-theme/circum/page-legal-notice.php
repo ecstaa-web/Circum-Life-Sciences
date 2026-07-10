@@ -1,0 +1,85 @@
+<?php
+/**
+ * Template Name: Mentions lÃ©gales
+ * Page template: legal-notice
+ */
+defined('ABSPATH') || exit;
+
+<?php add_action('wp_head', static function () { echo '<style>
+  .legal-content { max-width: 900px; margin: 0 auto; padding: 60px 20px; line-height: 1.8; }
+  .legal-section { margin-bottom: 40px; }
+  .legal-section h2 { font-size: 22px; color: var(--blue-dark); margin-bottom: 16px; margin-top: 32px; }
+  .legal-section h3 { font-size: 16px; color: var(--blue-dark); margin-bottom: 12px; margin-top: 20px; font-weight: 600; }
+  .legal-section p { color: var(--text-soft); margin-bottom: 12px; }
+  .legal-section ul { margin-left: 20px; margin-bottom: 16px; }
+  .legal-section li { color: var(--text-soft); margin-bottom: 8px; }
+</style>'; }, 20); ?>
+
+get_header();
+?>
+<main class="page-content">
+<section class="page-hero">
+<div class="container">
+<div class="page-hero-content">
+<nav class="page-hero-breadcrumb"><a data-i18n="breadcrumb.home" href="<?php echo esc_url( circum_url('home') ); ?>">Accueil</a><span class="page-hero-breadcrumb-sep">/</span><span data-i18n="footer.legal.mentions">Mentions légales</span></nav>
+<h1 data-i18n="footer.legal.mentions">Mentions légales</h1>
+<p data-i18n="legal.hero.subtitle">Informations juridiques et réglementaires concernant le site et nos services.</p>
+</div>
+</div>
+</section>
+
+<section class="legal-content">
+<div class="legal-section">
+<h2 data-i18n="legal.s1.title">1. Informations légales</h2>
+<h3 data-i18n="legal.s1.sub">Éditeur du site</h3>
+<p data-i18n-html="legal.s1.company"><strong>Circum Life Sciences SA</strong></p>
+<p data-i18n-html="legal.s1.address">Technopôle Zug<br/>6300 Zug, Suisse</p>
+<p data-i18n-html="legal.s1.contact">Email: contact@circumlifesciences.com<br/>
+Téléphone: +41 (0) 44 123 45 67</p>
+<p data-i18n-html="legal.s1.registration">Numéro d'entreprise: CHE-123.456.789<br/>
+Numéro de TVA: CHE-123.456.789 TVA</p>
+</div>
+
+<div class="legal-section">
+<h2 data-i18n="legal.s2.title">2. Responsabilité du contenu</h2>
+<p data-i18n="legal.s2.p1">Circum Life Sciences SA s'efforce de mettre à jour les informations contenues sur ce site de manière régulière. Néanmoins, malgré tous nos efforts, les informations contenues sur le site peuvent contenir des inexactitudes ou des omissions. Circum Life Sciences SA ne peut en aucun cas être tenue responsable des dommages directs ou indirects découlant de l'utilisation ou de l'impossibilité d'utiliser les informations du site.</p>
+<p data-i18n="legal.s2.p2">Les informations sur ce site sont fournies "telles quelles" sans garantie d'aucune sorte, expresse ou implicite.</p>
+</div>
+
+<div class="legal-section">
+<h2 data-i18n="legal.s3.title">3. Propriété intellectuelle</h2>
+<p data-i18n="legal.s3.p1">Tous les contenus du site (textes, images, logos, graphiques, vidéos, sons, marques) sont la propriété exclusive de Circum Life Sciences SA ou de ses partenaires et sont protégés par les lois sur la propriété intellectuelle.</p>
+<p data-i18n="legal.s3.p2">Toute reproduction, adaptation, traduction ou transmission du contenu sans l'autorisation écrite préalable de Circum Life Sciences SA est strictement interdite, sauf dispositions légales expresses.</p>
+</div>
+
+<div class="legal-section">
+<h2 data-i18n="legal.s4.title">4. Liens externes</h2>
+<p data-i18n="legal.s4.p1">Ce site contient des liens vers des sites externes. Circum Life Sciences SA n'est pas responsable du contenu de ces sites externes et n'approuve pas nécessairement les produits, services ou opinions qui y sont présentés.</p>
+<p data-i18n="legal.s4.p2">L'utilisation de tout lien externe se fait aux risques et périls de l'utilisateur. Circum Life Sciences SA se réserve le droit de supprimer tout lien sans préavis.</p>
+</div>
+
+<div class="legal-section">
+<h2 data-i18n="legal.s5.title">5. Limitations de responsabilité</h2>
+<p data-i18n="legal.s5.p1">En aucun cas, Circum Life Sciences SA ne sera responsable de tout dommage indirect, accidentel, spécial ou consécutif, y compris la perte de profits, de données ou de revenus, découlant de l'utilisation ou de l'impossibilité d'utiliser ce site.</p>
+</div>
+
+<div class="legal-section">
+<h2 data-i18n="legal.s6.title">6. Droit applicable</h2>
+<p data-i18n="legal.s6.p1">Ces mentions légales et l'utilisation du site sont régies par le droit suisse, sans tenir compte des dispositions concernant les conflits de lois. Tout litige sera soumis à la juridiction compétente du canton de Zug.</p>
+</div>
+
+<div class="legal-section">
+<h2 data-i18n="legal.s7.title">7. Conditions d'utilisation</h2>
+<p data-i18n="legal.s7.p1">En accédant à ce site, vous acceptez les présentes mentions légales. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser ce site.</p>
+<p data-i18n="legal.s7.p2">Circum Life Sciences SA se réserve le droit de modifier ces mentions légales à tout moment sans préavis.</p>
+</div>
+
+<div class="legal-section">
+<h2 data-i18n="legal.s8.title">8. Contact</h2>
+<p data-i18n="legal.s8.p1">Pour toute question ou réclamation concernant ces mentions légales, veuillez nous contacter à :</p>
+<p data-i18n-html="legal.s8.contact">Email: legal@circumlifesciences.com<br/>
+Adresse: Technopôle Zug, 6300 Zug, Suisse</p>
+</div>
+</section>
+</main>
+<?php get_footer();

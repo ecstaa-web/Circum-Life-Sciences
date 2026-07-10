@@ -5,16 +5,14 @@
 
 defined('ABSPATH') || exit;
 
-define('CIRCUM_THEME_VERSION', '1.0.0');
+define('CIRCUM_THEME_VERSION', '1.0.1');
 
+require_once get_template_directory() . '/inc/helpers.php';
 require_once get_template_directory() . '/inc/post-types.php';
 require_once get_template_directory() . '/inc/enqueue.php';
 require_once get_template_directory() . '/inc/forms.php';
 require_once get_template_directory() . '/inc/rest-api.php';
 
-/**
- * Destinataires des notifications (filtre possible depuis un plugin enfant).
- */
 function circum_mail_recipient(string $form_type): string
 {
     $defaults = [

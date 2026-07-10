@@ -1,14 +1,11 @@
-﻿<!DOCTYPE html>
+<?php
+/**
+ * Template Name: ConfidentialitÃ©
+ * Page template: privacy-policy
+ */
+defined('ABSPATH') || exit;
 
-<html lang="fr">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Politique de confidentialité · Circum Life Sciences</title>
-<meta content="Politique de confidentialité - Circum Life Sciences CDMO dispositifs médicaux." name="description"/>
-<link href="css/main.css" rel="stylesheet"/>
-<link as="image" href="assets/img/circum-logo.png" rel="preload"/>
-<style>
+<?php add_action('wp_head', static function () { echo '<style>
   .legal-content { max-width: 900px; margin: 0 auto; padding: 60px 20px; line-height: 1.8; }
   .legal-section { margin-bottom: 40px; }
   .legal-section h2 { font-size: 22px; color: var(--blue-dark); margin-bottom: 16px; margin-top: 32px; }
@@ -16,78 +13,15 @@
   .legal-section p { color: var(--text-soft); margin-bottom: 12px; }
   .legal-section ul { margin-left: 20px; margin-bottom: 16px; }
   .legal-section li { color: var(--text-soft); margin-bottom: 8px; }
-</style>
-</head>
-<body data-page="privacy">
-<div class="topbar">
-<div class="topbar-inner">
-<a data-i18n="topbar.email" href="contact.html">contact@circumlifesciences.com</a>
-<span class="topbar-divider"></span>
-<a data-i18n="topbar.newsletter" href="newsletter.html">Newsletter</a>
-<span class="topbar-divider"></span>
-<a data-i18n="topbar.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
-<nav class="nav">
-<div class="nav-inner">
-<a class="nav-logo" href="index.html">
-<img alt="Circum Life Sciences Logo" class="nav-logo-img" decoding="async" src="assets/img/circum-logo.png"/>
-</a>
-<ul class="nav-links">
-<li class="nav-item">
-<a class="nav-link" href="apropos.html"><span data-i18n="nav.about">À propos</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.company" href="apropos.html">Notre entreprise</a>
-<a data-i18n="nav.sub.values" href="apropos.html#valeurs">Nos valeurs</a>
-<a data-i18n="nav.sub.founders" href="apropos.html#founders">Les trois fondateurs</a>
-</div>
-</li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.design" href="design.html">Design &amp; Développement</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.manufacturing" href="fabrication.html">Fabrication</a></li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.clients" href="clients.html">Clients</a></li>
-<li class="nav-item">
-<a class="nav-link" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
-<div class="nav-submenu">
-<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
-</div>
-</li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.careers" href="carrieres.html">Carrières</a></li>
-</ul>
-<div class="nav-cta-group">
-<a class="nav-cta-btn" data-i18n="nav.contact" href="contact.html">Contact</a>
-<div class="lang-switch">
-<button class="lang-btn active" data-lang="fr">FR</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="en">EN</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="de">DE</button>
-<span class="lang-divider">/</span>
-<button class="lang-btn" data-lang="it">IT</button>
-</div>
-<button aria-label="Menu" class="nav-toggle"><span></span><span></span><span></span></button>
-</div>
-</div>
-</nav>
-<div class="nav-mobile">
-<div class="nav-mobile-section">
-<a data-i18n="nav.about" href="apropos.html">À propos</a>
-<a data-i18n="nav.design" href="design.html">Design &amp; Développement</a>
-<a data-i18n="nav.manufacturing" href="fabrication.html">Fabrication</a>
-</div>
-<div class="nav-mobile-section">
-<a data-i18n="nav.clients" href="clients.html">Clients</a>
-<a data-i18n="nav.news" href="news.html">News</a>
-<a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
-<a data-i18n="nav.contact" href="contact.html">Contact</a>
-<a data-i18n="nav.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
+</style>'; }, 20); ?>
 
+get_header();
+?>
 <main class="page-content">
 <section class="page-hero">
 <div class="container">
 <div class="page-hero-content">
-<nav class="page-hero-breadcrumb"><a data-i18n="breadcrumb.home" href="index.html">Accueil</a><span class="page-hero-breadcrumb-sep">/</span><span data-i18n="privacy.breadcrumb_current">Politique de confidentialité</span></nav>
+<nav class="page-hero-breadcrumb"><a data-i18n="breadcrumb.home" href="<?php echo esc_url( circum_url('home') ); ?>">Accueil</a><span class="page-hero-breadcrumb-sep">/</span><span data-i18n="privacy.breadcrumb_current">Politique de confidentialité</span></nav>
 <h1 data-i18n="privacy.hero_title">Politique de confidentialité</h1>
 <p data-i18n="privacy.hero_subtitle">Nous respectons votre vie privée. Découvrez comment vos données personnelles sont traitées.</p>
 </div>
@@ -202,49 +136,4 @@ Adresse: Technopôle Zug, 6300 Zug, Suisse</p>
 </div>
 </section>
 </main>
-
-<footer class="footer">
-<div class="footer-inner">
-<div class="footer-grid">
-<div class="footer-brand">
-<div class="footer-logo"><img alt="Circum Life Sciences Logo" class="footer-logo-img" decoding="async" loading="lazy" src="assets/img/circum-logo.png"/></div>
-<p class="footer-desc" data-i18n="footer.desc">Entreprise CDMO intégrée verticalement dans les domaines des dispositifs médicaux et des sciences de la vie. Implantation Suisse · France · Tunisie.</p>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.company">Société</div>
-<div class="footer-list">
-<a data-i18n="footer.link.about" href="apropos.html">À propos</a>
-<a data-i18n="footer.link.founders" href="apropos.html#founders">Fondateurs</a>
-<a data-i18n="footer.link.careers" href="carrieres.html">Carrières</a>
-</div>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.services">Services</div>
-<div class="footer-list">
-<a data-i18n="footer.link.design" href="design.html">Design &amp; Développement</a>
-<a data-i18n="footer.link.manufacturing" href="fabrication.html">Fabrication</a>
-<a data-i18n="footer.link.clients" href="clients.html">Nos clients</a>
-<a data-i18n="footer.link.news" href="news.html">News &amp; Media</a>
-</div>
-</div>
-<div>
-<div class="footer-col-title" data-i18n="footer.col.contact">Contact</div>
-<div class="footer-contact-item"><strong data-i18n="footer.email">Email</strong><a href="mailto:contact@circumlifesciences.com" style="color: rgba(255,255,255,0.85);">contact@circumlifesciences.com</a></div>
-<div class="footer-contact-item"><strong data-i18n="footer.hq">Siège</strong><span data-i18n="footer.zurich">Zug, Suisse</span></div>
-</div>
-</div>
-<div class="footer-bottom">
-<small data-i18n="footer.copy">© 2026 Circum Life Sciences. Tous droits réservés.</small>
-<div class="footer-legal"><a data-i18n="footer.legal.mentions" href="legal-notice.html">Mentions légales</a><a data-i18n="footer.legal.privacy" href="privacy-policy.html">Confidentialité</a><a data-i18n="footer.legal.cookies" href="cookies.html">Cookies</a></div>
-</div>
-</div>
-</footer>
-
-<script src="js/i18n/common.js"></script>
-<script src="js/i18n/page-privacy.js"></script>
-<script src="js/i18n/page-i18n-global.js"></script>
-<script src="js/i18n/loader.js"></script>
-<script src="js/main.js"></script>
-<script type="module" src="js/lenis-init.mjs"></script>
-</body>
-</html>
+<?php get_footer();
