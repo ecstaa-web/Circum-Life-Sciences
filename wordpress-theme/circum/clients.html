@@ -4,13 +4,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title data-i18n-title="meta.newsletter.title">Newsletter · Circum Life Sciences</title>
+<title data-i18n-title="meta.clients.title">Nos clients · Circum Life Sciences</title>
 <meta content="Circum Life Sciences, CDMO dispositifs médicaux. Suisse · France · Tunisie." name="description"/>
 <link href="css/main.css" rel="stylesheet"/>
 <link as="fetch" crossorigin="" href="assets/video/clients-hero.mp4" rel="preload" type="video/mp4"/>
 <link as="image" href="assets/img/circum-logo.png" rel="preload"/>
 </head>
-<body data-page="newsletter">
+<body data-page="clients">
 <div class="topbar">
 <div class="topbar-inner">
 <a data-i18n="topbar.email" href="contact.html">contact@circumlifesciences.com</a>
@@ -49,9 +49,9 @@
 <a data-i18n="nav.sub.molding" href="fabrication.html#flux">Flux de production</a>
 </div>
 </li>
-<li class="nav-item"><a class="nav-link" data-i18n="nav.clients" href="clients.html">Clients</a></li>
+<li class="nav-item"><a class="nav-link active" data-i18n="nav.clients" href="clients.html">Clients</a></li>
 <li class="nav-item">
-<a class="nav-link active" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
+<a class="nav-link" href="news.html"><span data-i18n="nav.news">News</span> <span class="nav-link-chev">▾</span></a>
 <div class="nav-submenu">
 <a data-i18n="nav.sub.newsletter" href="newsletter.html">Newsletter</a>
 </div>
@@ -105,98 +105,93 @@
 <video autoplay="" class="hero-video-bg" fetchpriority="high" loop="" muted="" playsinline="" preload="auto" src="assets/video/clients-hero.mp4"></video>
 <div class="hero-video-overlay"></div>
 <div class="hero-video-content">
-<div class="hero-eyebrow reveal" data-i18n="newsletter.page_hero_eyebrow.1">Quatre éditions par an</div>
-<h1 class="hero-title reveal" data-i18n-html="newsletter.page_hero_title.2">Newsletter <em>trimestrielle.</em></h1>
-<p class="hero-subtitle reveal" data-i18n="newsletter.page_hero_subtitle.3">Quatre fois par an, nous partageons nos actualités industrielles, nos publications scientifiques, nos avancées techniques et les principales évolutions du secteur. Format court, signal fort.</p>
-<div class="newsletter-hero-stat reveal">
-<div class="newsletter-hero-stat-item">
-<div class="value">4×/an</div>
-<div class="label" data-i18n="newsletter.stat_label.50">Édition trimestrielle</div>
-</div>
-<div class="newsletter-hero-stat-item">
-<div class="value" data-i18n="newsletter.stat_value.51">4 langues</div>
-<div class="label">FR · EN · DE · IT</div>
-</div>
-<div class="newsletter-hero-stat-item">
-<div class="value">5 min</div>
-<div class="label" data-i18n="newsletter.stat_label.52">Temps de lecture</div>
-</div>
+<div class="hero-eyebrow" data-i18n="clients.page_hero_eyebrow.1">Confiance &amp; Partenariats</div>
+<h1 class="hero-title" data-i18n-html="clients.page_hero_title.2">Aux côtés de ceux qui <em>innovent.</em></h1>
+<p class="hero-subtitle" data-i18n="clients.page_hero_subtitle.3">De la startup deeptech aux grandes multinationales des dispositifs médicaux, Circum accompagne ses partenaires dans la durée. Confidentialité, exigence, partenariat.</p>
+<div class="hero-actions reveal">
+<a class="btn btn-pink" href="#clients-signature"><span data-i18n="clients.hero_btn.1">Découvrir nos partenariats</span><span class="btn-arrow">→</span></a>
+<a class="btn btn-outline-white" href="contact.html"><span data-i18n="clients.hero_btn.2">Nous contacter</span></a>
 </div>
 </div>
 </section>
-<section class="form-section">
-<div class="form-inner">
-<div class="reveal" style="text-align: center; margin-bottom: 32px;">
-<span class="section-label center" data-i18n="newsletter.section_label.8">Inscription</span>
-<h2 class="section-title" data-i18n-html="newsletter.section_title.10" style="font-size: clamp(24px, 3vw, 36px);">Restez <em>informé</em> de nos avancées.</h2>
-</div>
-<form class="form reveal" data-form="newsletter" data-testid="newsletter-form" novalidate="">
-<div class="form-row">
-<div class="form-group" data-i18n-html="newsletter.form_label.12">
-<label class="form-label">Prénom <span class="req">*</span></label>
-<input class="form-input" name="firstname" required="" type="text"/>
-</div>
-<div class="form-group" data-i18n-html="newsletter.form_label.13">
-<label class="form-label">Nom <span class="req">*</span></label>
-<input class="form-input" name="lastname" required="" type="text"/>
+<section class="section clients-signature" id="clients-signature">
+<div class="container clients-signature-grid">
+<div class="clients-signature-copy reveal">
+<span class="section-label" data-i18n="clients.signature_label.32">Pourquoi nous choisir</span>
+<h2 class="section-title" data-i18n-html="clients.signature_title.33">Pourquoi <em>nous choisir.</em></h2>
+<p class="clients-signature-lead" data-i18n="clients.signature_lead.34">Nous sommes agiles, flexibles, et totalement engagés à établir un vrai partenariat.</p>
+<div class="clients-audience-row">
+<span class="clients-pill" data-i18n="clients.audience.35">Start-ups</span>
+<span class="clients-pill" data-i18n="clients.audience.36">Industriels chevronnés</span>
+<span class="clients-pill" data-i18n="clients.audience.37">Double approvisionnement &amp; relocalisation</span>
 </div>
 </div>
-<div class="form-group" data-i18n-html="newsletter.form_label.14">
-<label class="form-label">Email professionnel <span class="req">*</span></label>
-<input class="form-input" name="email" placeholder="vous@entreprise.com" data-i18n-placeholder="newsletter.placeholder.73" required="" type="email"/>
+<div class="clients-signature-aside reveal">
+<div class="clients-signature-visual">
+<img alt="Présence internationale Circum, drapeaux suisse, français et européen" data-i18n-alt="clients.flags_photo_alt.1" decoding="async" loading="lazy" src="assets/img/circum-flags-international.jpg"/>
 </div>
-<div class="form-row">
-<div class="form-group" data-i18n-html="newsletter.form_label.15">
-<label class="form-label">Société</label>
-<input class="form-input" name="company" type="text"/>
+<aside class="clients-signature-panel" aria-label="Points clés du partenariat client Circum" data-i18n-aria="clients.panel_aria.38">
+<h3 data-i18n="clients.panel_title.39">Start-ups</h3>
+<ul>
+<li>
+<strong data-i18n="clients.panel_item_title.40">Du concept au produit manufacturé</strong>
+<span data-i18n="clients.panel_item_text.41">Nous collaborons avec vous depuis votre concept initial jusqu'à la livraison d'un produit manufacturé. Nous facilitons le processus pour obtenir le parcours le plus simple et le plus rapide vers les autorisations réglementaires.</span>
+</li>
+<li>
+<strong data-i18n="clients.panel_item_title.42">POC efficace &amp; pragmatique</strong>
+<span data-i18n="clients.panel_item_text.43">Nous vous aidons à développer un POC avec la plus grande efficacité et le plus de pragmatisme possibles. Grâce à notre expérience de fabricant, nous vous accompagnons pour optimiser votre design initial.</span>
+</li>
+<li>
+<strong data-i18n="clients.panel_item_title.44">Industriels chevronnés</strong>
+<span data-i18n="clients.panel_item_text.45">Double approvisionnement, relocalisation près de l'Europe ou lancement d'un nouveau produit : nous concevons un plan ensemble et vous offrons le même type de support.</span>
+</li>
+</ul>
+</aside>
 </div>
-<div class="form-group" data-i18n-html="newsletter.form_label.16">
-<label class="form-label">Fonction</label>
-<input class="form-input" name="role" placeholder="R&amp;D, achats, qualité…" data-i18n-placeholder="newsletter.placeholder.74" type="text"/>
-</div>
-</div>
-<div class="form-group" data-i18n-html="newsletter.form_label.53">
-<label class="form-label">Langue préférée pour la newsletter</label>
-<select class="form-select" name="lang">
-<option value="fr">Français</option>
-<option value="en">English</option>
-<option value="de">Deutsch</option>
-<option value="it">Italiano</option>
-</select>
-</div>
-<div class="form-group" data-i18n-html="newsletter.form_label.54">
-<label class="form-label">Centres d'intérêt (optionnel)</label>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 8px;">
-<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox" name="interests[]" value="design"/> <span data-i18n="newsletter.interest.55">Conception &amp; R&amp;D</span></label>
-<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox" name="interests[]" value="quality"/> <span data-i18n="newsletter.interest.56">Qualité &amp; Réglementaire</span></label>
-<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox" name="interests[]" value="manufacturing"/> <span data-i18n="newsletter.interest.57">Fabrication &amp; Industrie</span></label>
-<label style="display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;"><input style="width: 16px; height: 16px; accent-color: var(--blue);" type="checkbox" name="interests[]" value="innovation"/> <span data-i18n="newsletter.interest.58">Innovation &amp; Publications</span></label>
-</div>
-</div>
-<div class="form-checkbox" data-i18n-html="newsletter.form_checkbox.19">
-<input id="nl-consent" name="consent" required="" type="checkbox"/>
-<label for="nl-consent"><strong>J'accepte de recevoir la newsletter trimestrielle Circum Life Sciences</strong> et confirme avoir pris connaissance de la politique de confidentialité. Désinscription possible à tout moment via un lien dans chaque envoi.</label>
-</div>
-<button class="btn btn-primary form-submit" type="submit">
-<span data-i18n="newsletter.form_submit.59">S'inscrire à la newsletter</span>
-<span class="btn-arrow">→</span>
-</button>
-<div class="form-message"></div>
-</form>
 </div>
 </section>
-<section class="section newsletter-archives-section">
+<section class="section clients-flow">
 <div class="container">
 <div class="section-header center reveal">
-<span class="section-label center" data-i18n="newsletter.section_label.9">Archives</span>
-<h2 class="section-title" data-i18n-html="newsletter.section_title.11">Les <em>éditions précédentes.</em></h2>
+<span class="section-label center" data-i18n="clients.flow_label.46">Nos clients</span>
+<h2 class="section-title" data-i18n-html="clients.flow_title.47">Start-ups &amp; <em>industriels.</em></h2>
 </div>
-<div class="newsletter-archives-empty reveal" id="newsletter-archives" data-testid="newsletter-archives">
-<p class="newsletter-archives-empty-text" data-i18n="newsletter.empty_archives.75">Aucune édition n'a encore été publiée. Inscrivez-vous ci-dessus pour recevoir notre première newsletter trimestrielle.</p>
+<div class="clients-flow-track reveal">
+<article class="clients-flow-step">
+<div class="clients-flow-index">01</div>
+<h3 data-i18n="clients.flow_step_title.48">Start-ups</h3>
+<p data-i18n="clients.flow_step_text.49">Du concept initial à la livraison d'un produit manufacturé, autorisations réglementaires simplifiées et POC pragmatique.</p>
+</article>
+<article class="clients-flow-step">
+<div class="clients-flow-index">02</div>
+<h3 data-i18n="clients.flow_step_title.50">Double approvisionnement</h3>
+<p data-i18n="clients.flow_step_text.51">Si vous êtes à la recherche d'un double approvisionnement, nous pouvons concevoir un plan ensemble.</p>
+</article>
+<article class="clients-flow-step">
+<div class="clients-flow-index">03</div>
+<h3 data-i18n="clients.flow_step_title.52">Relocalisation Europe</h3>
+<p data-i18n="clients.flow_step_text.53">Si vous cherchez à relocaliser votre production près de l'Europe, nous sommes prêts à vous aider à mettre ce projet en place.</p>
+</article>
 </div>
+<blockquote class="clients-quote reveal">
+<p data-i18n="clients.quote_text.54">Nous sommes agiles, flexibles, et totalement engagés à établir un vrai partenariat.</p>
+<cite data-i18n="clients.quote_cite.55">Anne Reiser, Présidente</cite>
+</blockquote>
 </div>
 </section>
 </main>
+<section class="newsletter-strip">
+<div class="newsletter-strip-inner">
+<div>
+<h3 class="newsletter-strip-title" data-i18n-html="strip.title"><strong>Newsletter trimestrielle.</strong> Restez informé.</h3>
+<p class="newsletter-strip-text" data-i18n="strip.text">Recevez chaque trimestre nos actualités, innovations et publications. Désinscription en un clic.</p>
+</div>
+<form class="newsletter-strip-form" data-form="newsletter" data-implicit-consent="true" novalidate="">
+<input aria-label="Adresse email" data-i18n-placeholder="strip.placeholder" placeholder="votre@email.com" required="" type="email" name="email"/>
+<button data-i18n="strip.submit" type="submit">S'inscrire →</button>
+</form>
+</div>
+</section>
 <section class="cta-final">
 <div class="cta-final-inner">
 <div>
@@ -251,8 +246,7 @@
 </div>
 </footer>
 <script src="js/i18n/common.js"></script>
-<script src="js/i18n/page-newsletter.js"></script>
-<script src="js/i18n/page-newsletter-extra.js"></script>
+<script src="js/i18n/page-clients.js"></script>
 <script src="js/i18n/page-i18n-global.js"></script>
 <script src="js/i18n/loader.js"></script>
 <script src="js/hero-video.js"></script>
