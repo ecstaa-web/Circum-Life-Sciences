@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yacht — Nereïs</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+  <meta name="description" content="Fiche yacht Nereïs : spécifications, galerie et demande d’audience privée."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="preloader"><div class="preloader-mark"><div class="preloader-n">N</div><div class="preloader-word">Yacht</div><div class="preloader-line"></div></div></div>
+
+  <header class="site-header">
+    <div class="header-progress"></div>
+    <div class="header-bar">
+      <a class="logo" href="index.html"><span class="logo-mark">N</span><span class="logo-word">Nere<span>ïs</span></span></a>
+      <nav class="primary-nav">
+        <a class="is-active" href="collection.html">Collection</a>
+        <a href="maison.html">La Maison</a>
+        <a href="experiences.html">Expériences</a>
+        <a href="concierge.html">Concierge</a>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-switch">
+          <button class="lang-btn active" data-lang="fr" type="button">FR</button>
+          <span class="sep">/</span>
+          <button class="lang-btn" data-lang="en" type="button">EN</button>
+        </div>
+        <a class="btn btn-gold header-cta" href="contact.html">Audience privée</a>
+        <button class="menu-toggle" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+  <nav class="mobile-nav">
+    <a href="collection.html">Collection</a>
+    <a href="maison.html">La Maison</a>
+    <a href="experiences.html">Expériences</a>
+    <a href="concierge.html">Concierge</a>
+    <a href="contact.html">Audience privée</a>
+  </nav>
+
+  <main data-yacht-detail></main>
+  <div class="lightbox" role="dialog" aria-modal="true">
+    <button type="button" data-close-lightbox>Fermer</button>
+    <img alt="Galerie yacht"/>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo" href="index.html"><span class="logo-mark">N</span><span class="logo-word">Nere<span>ïs</span></span></a>
+        <p>Maison de yachts d’exception. Monaco · Saint-Tropez · Genève.</p>
+      </div>
+      <div>
+        <h4>Maison</h4>
+        <a href="collection.html">Collection</a>
+        <a href="maison.html">Manifeste</a>
+        <a href="contact.html">Audience privée</a>
+      </div>
+      <div>
+        <h4>Quais</h4>
+        <a href="contact.html">Monaco</a>
+        <a href="contact.html">Saint-Tropez</a>
+      </div>
+      <div>
+        <h4>Correspondance</h4>
+        <a href="mailto:maison@nereis.yacht">maison@nereis.yacht</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Nereïs.</span>
+      <span>Pavillon discret</span>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/yacht.js"></script>
+</body>
+</html>
