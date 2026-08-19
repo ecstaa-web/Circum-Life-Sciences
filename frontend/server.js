@@ -6,8 +6,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 const yachtsPath = path.join(__dirname, 'data', 'yachts.json');
-const yachts = JSON.parse(fs.readFileSync(yachtsPath, 'utf8'));
 const inquiries = [];
+
+function loadYachts() {
+  return JSON.parse(fs.readFileSync(yachtsPath, 'utf8'));
+}
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
@@ -19,10 +22,11 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '32kb' }));
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'nereis', yachts: yachts.length });
+  res.json({ status: 'ok', service: 'nereis', yachts: loadYachts().length });
 });
 
 app.get('/api/yachts', (req, res) => {
+  const yachts = loadYachts();
   const category = req.query.category;
   const items = category && category !== 'all'
     ? yachts.filter((y) => y.category === category)
@@ -31,7 +35,7 @@ app.get('/api/yachts', (req, res) => {
 });
 
 app.get('/api/yachts/:id', (req, res) => {
-  const yacht = yachts.find((y) => y.id === req.params.id);
+  const yacht = loadYachts().find((y) => y.id === req.params.id);
   if (!yacht) return res.status(404).json({ error: 'Yacht introuvable' });
   res.json(yacht);
 });
