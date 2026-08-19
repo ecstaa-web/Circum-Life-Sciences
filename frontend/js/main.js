@@ -34,15 +34,23 @@
   }
 
   var preloader = document.querySelector('.preloader');
-  window.addEventListener('load', function () {
+  function hidePreloader() {
+    if (!preloader || preloader.classList.contains('hide')) return;
+    preloader.classList.add('hide');
+    document.body.classList.add('page-enter');
     setTimeout(function () {
-      if (preloader) preloader.classList.add('hide');
-      document.body.classList.add('page-enter');
-    }, 700);
-  });
-  setTimeout(function () {
-    if (preloader) preloader.classList.add('hide');
-  }, 2800);
+      if (preloader && preloader.parentNode) preloader.parentNode.removeChild(preloader);
+    }, 900);
+  }
+
+  if (document.readyState === 'complete') {
+    setTimeout(hidePreloader, 400);
+  } else {
+    window.addEventListener('load', function () {
+      setTimeout(hidePreloader, 500);
+    });
+  }
+  setTimeout(hidePreloader, 2200);
 
   var header = document.querySelector('.site-header');
   var progress = document.querySelector('.header-progress');
@@ -121,4 +129,13 @@
   window.Nereis.formatPrice = function (n) {
     return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
   };
+
+  var fallbackImg = 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?auto=format&fit=crop&w=1400&q=80';
+  document.querySelectorAll('img').forEach(function (img) {
+    img.addEventListener('error', function () {
+      if (img.dataset.fallbackApplied) return;
+      img.dataset.fallbackApplied = '1';
+      img.src = fallbackImg;
+    });
+  });
 })();
