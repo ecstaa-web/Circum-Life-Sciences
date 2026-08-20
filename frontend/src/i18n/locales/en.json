@@ -1,0 +1,204 @@
+{
+  "nav": {
+    "home": "Home",
+    "browse": "Listings",
+    "dashboard": "Dashboard",
+    "pricing": "Pricing",
+    "sell": "Sell",
+    "login": "Login",
+    "signup": "Sign Up"
+  },
+  "hero": {
+    "badge": "#1 SaaS Platform for Enthusiasts",
+    "title1": "The pulse of the",
+    "title2": "console market",
+    "subtitle": "Centralize all buy and sell listings for consoles — retro, modern and collector. Never miss the rare gem again.",
+    "cta1": "Browse listings",
+    "cta2": "Create an alert",
+    "stats": {
+      "listings": "Active listings",
+      "consoles": "Consoles tracked",
+      "collectors": "Collector items",
+      "avgPrice": "Average price"
+    }
+  },
+  "features": {
+    "title": "Everything a enthusiast needs",
+    "subtitle": "A platform designed for collectors and demanding gamers",
+    "f1": {
+      "title": "Smart aggregation",
+      "desc": "Real listings centralized from Vinted, 2ememain, Marktplaats, 2dehands and Kleinanzeigen."
+    },
+    "f2": {
+      "title": "Real-time alerts",
+      "desc": "Get notified as soon as a console from your wishlist appears."
+    },
+    "f3": {
+      "title": "Advanced filters",
+      "desc": "Console, brand, condition, price, listing type — find exactly what you need."
+    },
+    "f4": {
+      "title": "Buy & Sell",
+      "desc": "Post your listings or find the rare gem to complete your collection."
+    },
+    "f5": {
+      "title": "Market tracking",
+      "desc": "Visualize price trends and collector market evolution."
+    },
+    "f6": {
+      "title": "Community",
+      "desc": "Join thousands of enthusiasts sharing the same retro passion."
+    }
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "step1": { "title": "Create your account", "desc": "Free signup in 30 seconds" },
+    "step2": { "title": "Set up alerts", "desc": "Define your consoles and target budgets" },
+    "step3": { "title": "Explore & trade", "desc": "Buy, sell and collect with confidence" }
+  },
+  "featured": {
+    "title": "Featured listings",
+    "subtitle": "Hand-picked gems selected by our team",
+    "viewAll": "View all listings"
+  },
+  "pricing": {
+    "title": "Choose your plan",
+    "subtitle": "Start free, go Pro when you're ready",
+    "free": {
+      "name": "Free",
+      "price": "€0",
+      "period": "/month",
+      "f1": "5 active alerts",
+      "f2": "Basic search",
+      "f3": "Watchlist (10 items)",
+      "f4": "Community support",
+      "cta": "Start for free"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "€9.99",
+      "period": "/month",
+      "badge": "Popular",
+      "f1": "Unlimited alerts",
+      "f2": "Advanced filters + sort",
+      "f3": "Unlimited watchlist",
+      "f4": "Instant notifications",
+      "f5": "Market statistics",
+      "f6": "Priority support",
+      "cta": "Go Pro"
+    },
+    "collector": {
+      "name": "Collector",
+      "price": "€24.99",
+      "period": "/month",
+      "f1": "Everything in Pro",
+      "f2": "Data API access",
+      "f3": "Multi-platform alerts",
+      "f4": "Monthly market reports",
+      "f5": "Exclusive Collector badge",
+      "f6": "Early access to features",
+      "cta": "Become Collector"
+    }
+  },
+  "browse": {
+    "title": "Browse listings",
+    "subtitle": "Find your dream console among thousands of listings",
+    "search": "Search a console, model...",
+    "filters": "Filters",
+    "allTypes": "All types",
+    "sell": "For sale",
+    "buy": "Wanted",
+    "allConsoles": "All consoles",
+    "allBrands": "All brands",
+    "allSources": "All sources",
+    "sync": "Refresh listings",
+    "syncing": "Syncing...",
+    "sortNewest": "Newest",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "noResults": "No listings found",
+    "results": "{{count}} listings found"
+  },
+  "listing": {
+    "sell": "For sale",
+    "buy": "Wanted",
+    "collectible": "Collector",
+    "condition": "Condition",
+    "location": "Location",
+    "source": "Source",
+    "posted": "Posted on",
+    "contact": "Contact seller",
+    "viewOn": "View on {{source}}",
+    "watchlist": "Add to watchlist",
+    "watchlisted": "In watchlist",
+    "share": "Share",
+    "similar": "Similar listings"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {{name}}!",
+    "watchlist": "My watchlist",
+    "alerts": "My alerts",
+    "myListings": "My listings",
+    "createAlert": "Create alert",
+    "console": "Console",
+    "maxPrice": "Max price",
+    "type": "Type",
+    "active": "Active",
+    "delete": "Delete",
+    "noWatchlist": "Your watchlist is empty",
+    "noAlerts": "No alerts configured",
+    "noListings": "You haven't posted any listings yet",
+    "createListing": "Post a listing"
+  },
+  "create": {
+    "title": "Post a listing",
+    "subtitle": "Sell or search for a console in a few clicks",
+    "listingTitle": "Listing title",
+    "description": "Description",
+    "console": "Console",
+    "brand": "Brand",
+    "type": "Listing type",
+    "condition": "Condition",
+    "price": "Price",
+    "location": "Location",
+    "collectible": "Collector item",
+    "submit": "Publish listing",
+    "success": "Listing published successfully!"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "signupTitle": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "loginBtn": "Sign in",
+    "signupBtn": "Sign up",
+    "demoHint": "Demo account: demo@retropulse.io / demo123",
+    "demoLogin": "Instant demo login",
+    "subtitle": "Access your collector dashboard",
+    "invalidCredentials": "Invalid email or password",
+    "networkError": "Cannot reach the server. Make sure the API is running.",
+    "emailTaken": "This email is already registered"
+  },
+  "footer": {
+    "tagline": "The pulse of the video game console market.",
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "about": "About",
+    "blog": "Blog",
+    "careers": "Careers",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "rights": "All rights reserved."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "eur": "€"
+  }
+}

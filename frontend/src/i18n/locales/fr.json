@@ -1,0 +1,204 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "browse": "Annonces",
+    "dashboard": "Tableau de bord",
+    "pricing": "Tarifs",
+    "sell": "Vendre",
+    "login": "Connexion",
+    "signup": "S'inscrire"
+  },
+  "hero": {
+    "badge": "Plateforme SaaS #1 pour les passionnés",
+    "title1": "Le pulse du",
+    "title2": "marché des consoles",
+    "subtitle": "Centralisez toutes les annonces d'achat et de vente de consoles — rétro, modernes et collector. Ne ratez plus jamais la perle rare.",
+    "cta1": "Explorer les annonces",
+    "cta2": "Créer une alerte",
+    "stats": {
+      "listings": "Annonces actives",
+      "consoles": "Consoles référencées",
+      "collectors": "Pièces collector",
+      "avgPrice": "Prix moyen"
+    }
+  },
+  "features": {
+    "title": "Tout ce dont un passionné a besoin",
+    "subtitle": "Une plateforme pensée pour les collectionneurs et gamers exigeants",
+    "f1": {
+      "title": "Agrégation intelligente",
+      "desc": "Annonces réelles centralisées depuis Vinted, 2ememain, Marktplaats, 2dehands et Kleinanzeigen."
+    },
+    "f2": {
+      "title": "Alertes en temps réel",
+      "desc": "Recevez une notification dès qu'une console de votre wishlist apparaît."
+    },
+    "f3": {
+      "title": "Filtres avancés",
+      "desc": "Console, marque, état, prix, type d'annonce — trouvez exactement ce que vous cherchez."
+    },
+    "f4": {
+      "title": "Acheter & Vendre",
+      "desc": "Publiez vos annonces ou trouvez la perle rare pour compléter votre collection."
+    },
+    "f5": {
+      "title": "Suivi de marché",
+      "desc": "Visualisez les tendances de prix et l'évolution du marché collector."
+    },
+    "f6": {
+      "title": "Communauté",
+      "desc": "Rejoignez des milliers de passionnés partageant la même passion rétro."
+    }
+  },
+  "howItWorks": {
+    "title": "Comment ça marche",
+    "step1": { "title": "Créez votre compte", "desc": "Inscription gratuite en 30 secondes" },
+    "step2": { "title": "Configurez vos alertes", "desc": "Définissez vos consoles et budgets cibles" },
+    "step3": { "title": "Explorez & tradez", "desc": "Achetez, vendez et collectionnez en toute confiance" }
+  },
+  "featured": {
+    "title": "Annonces en vedette",
+    "subtitle": "Les pépites du moment sélectionnées par notre équipe",
+    "viewAll": "Voir toutes les annonces"
+  },
+  "pricing": {
+    "title": "Choisissez votre plan",
+    "subtitle": "Commencez gratuitement, passez Pro quand vous êtes prêt",
+    "free": {
+      "name": "Free",
+      "price": "0€",
+      "period": "/mois",
+      "f1": "5 alertes actives",
+      "f2": "Recherche basique",
+      "f3": "Watchlist (10 items)",
+      "f4": "Support communautaire",
+      "cta": "Commencer gratuitement"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "9,99€",
+      "period": "/mois",
+      "badge": "Populaire",
+      "f1": "Alertes illimitées",
+      "f2": "Filtres avancés + tri",
+      "f3": "Watchlist illimitée",
+      "f4": "Notifications instantanées",
+      "f5": "Statistiques de marché",
+      "f6": "Support prioritaire",
+      "cta": "Passer Pro"
+    },
+    "collector": {
+      "name": "Collector",
+      "price": "24,99€",
+      "period": "/mois",
+      "f1": "Tout Pro inclus",
+      "f2": "API d'accès aux données",
+      "f3": "Alertes multi-plateformes",
+      "f4": "Rapports de marché mensuels",
+      "f5": "Badge Collector exclusif",
+      "f6": "Accès anticipé aux features",
+      "cta": "Devenir Collector"
+    }
+  },
+  "browse": {
+    "title": "Explorer les annonces",
+    "subtitle": "Trouvez la console de vos rêves parmi des milliers d'annonces",
+    "search": "Rechercher une console, un modèle...",
+    "filters": "Filtres",
+    "allTypes": "Tous les types",
+    "sell": "Vente",
+    "buy": "Achat",
+    "allConsoles": "Toutes les consoles",
+    "allBrands": "Toutes les marques",
+    "allSources": "Toutes les sources",
+    "sync": "Actualiser les annonces",
+    "syncing": "Synchronisation...",
+    "sortNewest": "Plus récent",
+    "sortPriceAsc": "Prix croissant",
+    "sortPriceDesc": "Prix décroissant",
+    "noResults": "Aucune annonce trouvée",
+    "results": "{{count}} annonces trouvées"
+  },
+  "listing": {
+    "sell": "Vente",
+    "buy": "Achat",
+    "collectible": "Collector",
+    "condition": "État",
+    "location": "Localisation",
+    "source": "Source",
+    "posted": "Publié le",
+    "contact": "Contacter le vendeur",
+    "viewOn": "Voir sur {{source}}",
+    "watchlist": "Ajouter à la watchlist",
+    "watchlisted": "Dans la watchlist",
+    "share": "Partager",
+    "similar": "Annonces similaires"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bon retour, {{name}} !",
+    "watchlist": "Ma watchlist",
+    "alerts": "Mes alertes",
+    "myListings": "Mes annonces",
+    "createAlert": "Créer une alerte",
+    "console": "Console",
+    "maxPrice": "Prix max",
+    "type": "Type",
+    "active": "Active",
+    "delete": "Supprimer",
+    "noWatchlist": "Votre watchlist est vide",
+    "noAlerts": "Aucune alerte configurée",
+    "noListings": "Vous n'avez pas encore publié d'annonce",
+    "createListing": "Publier une annonce"
+  },
+  "create": {
+    "title": "Publier une annonce",
+    "subtitle": "Vendez ou recherchez une console en quelques clics",
+    "listingTitle": "Titre de l'annonce",
+    "description": "Description",
+    "console": "Console",
+    "brand": "Marque",
+    "type": "Type d'annonce",
+    "condition": "État",
+    "price": "Prix",
+    "location": "Localisation",
+    "collectible": "Pièce de collection",
+    "submit": "Publier l'annonce",
+    "success": "Annonce publiée avec succès !"
+  },
+  "auth": {
+    "loginTitle": "Connexion",
+    "signupTitle": "Créer un compte",
+    "email": "Email",
+    "password": "Mot de passe",
+    "name": "Nom",
+    "loginBtn": "Se connecter",
+    "signupBtn": "S'inscrire",
+    "demoHint": "Compte démo : demo@retropulse.io / demo123",
+    "demoLogin": "Connexion démo instantanée",
+    "subtitle": "Accédez à votre espace collectionneur",
+    "invalidCredentials": "Email ou mot de passe incorrect",
+    "networkError": "Impossible de joindre le serveur. Vérifiez que l'API est démarrée.",
+    "emailTaken": "Cet email est déjà utilisé"
+  },
+  "footer": {
+    "tagline": "Le pulse du marché des consoles de jeux vidéo.",
+    "product": "Produit",
+    "company": "Entreprise",
+    "legal": "Légal",
+    "about": "À propos",
+    "blog": "Blog",
+    "careers": "Carrières",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "rights": "Tous droits réservés."
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "back": "Retour",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "eur": "€"
+  }
+}

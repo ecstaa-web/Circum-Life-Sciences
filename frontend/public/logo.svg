@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="RetroPulse">
+  <defs>
+    <linearGradient id="rp-bg" x1="64" y1="48" x2="448" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4338ca"/>
+      <stop offset="0.55" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="rp-shine" x1="120" y1="80" x2="360" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="rp-gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fde68a"/>
+      <stop offset="1" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="rp-pulse" x1="96" y1="300" x2="416" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.2" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="0.5" stop-color="#ffffff"/>
+      <stop offset="0.8" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="rp-soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#312e81" flood-opacity="0.35"/>
+    </filter>
+    <clipPath id="rp-clip">
+      <rect x="64" y="64" width="384" height="384" rx="96"/>
+    </clipPath>
+  </defs>
+
+  <!-- Outer frame -->
+  <g filter="url(#rp-soft)">
+    <rect x="64" y="64" width="384" height="384" rx="96" fill="url(#rp-bg)"/>
+    <rect x="64" y="64" width="384" height="384" rx="96" fill="url(#rp-shine)"/>
+    <rect x="78" y="78" width="356" height="356" rx="88" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2"/>
+    <rect x="92" y="92" width="328" height="328" rx="80" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1.5"/>
+  </g>
+
+  <!-- Decorative orbit rings -->
+  <g clip-path="url(#rp-clip)" opacity="0.55">
+    <circle cx="256" cy="256" r="148" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1.5" stroke-dasharray="6 10"/>
+    <circle cx="256" cy="256" r="118" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+    <path d="M256 108 L256 88 M256 424 L256 404 M108 256 L88 256 M424 256 L404 256" stroke="#ffffff" stroke-opacity="0.15" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Cartridge silhouette (subtle retro nod) -->
+  <g opacity="0.92">
+    <path d="M176 168 h160 c14 0 24 10 24 24 v88 c0 12-8 22-20 24 l-24 8 c-6 2-12 2-18 0 l-24-8 c-12-2-20-12-20-24 v-88 c0-14 10-24 24-24z" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-opacity="0.22" stroke-width="2"/>
+    <path d="M196 188 h24 v56 h-24z M228 188 h24 v56 h-24z M260 188 h24 v56 h-24z M292 188 h24 v56 h-24z" fill="#ffffff" fill-opacity="0.08"/>
+    <rect x="318" y="204" width="10" height="28" rx="3" fill="url(#rp-gold)"/>
+  </g>
+
+  <!-- Monogram RP -->
+  <g fill="#ffffff">
+    <path d="M188 214 h44 c28 0 44 14 44 36 c0 16-8 28-22 33 l34 43 h-36 l-28-36 h-26 v36 h-32 V214zm32 58 c14 0 22-6 22-18 s-8-18-22-18 h-12 v36 h12z"/>
+    <path d="M292 214 h58 c24 0 38 12 38 32 c0 14-7 24-18 29 l28 41 h-38 l-24-34 h-22 v34 h-32 V214zm54 52 c10 0 16-5 16-14 s-6-14-16-14 h-22 v28 h22z"/>
+  </g>
+
+  <!-- Pulse line -->
+  <path d="M112 318 H168 L188 278 L216 358 L244 298 L272 338 L300 288 L328 318 H400" stroke="url(#rp-pulse)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="328" cy="288" r="7" fill="url(#rp-gold)" stroke="#ffffff" stroke-width="2"/>
+
+  <!-- Corner accents -->
+  <path d="M128 128 L148 128 L128 148 Z" fill="#ffffff" fill-opacity="0.25"/>
+  <path d="M384 384 L364 384 L384 364 Z" fill="#ffffff" fill-opacity="0.18"/>
+</svg>
