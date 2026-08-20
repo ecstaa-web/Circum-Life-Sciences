@@ -26,12 +26,12 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
       <div className="max-w-7xl mx-auto glass-strong rounded-2xl px-6 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-rp-cyan to-rp-purple flex items-center justify-center glow-cyan">
-            <Gamepad2 className="w-5 h-5 text-rp-bg" />
+          <div className="w-10 h-10 rounded-xl bg-rp-primary flex items-center justify-center shadow-md shadow-indigo-200">
+            <Gamepad2 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <span className="font-display font-bold text-lg tracking-wider gradient-text">RetroPulse</span>
-            <span className="hidden sm:block text-[10px] text-gray-500 tracking-widest uppercase">Console Market SaaS</span>
+            <span className="font-display font-bold text-lg text-rp-text tracking-tight">RetroPulse</span>
+            <span className="hidden sm:block text-[10px] text-rp-muted tracking-wide">Console marketplace</span>
           </div>
         </Link>
 
@@ -40,10 +40,10 @@ export default function Navbar() {
             <Link
               key={link.to}
               to={link.to}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                 location.pathname === link.to
-                  ? 'bg-rp-cyan/10 text-rp-cyan'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-rp-primary-soft text-rp-primary'
+                  : 'text-rp-muted hover:text-rp-text hover:bg-slate-50'
               }`}
             >
               {link.label}
@@ -54,15 +54,15 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <button
             onClick={toggleLang}
-            className="px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider glass border border-rp-border hover:border-rp-cyan/30 transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-rp-border text-rp-muted hover:border-indigo-200 hover:text-rp-primary transition-all"
           >
             {lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN'}
           </button>
 
           {isAuthenticated ? (
             <div className="hidden md:flex items-center gap-3">
-              <span className="text-sm text-gray-400">{user?.name}</span>
-              <button onClick={logout} className="text-sm text-gray-500 hover:text-rp-magenta transition-colors">
+              <span className="text-sm text-rp-muted">{user?.name}</span>
+              <button onClick={logout} className="text-sm text-rp-muted hover:text-red-600 transition-colors">
                 Logout
               </button>
             </div>
@@ -73,7 +73,7 @@ export default function Navbar() {
             </div>
           )}
 
-          <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="md:hidden p-2 text-rp-text" onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -92,7 +92,7 @@ export default function Navbar() {
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileOpen(false)}
-                className="block px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:bg-white/5"
+                className="block px-4 py-3 rounded-xl text-sm font-medium text-rp-text hover:bg-slate-50"
               >
                 {link.label}
               </Link>

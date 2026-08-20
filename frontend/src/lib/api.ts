@@ -1,3 +1,5 @@
+import { fetchJson } from './fetchJson'
+
 export interface Listing {
   id: number
   external_id?: string | null
@@ -48,17 +50,6 @@ export interface User {
   plan: string
 }
 
-const BASE = '/api'
-
-async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${url}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  })
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
-  return res.json()
-}
-
 export const api = {
   getStats: () => fetchJson<Stats>('/stats'),
   getListings: (params?: Record<string, string | number | boolean | undefined>) => {
@@ -97,3 +88,5 @@ export function getLocalizedTitle(listing: Listing, lang: string) {
 export function getLocalizedDescription(listing: Listing, lang: string) {
   return lang === 'en' ? listing.description_en : listing.description
 }
+
+export { ApiError } from './fetchJson'

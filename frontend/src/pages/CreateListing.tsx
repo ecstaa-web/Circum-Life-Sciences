@@ -54,11 +54,11 @@ export default function CreateListing() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-12">
       <h1 className="font-display text-4xl font-bold mb-2">{t('create.title')}</h1>
-      <p className="text-gray-500 mb-10">{t('create.subtitle')}</p>
+      <p className="text-rp-muted mb-10">{t('create.subtitle')}</p>
 
       <form onSubmit={handleSubmit} className="glass-strong rounded-3xl p-8 space-y-6">
         <div>
-          <label className="block text-sm text-gray-400 mb-2">{t('create.listingTitle')}</label>
+          <label className="block text-sm font-medium text-rp-muted mb-2">{t('create.listingTitle')}</label>
           <input
             value={form.title}
             onChange={e => update('title', e.target.value)}
@@ -68,7 +68,7 @@ export default function CreateListing() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-400 mb-2">{t('create.description')}</label>
+          <label className="block text-sm font-medium text-rp-muted mb-2">{t('create.description')}</label>
           <textarea
             value={form.description}
             onChange={e => update('description', e.target.value)}
@@ -79,25 +79,25 @@ export default function CreateListing() {
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-gray-400 mb-2">{t('create.console')}</label>
+            <label className="block text-sm font-medium text-rp-muted mb-2">{t('create.console')}</label>
             <input value={form.console} onChange={e => update('console', e.target.value)} className="rp-input" required />
           </div>
           <div>
-            <label className="block text-sm text-gray-400 mb-2">{t('create.brand')}</label>
+            <label className="block text-sm font-medium text-rp-muted mb-2">{t('create.brand')}</label>
             <input value={form.brand} onChange={e => update('brand', e.target.value)} className="rp-input" required />
           </div>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm text-gray-400 mb-2">{t('create.type')}</label>
+            <label className="block text-sm font-medium text-rp-muted mb-2">{t('create.type')}</label>
             <select value={form.listing_type} onChange={e => update('listing_type', e.target.value as 'sell' | 'buy')} className="rp-select w-full">
               <option value="sell">{t('browse.sell')}</option>
               <option value="buy">{t('browse.buy')}</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm text-gray-400 mb-2">{t('create.condition')}</label>
+            <label className="block text-sm font-medium text-rp-muted mb-2">{t('create.condition')}</label>
             <select value={form.condition} onChange={e => update('condition', e.target.value)} className="rp-select w-full">
               <option value="Neuf">Neuf / New</option>
               <option value="Comme neuf">Comme neuf / Like new</option>
@@ -108,13 +108,13 @@ export default function CreateListing() {
             </select>
           </div>
           <div>
-            <label className="block text-sm text-gray-400 mb-2">{t('create.price')}</label>
+            <label className="block text-sm font-medium text-rp-muted mb-2">{t('create.price')}</label>
             <input type="number" value={form.price} onChange={e => update('price', e.target.value)} className="rp-input" required />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm text-gray-400 mb-2">{t('create.location')}</label>
+          <label className="block text-sm font-medium text-rp-muted mb-2">{t('create.location')}</label>
           <input value={form.location} onChange={e => update('location', e.target.value)} className="rp-input" required />
         </div>
 

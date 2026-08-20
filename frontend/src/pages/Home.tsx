@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import {
-  Bell, Filter, TrendingUp, Users, Zap, ShoppingBag,
+  Bell, Filter, TrendingUp, Users, ShoppingBag,
   ArrowRight, Radio, Search, Sparkles
 } from 'lucide-react'
 import ListingCard from '../components/ListingCard'
@@ -30,32 +30,21 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-rp-cyan/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-rp-magenta/10 rounded-full blur-[120px]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-rp-purple/5 rounded-full blur-[100px]" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-rp-cyan/20 mb-8">
-              <Sparkles className="w-4 h-4 text-rp-amber" />
-              <span className="text-xs font-medium tracking-wider text-rp-cyan">{t('hero.badge')}</span>
+      <section className="relative min-h-[88vh] flex items-center">
+        <div className="relative max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-14 items-center">
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-rp-border shadow-sm mb-8">
+              <Sparkles className="w-4 h-4 text-rp-accent" />
+              <span className="text-xs font-semibold text-rp-primary">{t('hero.badge')}</span>
             </div>
 
-            <h1 className="font-display text-5xl md:text-7xl font-black leading-[1.1] mb-6">
-              <span className="text-white">{t('hero.title1')}</span>
+            <h1 className="font-display text-5xl md:text-6xl font-extrabold leading-[1.08] mb-6 tracking-tight text-rp-text">
+              {t('hero.title1')}
               <br />
-              <span className="gradient-text text-glow-cyan">{t('hero.title2')}</span>
+              <span className="gradient-text">{t('hero.title2')}</span>
             </h1>
 
-            <p className="text-lg text-gray-400 leading-relaxed mb-10 max-w-lg">
+            <p className="text-lg text-rp-muted leading-relaxed mb-10 max-w-lg">
               {t('hero.subtitle')}
             </p>
 
@@ -70,58 +59,54 @@ export default function Home() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
             className="relative hidden lg:block"
           >
-            <div className="relative glass-strong rounded-3xl p-8 glow-cyan">
-              <div className="absolute -top-3 -right-3 w-20 h-20 bg-gradient-to-br from-rp-cyan to-rp-magenta rounded-2xl flex items-center justify-center font-pixel text-[8px] text-rp-bg text-center leading-tight">
-                RETRO<br/>PULSE
+            <div className="glass-strong rounded-3xl p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-display font-semibold text-rp-text">Live feed</h3>
+                <span className="flex items-center gap-2 text-xs text-emerald-600 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Live
+                </span>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {featured.slice(0, 3).map(l => (
-                  <div key={l.id} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                    <img src={l.image_url} alt="" className="w-16 h-16 rounded-lg object-cover" />
+                  <div key={l.id} className="flex items-center gap-4 p-3 rounded-xl bg-slate-50 hover:bg-indigo-50/50 transition-colors border border-transparent hover:border-indigo-100">
+                    <img src={l.image_url} alt="" className="w-14 h-14 rounded-xl object-cover bg-white" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">{l.console}</p>
-                      <p className="text-xs text-gray-500 truncate">{l.title}</p>
+                      <p className="text-sm font-semibold text-rp-text truncate">{l.console}</p>
+                      <p className="text-xs text-rp-muted truncate">{l.title}</p>
                     </div>
-                    <span className="font-display font-bold text-rp-cyan">{l.price}€</span>
+                    <span className="font-display font-bold text-rp-primary">{l.price}€</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-6 flex flex-col items-center gap-2 text-xs text-gray-500">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-rp-green animate-pulse" />
-                  Live market feed
+              {stats?.sources_active && stats.sources_active.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-6 pt-4 border-t border-rp-border">
+                  {stats.sources_active.map(s => (
+                    <span key={s} className="px-2.5 py-1 rounded-full bg-rp-primary-soft text-rp-primary text-[11px] font-medium">{s}</span>
+                  ))}
                 </div>
-                {stats?.sources_active && stats.sources_active.length > 0 && (
-                  <div className="flex flex-wrap justify-center gap-1.5 mt-1">
-                    {stats.sources_active.map(s => (
-                      <span key={s} className="px-2 py-0.5 rounded-full bg-rp-cyan/10 text-rp-cyan text-[10px]">{s}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           </motion.div>
         </div>
 
-        {/* Stats bar */}
         {stats && (
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.3 }}
             className="absolute bottom-0 left-0 right-0"
           >
             <div className="max-w-5xl mx-auto px-6 pb-8">
               <div className="glass-strong rounded-2xl grid grid-cols-2 md:grid-cols-4 divide-x divide-rp-border">
                 {statItems.map((s, i) => (
                   <div key={i} className="p-6 text-center">
-                    <p className="font-display text-2xl md:text-3xl font-bold gradient-text">{s.value}</p>
-                    <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider">{s.label}</p>
+                    <p className="font-display text-2xl md:text-3xl font-bold text-rp-text">{s.value}</p>
+                    <p className="text-xs text-rp-muted mt-1 font-medium">{s.label}</p>
                   </div>
                 ))}
               </div>
@@ -130,17 +115,12 @@ export default function Home() {
         )}
       </section>
 
-      {/* Features */}
-      <section className="max-w-7xl mx-auto px-6 py-32">
-        <div className="text-center mb-16">
-          <motion.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            className="font-display text-3xl md:text-5xl font-bold mb-4"
-          >
+      <section className="max-w-7xl mx-auto px-6 py-28">
+        <div className="text-center mb-14">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 text-rp-text tracking-tight">
             {t('features.title')}
-          </motion.h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">{t('features.subtitle')}</p>
+          </h2>
+          <p className="text-rp-muted max-w-2xl mx-auto">{t('features.subtitle')}</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -149,57 +129,56 @@ export default function Home() {
             return (
               <motion.div
                 key={n}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.08 }}
                 viewport={{ once: true }}
-                className="glass rounded-2xl p-8 hover:border-rp-cyan/20 border border-transparent transition-all group"
+                className="glass rounded-2xl p-8 hover:shadow-md transition-shadow"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rp-cyan/20 to-rp-purple/20 flex items-center justify-center mb-5 group-hover:glow-cyan transition-all">
-                  <Icon className="w-6 h-6 text-rp-cyan" />
+                <div className="w-11 h-11 rounded-xl bg-rp-primary-soft flex items-center justify-center mb-5">
+                  <Icon className="w-5 h-5 text-rp-primary" />
                 </div>
-                <h3 className="font-display font-semibold text-lg mb-2">{t(`features.f${n}.title`)}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{t(`features.f${n}.desc`)}</p>
+                <h3 className="font-display font-semibold text-lg mb-2 text-rp-text">{t(`features.f${n}.title`)}</h3>
+                <p className="text-sm text-rp-muted leading-relaxed">{t(`features.f${n}.desc`)}</p>
               </motion.div>
             )
           })}
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-rp-purple/5 to-transparent" />
-        <div className="relative max-w-7xl mx-auto px-6">
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-center mb-16">{t('howItWorks.title')}</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+      <section className="py-28 bg-white/50 border-y border-rp-border">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-14 text-rp-text tracking-tight">
+            {t('howItWorks.title')}
+          </h2>
+          <div className="grid md:grid-cols-3 gap-10">
             {[1, 2, 3].map((step, i) => (
               <motion.div
                 key={step}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.15 }}
+                transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-rp-cyan to-rp-purple flex items-center justify-center font-display text-2xl font-black text-rp-bg">
+                <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-rp-primary text-white flex items-center justify-center font-display text-xl font-bold shadow-lg shadow-indigo-200">
                   {step}
                 </div>
-                <h3 className="font-display font-semibold text-xl mb-2">{t(`howItWorks.step${step}.title`)}</h3>
-                <p className="text-gray-500">{t(`howItWorks.step${step}.desc`)}</p>
+                <h3 className="font-display font-semibold text-lg mb-2 text-rp-text">{t(`howItWorks.step${step}.title`)}</h3>
+                <p className="text-rp-muted text-sm leading-relaxed">{t(`howItWorks.step${step}.desc`)}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured listings */}
-      <section className="max-w-7xl mx-auto px-6 py-32">
-        <div className="flex items-end justify-between mb-12">
+      <section className="max-w-7xl mx-auto px-6 py-28">
+        <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-2">{t('featured.title')}</h2>
-            <p className="text-gray-500">{t('featured.subtitle')}</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-2 text-rp-text tracking-tight">{t('featured.title')}</h2>
+            <p className="text-rp-muted">{t('featured.subtitle')}</p>
           </div>
-          <Link to="/browse" className="hidden md:flex items-center gap-2 text-rp-cyan hover:gap-3 transition-all text-sm font-medium">
+          <Link to="/browse" className="hidden md:flex items-center gap-2 text-rp-primary hover:gap-3 transition-all text-sm font-semibold">
             {t('featured.viewAll')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -209,24 +188,15 @@ export default function Home() {
             <ListingCard key={l.id} listing={l} index={i} />
           ))}
         </div>
-
-        <div className="mt-8 text-center md:hidden">
-          <Link to="/browse" className="btn-secondary">{t('featured.viewAll')}</Link>
-        </div>
       </section>
 
-      {/* CTA */}
-      <section className="max-w-7xl mx-auto px-6 pb-32">
-        <div className="relative glass-strong rounded-3xl p-12 md:p-16 text-center overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-rp-cyan/5 via-rp-purple/5 to-rp-magenta/5" />
-          <div className="relative">
-            <Zap className="w-12 h-12 text-rp-amber mx-auto mb-6" />
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-              {t('hero.title1')} <span className="gradient-text">{t('hero.title2')}</span>
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-lg mx-auto">{t('hero.subtitle')}</p>
-            <Link to="/auth" className="btn-primary text-lg">{t('nav.signup')}</Link>
-          </div>
+      <section className="max-w-7xl mx-auto px-6 pb-28">
+        <div className="glass-strong rounded-3xl p-12 md:p-16 text-center bg-gradient-to-br from-indigo-50 via-white to-amber-50">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 text-rp-text tracking-tight">
+            {t('hero.title1')} <span className="gradient-text">{t('hero.title2')}</span>
+          </h2>
+          <p className="text-rp-muted mb-8 max-w-lg mx-auto">{t('hero.subtitle')}</p>
+          <Link to="/auth" className="btn-primary text-lg">{t('nav.signup')}</Link>
         </div>
       </section>
     </div>

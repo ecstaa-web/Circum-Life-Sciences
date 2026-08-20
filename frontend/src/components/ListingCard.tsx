@@ -7,9 +7,9 @@ import { type Listing, getLocalizedTitle } from '../lib/api'
 import { getLanguage } from '../i18n'
 
 const FALLBACK_GRADIENTS = [
-  'from-rp-cyan/30 to-rp-purple/30',
-  'from-rp-magenta/30 to-rp-amber/30',
-  'from-rp-purple/30 to-rp-cyan/30',
+  'from-indigo-100 to-violet-100',
+  'from-amber-50 to-orange-100',
+  'from-sky-50 to-indigo-100',
 ]
 
 interface Props {
@@ -26,27 +26,26 @@ export default function ListingCard({ listing, index = 0 }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.5 }}
+      transition={{ delay: index * 0.04, duration: 0.4 }}
     >
       <Link to={`/listing/${listing.id}`} className="listing-card block group">
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
           {!imgError ? (
             <img
               src={listing.image_url}
               alt={title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
               onError={() => setImgError(true)}
             />
           ) : (
             <div className={`w-full h-full bg-gradient-to-br ${gradient} flex flex-col items-center justify-center gap-3`}>
-              <Gamepad2 className="w-12 h-12 text-rp-cyan/60" />
-              <span className="font-display text-sm text-white/70">{listing.console}</span>
+              <Gamepad2 className="w-10 h-10 text-indigo-400" />
+              <span className="font-display text-sm text-rp-muted">{listing.console}</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-rp-bg via-transparent to-transparent" />
           <div className="absolute top-3 left-3 flex gap-2">
             <span className={listing.listing_type === 'sell' ? 'badge-sell' : 'badge-buy'}>
               {listing.listing_type === 'sell' ? t('listing.sell') : t('listing.buy')}
@@ -57,27 +56,23 @@ export default function ListingCard({ listing, index = 0 }: Props) {
               </span>
             )}
           </div>
-          <div className="absolute bottom-3 right-3">
-            <span className="font-display text-xl font-bold text-white text-glow-cyan">
-              {listing.price}{listing.currency === 'EUR' ? '€' : listing.currency}
-            </span>
-          </div>
         </div>
 
         <div className="p-5">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-medium text-rp-cyan/70 uppercase tracking-wider">{listing.console}</span>
-            <span className="text-xs text-gray-600">•</span>
-            <span className="text-xs text-gray-500">{listing.brand}</span>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-rp-primary uppercase tracking-wide">{listing.console}</span>
+            <span className="font-display text-lg font-bold text-rp-text">
+              {listing.price}{listing.currency === 'EUR' ? '€' : listing.currency}
+            </span>
           </div>
-          <h3 className="font-semibold text-white group-hover:text-rp-cyan transition-colors line-clamp-2 mb-3">
+          <h3 className="font-medium text-rp-text group-hover:text-rp-primary transition-colors line-clamp-2 mb-3 leading-snug">
             {title}
           </h3>
-          <div className="flex items-center justify-between text-xs text-gray-500">
+          <div className="flex items-center justify-between text-xs text-rp-muted">
             <span className="flex items-center gap-1">
               <MapPin className="w-3 h-3" /> {listing.location}
             </span>
-            <span className="text-gray-600">{listing.source}</span>
+            <span className="font-medium">{listing.source}</span>
           </div>
         </div>
       </Link>

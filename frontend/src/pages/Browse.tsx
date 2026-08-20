@@ -67,7 +67,7 @@ export default function Browse() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
         <div>
           <h1 className="font-display text-4xl md:text-5xl font-bold mb-3">{t('browse.title')}</h1>
-          <p className="text-gray-500">{t('browse.subtitle')}</p>
+          <p className="text-rp-muted">{t('browse.subtitle')}</p>
         </div>
         <button onClick={handleSync} disabled={syncing} className="btn-secondary text-sm !px-4 !py-2 shrink-0">
           <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
@@ -79,7 +79,7 @@ export default function Browse() {
       <div className="glass-strong rounded-2xl p-6 mb-8">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-rp-muted" />
             <input
               type="text"
               value={search}
@@ -137,15 +137,15 @@ export default function Browse() {
         </div>
       </div>
 
-      <p className="text-sm text-gray-500 mb-6">
+      <p className="text-sm text-rp-muted mb-6">
         {t('browse.results', { count: listings.length })}
       </p>
 
       {loading ? (
-        <div className="text-center py-20 text-gray-500">{t('common.loading')}</div>
+        <div className="text-center py-20 text-rp-muted">{t('common.loading')}</div>
       ) : listings.length === 0 ? (
         <div className="text-center py-20">
-          <p className="text-gray-500 text-lg">{t('browse.noResults')}</p>
+          <p className="text-rp-muted text-lg">{t('browse.noResults')}</p>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

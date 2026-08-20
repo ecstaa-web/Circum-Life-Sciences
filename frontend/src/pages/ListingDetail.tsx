@@ -34,7 +34,7 @@ export default function ListingDetail() {
   }
 
   if (!listing) {
-    return <div className="max-w-7xl mx-auto px-6 py-20 text-center text-gray-500">{t('common.loading')}</div>
+    return <div className="max-w-7xl mx-auto px-6 py-20 text-center text-rp-muted">{t('common.loading')}</div>
   }
 
   const title = getLocalizedTitle(listing, lang)
@@ -42,7 +42,7 @@ export default function ListingDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
-      <Link to="/browse" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-rp-cyan transition-colors mb-8">
+      <Link to="/browse" className="inline-flex items-center gap-2 text-sm text-rp-muted hover:text-rp-primary transition-colors mb-8">
         <ArrowLeft className="w-4 h-4" /> {t('common.back')}
       </Link>
 
@@ -50,10 +50,9 @@ export default function ListingDetail() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="relative rounded-3xl overflow-hidden aspect-square"
+          className="relative rounded-3xl overflow-hidden aspect-square bg-slate-100 border border-rp-border shadow-sm"
         >
           <img src={listing.image_url} alt={title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-rp-bg/60 to-transparent" />
           <div className="absolute top-4 left-4 flex gap-2">
             <span className={listing.listing_type === 'sell' ? 'badge-sell' : 'badge-buy'}>
               {listing.listing_type === 'sell' ? t('listing.sell') : t('listing.buy')}
@@ -66,50 +65,35 @@ export default function ListingDetail() {
           </div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex flex-col"
-        >
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-sm font-medium text-rp-cyan uppercase tracking-wider">{listing.console}</span>
-            <span className="text-gray-600">•</span>
-            <span className="text-sm text-gray-500">{listing.brand}</span>
+            <span className="text-sm font-semibold text-rp-primary uppercase tracking-wide">{listing.console}</span>
+            <span className="text-slate-300">•</span>
+            <span className="text-sm text-rp-muted">{listing.brand}</span>
           </div>
 
-          <h1 className="font-display text-3xl md:text-4xl font-bold mb-4">{title}</h1>
+          <h1 className="font-display text-3xl md:text-4xl font-bold mb-4 text-rp-text tracking-tight">{title}</h1>
 
-          <div className="font-display text-4xl font-black gradient-text mb-6">
+          <div className="font-display text-4xl font-bold text-rp-text mb-6">
             {listing.price}{listing.currency === 'EUR' ? '€' : listing.currency}
           </div>
 
-          <p className="text-gray-400 leading-relaxed mb-8">{description}</p>
+          <p className="text-rp-muted leading-relaxed mb-8">{description}</p>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="glass rounded-xl p-4">
-              <div className="flex items-center gap-2 text-gray-500 text-xs mb-1">
-                <Tag className="w-3 h-3" /> {t('listing.condition')}
+            {[
+              { icon: Tag, label: t('listing.condition'), value: listing.condition },
+              { icon: MapPin, label: t('listing.location'), value: listing.location },
+              { icon: ExternalLink, label: t('listing.source'), value: listing.source },
+              { icon: Calendar, label: t('listing.posted'), value: new Date(listing.synced_at || listing.created_at).toLocaleDateString(lang) },
+            ].map(({ icon: Icon, label, value }) => (
+              <div key={label} className="glass rounded-xl p-4">
+                <div className="flex items-center gap-2 text-rp-muted text-xs mb-1">
+                  <Icon className="w-3 h-3" /> {label}
+                </div>
+                <p className="font-medium text-rp-text">{value}</p>
               </div>
-              <p className="font-medium">{listing.condition}</p>
-            </div>
-            <div className="glass rounded-xl p-4">
-              <div className="flex items-center gap-2 text-gray-500 text-xs mb-1">
-                <MapPin className="w-3 h-3" /> {t('listing.location')}
-              </div>
-              <p className="font-medium">{listing.location}</p>
-            </div>
-            <div className="glass rounded-xl p-4">
-              <div className="flex items-center gap-2 text-gray-500 text-xs mb-1">
-                <ExternalLink className="w-3 h-3" /> {t('listing.source')}
-              </div>
-              <p className="font-medium">{listing.source}</p>
-            </div>
-            <div className="glass rounded-xl p-4">
-              <div className="flex items-center gap-2 text-gray-500 text-xs mb-1">
-                <Calendar className="w-3 h-3" /> {t('listing.posted')}
-              </div>
-              <p className="font-medium">{new Date(listing.synced_at || listing.created_at).toLocaleDateString(lang)}</p>
-            </div>
+            ))}
           </div>
 
           <div className="flex flex-wrap gap-3 mt-auto">
@@ -124,9 +108,9 @@ export default function ListingDetail() {
             )}
             <button
               onClick={handleWatchlist}
-              className={`btn-secondary !px-4 ${watchlisted ? '!border-rp-magenta !text-rp-magenta' : ''}`}
+              className={`btn-secondary !px-4 ${watchlisted ? '!border-rose-300 !text-rose-600 !bg-rose-50' : ''}`}
             >
-              <Heart className={`w-5 h-5 ${watchlisted ? 'fill-rp-magenta' : ''}`} />
+              <Heart className={`w-5 h-5 ${watchlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
               {watchlisted ? t('listing.watchlisted') : t('listing.watchlist')}
             </button>
             <button className="btn-secondary !px-4">
@@ -138,7 +122,7 @@ export default function ListingDetail() {
 
       {similar.length > 0 && (
         <section className="mt-20">
-          <h2 className="font-display text-2xl font-bold mb-8">{t('listing.similar')}</h2>
+          <h2 className="font-display text-2xl font-bold mb-8 text-rp-text">{t('listing.similar')}</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {similar.map((l, i) => (
               <ListingCard key={l.id} listing={l} index={i} />

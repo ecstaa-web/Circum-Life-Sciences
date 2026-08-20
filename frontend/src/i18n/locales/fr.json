@@ -174,7 +174,12 @@
     "name": "Nom",
     "loginBtn": "Se connecter",
     "signupBtn": "S'inscrire",
-    "demoHint": "Compte démo : demo@retropulse.io / demo123"
+    "demoHint": "Compte démo : demo@retropulse.io / demo123",
+    "demoLogin": "Connexion démo instantanée",
+    "subtitle": "Accédez à votre espace collectionneur",
+    "invalidCredentials": "Email ou mot de passe incorrect",
+    "networkError": "Impossible de joindre le serveur. Vérifiez que l'API est démarrée.",
+    "emailTaken": "Cet email est déjà utilisé"
   },
   "footer": {
     "tagline": "Le pulse du marché des consoles de jeux vidéo.",

@@ -174,7 +174,12 @@
     "name": "Name",
     "loginBtn": "Sign in",
     "signupBtn": "Sign up",
-    "demoHint": "Demo account: demo@retropulse.io / demo123"
+    "demoHint": "Demo account: demo@retropulse.io / demo123",
+    "demoLogin": "Instant demo login",
+    "subtitle": "Access your collector dashboard",
+    "invalidCredentials": "Invalid email or password",
+    "networkError": "Cannot reach the server. Make sure the API is running.",
+    "emailTaken": "This email is already registered"
   },
   "footer": {
     "tagline": "The pulse of the video game console market.",

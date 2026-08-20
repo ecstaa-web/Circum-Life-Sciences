@@ -4,7 +4,7 @@ import Footer from './Footer'
 
 export default function Layout() {
   return (
-    <div className="scanlines retro-grid min-h-screen">
+    <div className="page-bg min-h-screen">
       <Navbar />
       <main className="pt-24">
         <Outlet />
