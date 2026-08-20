@@ -1,0 +1,110 @@
+import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { Menu, X, Gamepad2 } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { setLanguage, getLanguage } from '../i18n'
+import { useAuth } from '../context/AuthContext'
+
+export default function Navbar() {
+  const { t } = useTranslation()
+  const { isAuthenticated, user, logout } = useAuth()
+  const location = useLocation()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const lang = getLanguage()
+
+  const links = [
+    { to: '/', label: t('nav.home') },
+    { to: '/browse', label: t('nav.browse') },
+    { to: '/pricing', label: t('nav.pricing') },
+    ...(isAuthenticated ? [{ to: '/dashboard', label: t('nav.dashboard') }] : []),
+  ]
+
+  const toggleLang = () => setLanguage(lang === 'fr' ? 'en' : 'fr')
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
+      <div className="max-w-7xl mx-auto glass-strong rounded-2xl px-6 py-3 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-rp-cyan to-rp-purple flex items-center justify-center glow-cyan">
+            <Gamepad2 className="w-5 h-5 text-rp-bg" />
+          </div>
+          <div>
+            <span className="font-display font-bold text-lg tracking-wider gradient-text">RetroPulse</span>
+            <span className="hidden sm:block text-[10px] text-gray-500 tracking-widest uppercase">Console Market SaaS</span>
+          </div>
+        </Link>
+
+        <div className="hidden md:flex items-center gap-1">
+          {links.map(link => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                location.pathname === link.to
+                  ? 'bg-rp-cyan/10 text-rp-cyan'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={toggleLang}
+            className="px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider glass border border-rp-border hover:border-rp-cyan/30 transition-all"
+          >
+            {lang === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN'}
+          </button>
+
+          {isAuthenticated ? (
+            <div className="hidden md:flex items-center gap-3">
+              <span className="text-sm text-gray-400">{user?.name}</span>
+              <button onClick={logout} className="text-sm text-gray-500 hover:text-rp-magenta transition-colors">
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-2">
+              <Link to="/auth" className="btn-secondary text-sm !px-4 !py-2">{t('nav.login')}</Link>
+              <Link to="/create" className="btn-primary text-sm !px-4 !py-2">{t('nav.sell')}</Link>
+            </div>
+          )}
+
+          <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden mt-2 mx-4 glass-strong rounded-2xl p-4"
+          >
+            {links.map(link => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setMobileOpen(false)}
+                className="block px-4 py-3 rounded-xl text-sm font-medium text-gray-300 hover:bg-white/5"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {!isAuthenticated && (
+              <Link to="/auth" onClick={() => setMobileOpen(false)} className="block mt-2 btn-primary text-center text-sm">
+                {t('nav.login')}
+              </Link>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  )
+}
