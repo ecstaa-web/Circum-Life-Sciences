@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Gamepad2, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { ApiError } from '../lib/api'
+import Logo from '../components/Logo'
 
 const DEMO_EMAIL = 'demo@retropulse.io'
 const DEMO_PASSWORD = 'demo123'
@@ -71,8 +72,8 @@ export default function Auth() {
         className="w-full max-w-md"
       >
         <div className="text-center mb-8">
-          <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-rp-primary flex items-center justify-center shadow-lg shadow-indigo-200">
-            <Gamepad2 className="w-7 h-7 text-white" />
+          <div className="mx-auto mb-5 w-fit">
+            <Logo size={72} />
           </div>
           <h1 className="font-display text-3xl font-bold text-rp-text tracking-tight">
             {isSignup ? t('auth.signupTitle') : t('auth.loginTitle')}

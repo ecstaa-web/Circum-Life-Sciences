@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Gamepad2 } from 'lucide-react'
+import Logo from './Logo'
 
 export default function Footer() {
   const { t } = useTranslation()
@@ -11,9 +11,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-rp-primary flex items-center justify-center">
-                <Gamepad2 className="w-4 h-4 text-white" />
-              </div>
+              <Logo size={36} />
               <span className="font-display font-bold text-rp-text">RetroPulse</span>
             </div>
             <p className="text-sm text-rp-muted leading-relaxed">{t('footer.tagline')}</p>

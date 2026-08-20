@@ -1,10 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Menu, X, Gamepad2 } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { setLanguage, getLanguage } from '../i18n'
 import { useAuth } from '../context/AuthContext'
+import Logo from './Logo'
 
 export default function Navbar() {
   const { t } = useTranslation()
@@ -26,12 +27,10 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 px-4 pt-4">
       <div className="max-w-7xl mx-auto glass-strong rounded-2xl px-6 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-rp-primary flex items-center justify-center shadow-md shadow-indigo-200">
-            <Gamepad2 className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <span className="font-display font-bold text-lg text-rp-text tracking-tight">RetroPulse</span>
-            <span className="hidden sm:block text-[10px] text-rp-muted tracking-wide">Console marketplace</span>
+          <Logo size={40} />
+          <div className="hidden sm:block">
+            <span className="font-display font-bold text-lg text-rp-text tracking-tight block">RetroPulse</span>
+            <span className="text-[10px] text-rp-muted tracking-wide">Console marketplace</span>
           </div>
         </Link>
 
