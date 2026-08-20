@@ -1,26 +1,29 @@
+import threading
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from aggregator.sync import sync_all_listings
 from database import Base, engine, get_db
-from models import Alert, Listing, User, WatchlistItem
+from models import Alert, Listing, SyncLog, User, WatchlistItem
 from schemas import (
     AlertCreate,
     AlertOut,
     ListingCreate,
     ListingOut,
     StatsOut,
+    SyncOut,
     UserCreate,
     UserLogin,
     UserOut,
 )
 from seed import seed_database
 
-app = FastAPI(title="RetroPulse API", version="1.0.0")
+app = FastAPI(title="RetroPulse API", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,18 +33,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+_sync_lock = threading.Lock()
+_sync_running = False
+
 Base.metadata.create_all(bind=engine)
+
+
+def _run_sync():
+    global _sync_running
+    with _sync_lock:
+        if _sync_running:
+            return
+        _sync_running = True
+    try:
+        db = next(get_db())
+        seed_database(db)
+        sync_all_listings(db)
+    finally:
+        _sync_running = False
 
 
 @app.on_event("startup")
 def startup():
     db = next(get_db())
     seed_database(db)
+    total = db.query(Listing).count()
+    last = db.query(SyncLog).order_by(SyncLog.finished_at.desc()).first()
+    stale = not last or (datetime.utcnow() - last.finished_at) > timedelta(hours=6)
+    if total < 20 or stale:
+        threading.Thread(target=_run_sync, daemon=True).start()
 
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "service": "retropulse"}
+    return {"status": "ok", "service": "retropulse", "version": "2.0.0"}
 
 
 @app.get("/api/stats", response_model=StatsOut)
@@ -50,15 +75,28 @@ def get_stats(db: Session = Depends(get_db)):
     consoles = db.query(Listing.console).distinct().count()
     avg = db.query(func.avg(Listing.price)).scalar() or 0
     today = datetime.utcnow() - timedelta(hours=24)
-    new_today = db.query(Listing).filter(Listing.created_at >= today).count()
+    new_today = db.query(Listing).filter(Listing.synced_at >= today).count()
     collectors = db.query(Listing).filter(Listing.is_collectible.is_(True)).count()
+    last_sync = db.query(SyncLog).order_by(SyncLog.finished_at.desc()).first()
+    sources = [row[0] for row in db.query(Listing.source).distinct().all()]
     return StatsOut(
         total_listings=total,
         total_consoles=consoles,
         avg_price=round(float(avg), 2),
         new_today=new_today,
         collectors_items=collectors,
+        last_sync=last_sync.finished_at if last_sync else None,
+        sources_active=sources,
     )
+
+
+@app.post("/api/sync", response_model=SyncOut)
+def trigger_sync(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    global _sync_running
+    if _sync_running:
+        raise HTTPException(status_code=409, detail="Sync already in progress")
+    stats = sync_all_listings(db)
+    return SyncOut(**stats)
 
 
 @app.get("/api/listings", response_model=list[ListingOut])
@@ -72,8 +110,9 @@ def get_listings(
     collectible: Optional[bool] = None,
     search: Optional[str] = None,
     featured: Optional[bool] = None,
+    source: Optional[str] = None,
     sort: str = Query(default="newest"),
-    limit: int = Query(default=50, le=100),
+    limit: int = Query(default=50, le=200),
     db: Session = Depends(get_db),
 ):
     query = db.query(Listing)
@@ -94,6 +133,8 @@ def get_listings(
         query = query.filter(Listing.is_collectible.is_(collectible))
     if featured is not None:
         query = query.filter(Listing.is_featured.is_(featured))
+    if source:
+        query = query.filter(Listing.source.ilike(f"%{source}%"))
     if search:
         term = f"%{search}%"
         query = query.filter(
@@ -108,7 +149,7 @@ def get_listings(
     elif sort == "price_desc":
         query = query.order_by(Listing.price.desc())
     else:
-        query = query.order_by(Listing.created_at.desc())
+        query = query.order_by(Listing.synced_at.desc(), Listing.created_at.desc())
 
     return query.limit(limit).all()
 
@@ -123,7 +164,16 @@ def get_listing(listing_id: int, db: Session = Depends(get_db)):
 
 @app.post("/api/listings", response_model=ListingOut)
 def create_listing(payload: ListingCreate, db: Session = Depends(get_db)):
-    listing = Listing(**payload.model_dump(), owner_id=1)
+    import uuid
+
+    listing = Listing(
+        **payload.model_dump(),
+        external_id=f"user-{uuid.uuid4().hex[:12]}",
+        source="RetroPulse",
+        source_url="",
+        owner_id=1,
+        synced_at=datetime.utcnow(),
+    )
     db.add(listing)
     db.commit()
     db.refresh(listing)
@@ -139,6 +189,12 @@ def get_consoles(db: Session = Depends(get_db)):
 @app.get("/api/brands")
 def get_brands(db: Session = Depends(get_db)):
     rows = db.query(Listing.brand, func.count(Listing.id)).group_by(Listing.brand).all()
+    return [{"name": name, "count": count} for name, count in rows]
+
+
+@app.get("/api/sources")
+def get_sources(db: Session = Depends(get_db)):
+    rows = db.query(Listing.source, func.count(Listing.id)).group_by(Listing.source).all()
     return [{"name": name, "count": count} for name, count in rows]
 
 

@@ -1,5 +1,7 @@
 export interface Listing {
   id: number
+  external_id?: string | null
+  source_url?: string | null
   title: string
   title_en: string
   description: string
@@ -17,6 +19,7 @@ export interface Listing {
   source: string
   owner_id: number | null
   created_at: string
+  synced_at?: string | null
 }
 
 export interface Stats {
@@ -25,6 +28,8 @@ export interface Stats {
   avg_price: number
   new_today: number
   collectors_items: number
+  last_sync?: string | null
+  sources_active?: string[]
 }
 
 export interface Alert {
@@ -68,6 +73,8 @@ export const api = {
   getListing: (id: number) => fetchJson<Listing>(`/listings/${id}`),
   getConsoles: () => fetchJson<{ name: string; count: number }[]>('/consoles'),
   getBrands: () => fetchJson<{ name: string; count: number }[]>('/brands'),
+  getSources: () => fetchJson<{ name: string; count: number }[]>('/sources'),
+  triggerSync: () => fetchJson<{ added: number; updated: number; total: number; synced_at: string }>('/sync', { method: 'POST' }),
   createListing: (data: Partial<Listing>) =>
     fetchJson<Listing>('/listings', { method: 'POST', body: JSON.stringify(data) }),
   login: (email: string, password: string) =>

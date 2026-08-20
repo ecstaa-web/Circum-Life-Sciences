@@ -42,6 +42,8 @@ class ListingCreate(BaseModel):
 
 class ListingOut(BaseModel):
     id: int
+    external_id: Optional[str] = None
+    source_url: Optional[str] = None
     title: str
     title_en: str
     description: str
@@ -59,6 +61,7 @@ class ListingOut(BaseModel):
     source: str
     owner_id: Optional[int]
     created_at: datetime
+    synced_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
 
@@ -86,3 +89,14 @@ class StatsOut(BaseModel):
     avg_price: float
     new_today: int
     collectors_items: int
+    last_sync: Optional[datetime] = None
+    sources_active: list[str] = []
+
+
+class SyncOut(BaseModel):
+    added: int
+    updated: int
+    total: int
+    sources: dict
+    synced_at: str
+    errors: list[str] = []

@@ -27,7 +27,7 @@
     "subtitle": "A platform designed for collectors and demanding gamers",
     "f1": {
       "title": "Smart aggregation",
-      "desc": "All listings centralized from LeBonCoin, eBay, Mercari and more."
+      "desc": "Real listings centralized from Vinted, 2ememain, Marktplaats, 2dehands and Kleinanzeigen."
     },
     "f2": {
       "title": "Real-time alerts",
@@ -110,7 +110,9 @@
     "buy": "Wanted",
     "allConsoles": "All consoles",
     "allBrands": "All brands",
-    "collectibleOnly": "Collector only",
+    "allSources": "All sources",
+    "sync": "Refresh listings",
+    "syncing": "Syncing...",
     "sortNewest": "Newest",
     "sortPriceAsc": "Price: low to high",
     "sortPriceDesc": "Price: high to low",
@@ -126,6 +128,7 @@
     "source": "Source",
     "posted": "Posted on",
     "contact": "Contact seller",
+    "viewOn": "View on {{source}}",
     "watchlist": "Add to watchlist",
     "watchlisted": "In watchlist",
     "share": "Share",

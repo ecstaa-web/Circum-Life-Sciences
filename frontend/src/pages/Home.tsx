@@ -91,9 +91,18 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <div className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500">
-                <span className="w-2 h-2 rounded-full bg-rp-green animate-pulse" />
-                Live market feed
+              <div className="mt-6 flex flex-col items-center gap-2 text-xs text-gray-500">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-rp-green animate-pulse" />
+                  Live market feed
+                </div>
+                {stats?.sources_active && stats.sources_active.length > 0 && (
+                  <div className="flex flex-wrap justify-center gap-1.5 mt-1">
+                    {stats.sources_active.map(s => (
+                      <span key={s} className="px-2 py-0.5 rounded-full bg-rp-cyan/10 text-rp-cyan text-[10px]">{s}</span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

@@ -31,10 +31,12 @@ cd frontend && npm install && npm run dev
 
 ## Fonctionnalités
 
+- **Agrégation en temps réel** depuis Vinted, 2ememain, Marktplaats, 2dehands, Kleinanzeigen
 - Landing page avec stats live et annonces en vedette
-- Explorer les annonces avec filtres avancés (console, marque, type, prix, collector)
-- Détail d'annonce avec watchlist
+- Explorer les annonces avec filtres avancés (console, marque, source, prix, collector)
+- Détail d'annonce avec lien direct vers l'annonce originale
 - Tableau de bord (watchlist, alertes prix)
+- Bouton « Actualiser les annonces » pour resynchroniser
 - Publier une annonce (achat/vente)
 - Tarification SaaS (Free / Pro / Collector)
 - Bilingue FR/EN avec détection automatique

@@ -27,7 +27,7 @@
     "subtitle": "Une plateforme pensée pour les collectionneurs et gamers exigeants",
     "f1": {
       "title": "Agrégation intelligente",
-      "desc": "Toutes les annonces centralisées depuis LeBonCoin, eBay, Mercari et plus encore."
+      "desc": "Annonces réelles centralisées depuis Vinted, 2ememain, Marktplaats, 2dehands et Kleinanzeigen."
     },
     "f2": {
       "title": "Alertes en temps réel",
@@ -110,7 +110,9 @@
     "buy": "Achat",
     "allConsoles": "Toutes les consoles",
     "allBrands": "Toutes les marques",
-    "collectibleOnly": "Collector uniquement",
+    "allSources": "Toutes les sources",
+    "sync": "Actualiser les annonces",
+    "syncing": "Synchronisation...",
     "sortNewest": "Plus récent",
     "sortPriceAsc": "Prix croissant",
     "sortPriceDesc": "Prix décroissant",
@@ -126,6 +128,7 @@
     "source": "Source",
     "posted": "Publié le",
     "contact": "Contacter le vendeur",
+    "viewOn": "Voir sur {{source}}",
     "watchlist": "Ajouter à la watchlist",
     "watchlisted": "Dans la watchlist",
     "share": "Partager",

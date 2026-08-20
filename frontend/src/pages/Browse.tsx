@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Search, SlidersHorizontal } from 'lucide-react'
+import { Search, SlidersHorizontal, RefreshCw } from 'lucide-react'
 import ListingCard from '../components/ListingCard'
 import { api, type Listing } from '../lib/api'
 
@@ -9,11 +9,14 @@ export default function Browse() {
   const [listings, setListings] = useState<Listing[]>([])
   const [consoles, setConsoles] = useState<{ name: string; count: number }[]>([])
   const [brands, setBrands] = useState<{ name: string; count: number }[]>([])
+  const [sources, setSources] = useState<{ name: string; count: number }[]>([])
   const [loading, setLoading] = useState(true)
+  const [syncing, setSyncing] = useState(false)
   const [search, setSearch] = useState('')
   const [listingType, setListingType] = useState('')
   const [consoleFilter, setConsoleFilter] = useState('')
   const [brandFilter, setBrandFilter] = useState('')
+  const [sourceFilter, setSourceFilter] = useState('')
   const [collectible, setCollectible] = useState(false)
   const [sort, setSort] = useState('newest')
 
@@ -25,21 +28,34 @@ export default function Browse() {
         listing_type: listingType || undefined,
         console: consoleFilter || undefined,
         brand: brandFilter || undefined,
+        source: sourceFilter || undefined,
         collectible: collectible || undefined,
         sort,
-        limit: 50,
+        limit: 100,
       })
       setListings(data)
     } catch {
       setListings([])
     }
     setLoading(false)
-  }, [search, listingType, consoleFilter, brandFilter, collectible, sort])
+  }, [search, listingType, consoleFilter, brandFilter, sourceFilter, collectible, sort])
 
   useEffect(() => {
     api.getConsoles().then(setConsoles).catch(() => {})
     api.getBrands().then(setBrands).catch(() => {})
+    api.getSources().then(setSources).catch(() => {})
   }, [])
+
+  const handleSync = async () => {
+    setSyncing(true)
+    try {
+      await api.triggerSync()
+      await fetchListings()
+      api.getSources().then(setSources).catch(() => {})
+    } finally {
+      setSyncing(false)
+    }
+  }
 
   useEffect(() => {
     const timer = setTimeout(fetchListings, 300)
@@ -48,9 +64,15 @@ export default function Browse() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="mb-10">
-        <h1 className="font-display text-4xl md:text-5xl font-bold mb-3">{t('browse.title')}</h1>
-        <p className="text-gray-500">{t('browse.subtitle')}</p>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+        <div>
+          <h1 className="font-display text-4xl md:text-5xl font-bold mb-3">{t('browse.title')}</h1>
+          <p className="text-gray-500">{t('browse.subtitle')}</p>
+        </div>
+        <button onClick={handleSync} disabled={syncing} className="btn-secondary text-sm !px-4 !py-2 shrink-0">
+          <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
+          {syncing ? t('browse.syncing') : t('browse.sync')}
+        </button>
       </div>
 
       {/* Search & Filters */}
@@ -85,6 +107,13 @@ export default function Browse() {
               <option value="">{t('browse.allBrands')}</option>
               {brands.map(b => (
                 <option key={b.name} value={b.name}>{b.name} ({b.count})</option>
+              ))}
+            </select>
+
+            <select value={sourceFilter} onChange={e => setSourceFilter(e.target.value)} className="rp-select">
+              <option value="">{t('browse.allSources')}</option>
+              {sources.map(s => (
+                <option key={s.name} value={s.name}>{s.name} ({s.count})</option>
               ))}
             </select>
 

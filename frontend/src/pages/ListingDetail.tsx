@@ -108,14 +108,20 @@ export default function ListingDetail() {
               <div className="flex items-center gap-2 text-gray-500 text-xs mb-1">
                 <Calendar className="w-3 h-3" /> {t('listing.posted')}
               </div>
-              <p className="font-medium">{new Date(listing.created_at).toLocaleDateString(lang)}</p>
+              <p className="font-medium">{new Date(listing.synced_at || listing.created_at).toLocaleDateString(lang)}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-3 mt-auto">
-            <button className="btn-primary flex-1">
-              <ExternalLink className="w-5 h-5" /> {t('listing.contact')}
-            </button>
+            {listing.source_url ? (
+              <a href={listing.source_url} target="_blank" rel="noopener noreferrer" className="btn-primary flex-1">
+                <ExternalLink className="w-5 h-5" /> {t('listing.viewOn', { source: listing.source })}
+              </a>
+            ) : (
+              <button className="btn-primary flex-1">
+                <ExternalLink className="w-5 h-5" /> {t('listing.contact')}
+              </button>
+            )}
             <button
               onClick={handleWatchlist}
               className={`btn-secondary !px-4 ${watchlisted ? '!border-rp-magenta !text-rp-magenta' : ''}`}
